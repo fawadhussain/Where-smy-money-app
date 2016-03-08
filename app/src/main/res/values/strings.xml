@@ -12,17 +12,11 @@
     <string name="date">Date</string>
     <string name="price">$100.00</string>
     <string name="title">Title</string>
-
-    <string-array name="period_arrays">
-        <item>DAY</item>
-        <item>WEEK</item>
-        <item>MONTH</item>
-        <item>LAST 7 DAYS</item>
-        <item>LAST 30 DAYS</item>
-        <item>CUSTOM RANGE</item>
-
-
-    </string-array>
+    <string name="day">DAY</string>
+    <string name="week">WEEK</string>
+    <string name="seven_days">LAST 7 DAYS</string>
+    <string name="thirty_days">LAST 30 DAYS</string>
+    <string name="custom_range">CUSTOM RANGE</string>
 
 
 </resources>

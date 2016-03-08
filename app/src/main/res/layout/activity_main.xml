@@ -36,18 +36,6 @@
             android:textStyle="bold" />
 
 
-        <Spinner
-            android:id="@+id/spinner"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_alignParentRight="true"
-            android:layout_below="@+id/period_picker"
-            android:layout_marginLeft="20dp"
-            android:popupBackground="@drawable/nav_logo">
-
-        </Spinner>
-
-
         <TextView
             android:id="@+id/price"
             android:layout_width="wrap_content"

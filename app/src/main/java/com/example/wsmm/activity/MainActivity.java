@@ -1,16 +1,15 @@
 package com.example.wsmm.activity;
 
 import android.app.DatePickerDialog;
-import android.graphics.Color;
 import android.os.Bundle;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentTransaction;
 import android.support.v4.widget.DrawerLayout;
+import android.support.v7.widget.PopupMenu;
 import android.support.v7.widget.Toolbar;
-import android.view.Gravity;
+
+import android.view.MenuItem;
 import android.view.View;
-import android.widget.AdapterView;
-import android.widget.ArrayAdapter;
 import android.widget.DatePicker;
 import android.widget.Spinner;
 import android.widget.TextView;
@@ -24,7 +23,7 @@ import com.example.wsmm.fragment.NavigationDrawerFragment;
 import java.util.Calendar;
 
 
-public class MainActivity extends BaseActivity implements View.OnClickListener, PrimaryFragment.OnUpdateToolBar, AdapterView.OnItemSelectedListener {
+public class MainActivity extends BaseActivity implements View.OnClickListener, PrimaryFragment.OnUpdateToolBar ,PopupMenu.OnMenuItemClickListener {
 
 
     Calendar cal;
@@ -62,6 +61,8 @@ public class MainActivity extends BaseActivity implements View.OnClickListener, 
         mFragmentTransaction.replace(R.id.containerView, new TabFragment()).commit();
         findViewById(R.id.date_picker).setOnClickListener(this);
 
+
+
     }
 
     @Override
@@ -70,10 +71,6 @@ public class MainActivity extends BaseActivity implements View.OnClickListener, 
         switch (v.getId()) {
             case R.id.date_picker:
 
-                   /* date_picker = new DatePickerDialog(this, this, cal.get(Calendar.YEAR), cal.get(Calendar.MONTH), cal.get(Calendar.DAY_OF_MONTH));
-                    date_picker.show();*/
-
-                // R.style.DialogTheme
                 new DatePickerDialog(MainActivity.this, R.style.DialogTheme, new DatePickerDialog.OnDateSetListener() {
                     @Override
                     public void onDateSet(DatePicker view, int year, int monthOfYear, int dayOfMonth) {
@@ -88,8 +85,11 @@ public class MainActivity extends BaseActivity implements View.OnClickListener, 
                 break;
 
             case R.id.period_picker:
-                addSpinner();
-                spinnerFormatting();
+
+                PopupMenu popupMenu = new PopupMenu(MainActivity.this, v);
+                popupMenu.setOnMenuItemClickListener(MainActivity.this);
+                popupMenu.inflate(R.menu.popup_menu);
+                popupMenu.show();
 
 
                 break;
@@ -107,63 +107,8 @@ public class MainActivity extends BaseActivity implements View.OnClickListener, 
     }
 
 
-    private void addSpinner() {
-        spinner = (Spinner) findViewById(R.id.spinner);
-        spinner.setVisibility(View.VISIBLE);
-        spinner.performClick();
-        spinner.setSelected(false);
-        spinner.setSelection(-1);
-        spinner.setOnItemSelectedListener(this);
-
-    }
-
-    @Override
-    public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
 
 
-        if (position == 0) {
-
-            spinner.setVisibility(View.VISIBLE);
-
-        } else {
-
-            spinner.setVisibility(View.GONE);
-
-        }
-
-
-    }
-
-    @Override
-    public void onNothingSelected(AdapterView<?> parent) {
-
-        Toast.makeText(getApplicationContext(), "onNothing Selected", Toast.LENGTH_SHORT).show();
-
-    }
-
-    private void spinnerFormatting() {
-        ArrayAdapter<String> adapter1 = new ArrayAdapter<String>(this, android.R.layout.simple_list_item_1,
-                getResources().getStringArray(R.array.period_arrays)) {
-            public View getView(int position, View convertView, android.view.ViewGroup parent) {
-                View v = super.getView(position, convertView, parent);
-                ((TextView) v).setTextColor(Color.parseColor("#FFFFFF"));
-                ((TextView) v).setGravity(Gravity.LEFT);
-
-                return v;
-            }
-
-            public View getDropDownView(int position, View convertView, android.view.ViewGroup parent) {
-                View v = super.getView(position, convertView, parent);
-                ((TextView) v).setTextColor(Color.parseColor("#FFFFFF"));
-                ((TextView) v).setGravity(Gravity.LEFT);
-                ((TextView) v).setTextSize(15);
-
-                return v;
-            }
-        };
-        adapter1.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
-        spinner.setAdapter(adapter1);
-    }
 
 
     private String getMonth(int i) {
@@ -217,4 +162,26 @@ public class MainActivity extends BaseActivity implements View.OnClickListener, 
         return "";
     }
 
+    @Override
+    public boolean onMenuItemClick(MenuItem item) {
+        switch (item.getItemId()) {
+            case R.id.item_day:
+                Toast.makeText(this, "Day", Toast.LENGTH_SHORT).show();
+                return true;
+            case R.id.item_week:
+                Toast.makeText(this, "Week", Toast.LENGTH_SHORT).show();
+                return true;
+            case R.id.item_seven_days:
+                Toast.makeText(this, "Seven", Toast.LENGTH_SHORT).show();
+                return true;
+            case R.id.item_thirty_days:
+                Toast.makeText(this, "Thirty", Toast.LENGTH_SHORT).show();
+                return true;
+            case R.id.item_custom_range:
+                Toast.makeText(this, "Custom", Toast.LENGTH_SHORT).show();
+                return true;
+        }
+
+        return false;
+    }
 }

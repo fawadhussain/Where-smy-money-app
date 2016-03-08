@@ -1,0 +1,31 @@
+<?xml version="1.0" encoding="utf-8"?>
+<menu xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto">
+
+    <item
+        android:id="@+id/item_day"
+        app:showAsAction="ifRoom|withText"
+        android:title="@string/day"
+        android:visible="true"/>
+    <item
+        android:id="@+id/item_week"
+        app:showAsAction="ifRoom|withText"
+        android:title="@string/week"
+        android:visible="true"/>
+    <item
+        android:id="@+id/item_seven_days"
+        app:showAsAction="ifRoom|withText"
+        android:title="@string/seven_days"
+        android:visible="true"/>
+    <item
+        android:id="@+id/item_thirty_days"
+        app:showAsAction="ifRoom|withText"
+        android:title="@string/thirty_days"
+        android:visible="true"/>
+    <item
+        android:id="@+id/item_custom_range"
+        app:showAsAction="ifRoom|withText"
+        android:title="@string/custom_range"
+        android:visible="true"/>
+
+</menu>
