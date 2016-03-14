@@ -17,6 +17,29 @@
     <string name="seven_days">LAST 7 DAYS</string>
     <string name="thirty_days">LAST 30 DAYS</string>
     <string name="custom_range">CUSTOM RANGE</string>
+    <string name="category_title">Category Title</string>
+    <string name="add_title">Add Category Title</string>
+    <string name="add_item_amount">Add Amount</string>
+
+
+    <string-array
+        name="categories">
+        <item>MEDICAL</item>
+        <item>MIS</item>
+        <item>TAX</item>
+        <item>PETS</item>
+        <item>TAX</item>
+        <item>TRANSPORT</item>
+        <item>RECYCLE</item>
+        <item>TRAVEL</item>
+        <item>TV</item>
+        <item>OTHERS</item>
+        <item>ELECTRIC</item>
+        <item>INTERNET</item>
+        <item>TELEPHONE</item>
+        <item>WATER</item>
+    </string-array>
+
 
 
 </resources>

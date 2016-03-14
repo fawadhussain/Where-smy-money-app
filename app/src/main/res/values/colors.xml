@@ -7,7 +7,9 @@
     <color name="white">#FFF</color>
     <color name="primary">#70C2DE</color>
     <color name="primary_dark">#70C2DE</color>
+    <color name="colorAccent">#70C2DE</color>
     <color name="divider">#B6B6B6</color>
+
 
 
 </resources>

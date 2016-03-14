@@ -8,10 +8,10 @@ import android.support.v4.widget.DrawerLayout;
 import android.support.v7.widget.PopupMenu;
 import android.support.v7.widget.Toolbar;
 
+import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.DatePicker;
-import android.widget.Spinner;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -27,26 +27,26 @@ public class MainActivity extends BaseActivity implements View.OnClickListener, 
 
 
     Calendar cal;
-    private Spinner spinner;
-    TextView dateText;
+    TextView datePickerText;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
         Toolbar mToolbar = (Toolbar) findViewById(R.id.toolbar);
-        dateText = (TextView) findViewById(R.id.date_picker);
+       // dateText = (TextView) findViewById(R.id.date_picker);
         setSupportActionBar(mToolbar);
+        datePickerText = (TextView) findViewById(R.id.date_picker_text);
         NavigationDrawerFragment drawerFragment = (NavigationDrawerFragment)
                 getSupportFragmentManager().findFragmentById(R.id.fragment_navigation_drawer);
         drawerFragment.setUp(R.id.fragment_navigation_drawer, (DrawerLayout) findViewById(R.id.drawerLayout), mToolbar);
         getSupportActionBar().setDisplayShowTitleEnabled(false);
         cal = Calendar.getInstance();
-        dateText.setText("TODAY " + getMonth(cal.get(Calendar.MONTH)) + " " + cal.get(Calendar.DAY_OF_MONTH));
+        datePickerText.setText("TODAY " + getMonth(cal.get(Calendar.MONTH)) + " " + cal.get(Calendar.DAY_OF_MONTH));
 
 
-        findViewById(R.id.date_picker).setOnClickListener(this);
-        findViewById(R.id.period_picker).setOnClickListener(this);
+        datePickerText.setOnClickListener(this);
+       // findViewById(R.id.period_picker).setOnClickListener(this);
 
 
         /**
@@ -59,7 +59,7 @@ public class MainActivity extends BaseActivity implements View.OnClickListener, 
         FragmentManager mFragmentManager = getSupportFragmentManager();
         FragmentTransaction mFragmentTransaction = mFragmentManager.beginTransaction();
         mFragmentTransaction.replace(R.id.containerView, new TabFragment()).commit();
-        findViewById(R.id.date_picker).setOnClickListener(this);
+      //  findViewById(R.id.date_picker).setOnClickListener(this);
 
 
 
@@ -68,31 +68,23 @@ public class MainActivity extends BaseActivity implements View.OnClickListener, 
     @Override
     public void onClick(View v) {
 
-        switch (v.getId()) {
-            case R.id.date_picker:
+       switch (v.getId()) {
+            case R.id.date_picker_text:
 
                 new DatePickerDialog(MainActivity.this, R.style.DialogTheme, new DatePickerDialog.OnDateSetListener() {
                     @Override
                     public void onDateSet(DatePicker view, int year, int monthOfYear, int dayOfMonth) {
 
-                        dateText.setText(year+","+getMonth(monthOfYear)+" "+ dayOfMonth);
+                        datePickerText.setText(year+","+getMonth(monthOfYear)+" "+ dayOfMonth);
 
 
 
                         //DO SOMETHING
                     }
-                }, cal.get(Calendar.YEAR), cal.get(Calendar.MONTH), cal.get(Calendar.DAY_OF_MONTH)).show();
+                },cal.get(Calendar.YEAR), cal.get(Calendar.MONTH), cal.get(Calendar.DAY_OF_MONTH)).show();
                 break;
 
-            case R.id.period_picker:
 
-                PopupMenu popupMenu = new PopupMenu(MainActivity.this, v);
-                popupMenu.setOnMenuItemClickListener(MainActivity.this);
-                popupMenu.inflate(R.menu.popup_menu);
-                popupMenu.show();
-
-
-                break;
 
         }
 
@@ -183,5 +175,29 @@ public class MainActivity extends BaseActivity implements View.OnClickListener, 
         }
 
         return false;
+    }
+
+    @Override
+    public boolean onCreateOptionsMenu(Menu menu) {
+        getMenuInflater().inflate(R.menu.activity_menu, menu);
+        return true;
+    }
+
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+        switch (item.getItemId()) {
+            case R.id.day_range:
+                View dayRange = findViewById(R.id.day_range);
+                PopupMenu popupMenu = new PopupMenu(MainActivity.this, dayRange);
+                popupMenu.setOnMenuItemClickListener(MainActivity.this);
+                popupMenu.inflate(R.menu.popup_menu);
+                popupMenu.show();
+
+                break;
+
+            default:
+                break;
+        }
+        return super.onOptionsItemSelected(item);
     }
 }
