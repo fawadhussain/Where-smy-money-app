@@ -20,10 +20,16 @@
     <string name="category_title">Category Title</string>
     <string name="add_title">Add Category Title</string>
     <string name="add_item_amount">Add Amount</string>
+    <string name="select_image">Select Image</string>
+    <string name="save">SAVE</string>
 
 
     <string-array
         name="categories">
+        <item>AUTO GAS</item>
+        <item>AUTO REGISTRATION</item>
+        <item>AUTO SERVICE</item>
+        <item>BANK</item>
         <item>MEDICAL</item>
         <item>MIS</item>
         <item>TAX</item>
@@ -38,6 +44,23 @@
         <item>INTERNET</item>
         <item>TELEPHONE</item>
         <item>WATER</item>
+        <item>CASH</item>
+        <item>CHARITY</item>
+        <item>CHILD CARE</item>Î
+        <item>CLOTHING</item>Î
+        <item>CREDIT CARD PAYMENT</item>Î
+        <item>EATING</item>Î
+        <item>EDUCATION</item>Î
+        <item>ENTERTAINMENT</item>Î
+        <item>GIFTS</item>Î
+        <item>GROCERY</item>Î
+        <item>GIFTS</item>Î
+        <item>HEALTH</item>Î
+        <item>HOME REPAIR</item>Î
+        <item>HOUSEHOLD</item>Î
+        <item>INSURANCE</item>Î
+        <item>LOAN</item>Î
+
     </string-array>
 
 

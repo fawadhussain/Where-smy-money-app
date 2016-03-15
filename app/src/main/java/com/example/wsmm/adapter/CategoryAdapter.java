@@ -36,7 +36,7 @@ public class CategoryAdapter extends RecyclerView.Adapter<CategoryAdapter.ViewHo
 
         String category = mDataSet.get(position);
         holder.title.setText(category);
-        int id = mContext.getResources().getIdentifier(category.toLowerCase() ,"drawable", mContext.getPackageName());
+        int id = mContext.getResources().getIdentifier(category.replaceAll("\\s+","").toLowerCase() ,"drawable", mContext.getPackageName());
         holder.categoryIcon.setImageResource(id);
 
     }

@@ -8,17 +8,44 @@ import io.realm.annotations.PrimaryKey;
 /**
  * Created by abubaker on 15/03/2016.
  */
-public class Category extends RealmObject{
+public class Category extends RealmObject {
     @PrimaryKey
     private int categoryId;
     private String categoryName;
-    private Date date;
+    private String categoryTitle;
+    private long date;
+    private int price;
+    private String imagePath;
 
-    public Date getDate() {
+    public int getPrice() {
+        return price;
+    }
+
+    public void setPrice(int price) {
+        this.price = price;
+    }
+
+    public String getImagePath() {
+        return imagePath;
+    }
+
+    public void setImagePath(String imagePath) {
+        this.imagePath = imagePath;
+    }
+
+    public String getCategoryTitle() {
+        return categoryTitle;
+    }
+
+    public void setCategoryTitle(String categoryTitle) {
+        this.categoryTitle = categoryTitle;
+    }
+
+    public long getDate() {
         return date;
     }
 
-    public void setDate(Date date) {
+    public void setDate(long date) {
         this.date = date;
     }
 

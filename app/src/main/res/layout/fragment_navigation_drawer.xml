@@ -10,7 +10,9 @@
 <LinearLayout
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="@drawable/nav_logo"
+    android:alpha="0.8"
+    android:background="#5A5855"
+
     android:orientation="vertical">
 
 
@@ -26,11 +28,14 @@
         <ImageView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:src="@drawable/gallery"/>
+            android:src="@drawable/transactions"/>
 
         <TextView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
+            android:textColor="@color/white"
+            android:layout_marginTop="10dp"
+            android:textSize="14sp"
             android:text="@string/transactions"/>
 
 
@@ -49,11 +54,14 @@
         <ImageView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:src="@drawable/gallery"/>
+            android:src="@drawable/settings"/>
 
         <TextView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
+            android:textColor="@color/white"
+            android:textSize="14sp"
+            android:layout_marginTop="10dp"
             android:text="@string/settings"/>
 
 
@@ -71,11 +79,14 @@
         <ImageView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:src="@drawable/gallery"/>
+            android:src="@drawable/export"/>
 
         <TextView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
+            android:textColor="@color/white"
+            android:layout_marginTop="10dp"
+            android:textSize="14sp"
             android:text="@string/export_csv"/>
 
 
@@ -94,11 +105,14 @@
         <ImageView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:src="@drawable/gallery"/>
+            android:src="@drawable/how_to_use"/>
 
         <TextView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
+            android:textColor="@color/white"
+            android:layout_marginTop="10dp"
+            android:textSize="14sp"
             android:text="@string/how_to_us"/>
 
 
