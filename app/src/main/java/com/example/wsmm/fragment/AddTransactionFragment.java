@@ -3,6 +3,7 @@ package com.example.wsmm.fragment;
 import android.Manifest;
 import android.annotation.TargetApi;
 import android.app.Activity;
+import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.pm.PackageManager;
@@ -12,6 +13,7 @@ import android.graphics.BitmapFactory;
 import android.net.Uri;
 import android.os.Build;
 import android.os.Bundle;
+import android.os.Environment;
 import android.provider.MediaStore;
 import android.support.annotation.NonNull;
 import android.support.v7.app.AlertDialog;
@@ -25,10 +27,16 @@ import android.widget.Toast;
 
 
 import com.example.wsmm.R;
+import com.example.wsmm.activity.MainActivity;
 import com.example.wsmm.adapter.CategoryAdapter;
+import com.example.wsmm.util.ImageUtils;
 
+import java.io.File;
+import java.io.IOException;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -45,6 +53,9 @@ public class AddTransactionFragment extends BaseFragment implements View.OnClick
     final private int REQUEST_CODE_ASK_PERMISSIONS = 123;
     final private int REQUEST_CODE_ASK_MULTIPLE_PERMISSIONS = 124;
     private ImageView setImage;
+    public static final int TAKE_PHOTO_CODE = 100;
+    private String mCurrentPhotoPath;
+    private long mills;
 
     public AddTransactionFragment() {
 
@@ -128,7 +139,7 @@ public class AddTransactionFragment extends BaseFragment implements View.OnClick
 
                     } else {
 
-                        capturePhoto();
+                       dispatchTakePictureIntent(getActivity());
 
                     }
 
@@ -170,7 +181,7 @@ public class AddTransactionFragment extends BaseFragment implements View.OnClick
                         && perms.get(Manifest.permission.WRITE_EXTERNAL_STORAGE) == PackageManager.PERMISSION_GRANTED) {
                     // All Permissions Granted
 
-                    capturePhoto();
+                    dispatchTakePictureIntent(getActivity());
 
 
                 } else {
@@ -228,7 +239,7 @@ public class AddTransactionFragment extends BaseFragment implements View.OnClick
             return;
         }
 
-        capturePhoto();
+        dispatchTakePictureIntent(getActivity());
     }
 
     private void showMessageOKCancel(String message, DialogInterface.OnClickListener okListener) {
@@ -275,10 +286,6 @@ public class AddTransactionFragment extends BaseFragment implements View.OnClick
 
     }
 
-    private void capturePhoto() {
-        Intent intent = new Intent(MediaStore.ACTION_IMAGE_CAPTURE);
-        startActivityForResult(intent, REQUEST_CAMERA);
-    }
 
     @Override
     public void onActivityResult(int requestCode, int resultCode, Intent data) {
@@ -287,12 +294,12 @@ public class AddTransactionFragment extends BaseFragment implements View.OnClick
         if (resultCode == Activity.RESULT_OK) {
             if (requestCode == SELECT_FILE){
                 onSelectFromGalleryResult(data);
-            }
+            } else if (requestCode == TAKE_PHOTO_CODE){
 
-            else if (requestCode == REQUEST_CAMERA){
+                ImageUtils.loadImageLocally(getActivity(),setImage.getWidth()/2,200,setImage,getCurrentPhotoPath());
 
-            }
-               // onCaptureImageResult(data);
+                }
+
         }
     }
 
@@ -325,4 +332,60 @@ public class AddTransactionFragment extends BaseFragment implements View.OnClick
     }
 
 
+
+
+
+    private  void dispatchTakePictureIntent(Context context) {
+        Intent takePictureIntent = new Intent(MediaStore.ACTION_IMAGE_CAPTURE);
+        // Ensure that there's a camera activity to handle the intent
+        if (takePictureIntent.resolveActivity(context.getPackageManager()) != null) {
+            // Create the File where the photo should go
+            File photoFile = null;
+            try {
+                photoFile = createImageFile(context);
+            } catch (IOException ex) {
+                // Error occurred while creating the File
+
+            }
+            // Continue only if the File was successfully created
+            if (photoFile != null) {
+                takePictureIntent.putExtra(MediaStore.EXTRA_OUTPUT, Uri.fromFile(photoFile));
+
+                startActivityForResult(takePictureIntent, AddTransactionFragment.TAKE_PHOTO_CODE);
+            }
+        }
+    }
+
+
+
+    private   File createImageFile(Context context) throws IOException {
+
+        // Create an image file name
+        String timeStamp = new SimpleDateFormat("yyyyMMdd_HHmmss").format(new Date());
+        String imageFileName = "JPEG_" + timeStamp + "_";
+        File storageDir = Environment.getExternalStorageDirectory();
+        File appFolder = new File(storageDir, context.getResources().getString(R.string.app_name));
+        if(!appFolder.exists()) {
+            appFolder.mkdirs();
+        }
+        File image = File.createTempFile(
+                imageFileName,  /* prefix */
+                ".jpg",         /* suffix */
+                appFolder      /* directory */
+        );
+
+        // Save a file: path for use with ACTION_VIEW intents
+        mCurrentPhotoPath = image.getAbsolutePath();
+        return image;
+    }
+
+    public String getCurrentPhotoPath(){
+        return mCurrentPhotoPath;
+
+    }
+
+
+    public void setChangeDate(long mills){
+        this.mills = mills;
+    }
 }

@@ -32,7 +32,7 @@ public class BaseActivity extends AppCompatActivity implements BaseFragment.Frag
     }
 
     @Override
-    public void addFragment(BaseFragment f, boolean clearBackStack) {
+    public void addFragment(BaseFragment f, boolean clearBackStack , String tag) {
 
         if (clearBackStack) {
             clearFragmentBackStack();
@@ -40,7 +40,7 @@ public class BaseActivity extends AppCompatActivity implements BaseFragment.Frag
 
         FragmentTransaction transaction = getSupportFragmentManager().beginTransaction();
         transaction.setCustomAnimations(android.R.anim.slide_in_left, android.R.anim.slide_out_right);
-        transaction.add(R.id.containerView, f);
+        transaction.add(R.id.containerView, f,tag);
         transaction.addToBackStack(null);
         transaction.commit();
 
@@ -52,7 +52,7 @@ public class BaseActivity extends AppCompatActivity implements BaseFragment.Frag
     }
 
     @Override
-    public void replaceFragment(BaseFragment f, boolean clearBackStack) {
+    public void replaceFragment(BaseFragment f, boolean clearBackStack,String tag) {
 
         if (clearBackStack) {
             clearFragmentBackStack();
@@ -60,7 +60,7 @@ public class BaseActivity extends AppCompatActivity implements BaseFragment.Frag
 
         FragmentTransaction transaction = getSupportFragmentManager().beginTransaction();
         transaction.setCustomAnimations(android.R.anim.slide_in_left, android.R.anim.slide_out_right);
-        transaction.replace(R.id.containerView, f);
+        transaction.replace(R.id.containerView, f,tag);
         transaction.addToBackStack(null);
         transaction.commit();
 

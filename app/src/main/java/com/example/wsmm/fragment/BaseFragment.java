@@ -120,9 +120,9 @@ public abstract class BaseFragment extends Fragment {
 
     public interface FragmentNavigationHelper {
 
-        public void addFragment(BaseFragment f, boolean clearBackStack);
+        public void addFragment(BaseFragment f, boolean clearBackStack , String tag);
 
-        public void replaceFragment(BaseFragment f, boolean clearBackStack);
+        public void replaceFragment(BaseFragment f, boolean clearBackStack, String tag);
 
         public void onBack();
 

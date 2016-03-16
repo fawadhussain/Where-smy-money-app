@@ -1,6 +1,8 @@
 package com.example.wsmm.activity;
 
+
 import android.app.DatePickerDialog;
+
 import android.os.Bundle;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentTransaction;
@@ -15,6 +17,7 @@ import android.widget.DatePicker;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.example.wsmm.fragment.AddTransactionFragment;
 import com.example.wsmm.fragment.PrimaryFragment;
 import com.example.wsmm.R;
 import com.example.wsmm.TabFragment;
@@ -34,6 +37,7 @@ public class MainActivity extends BaseActivity implements View.OnClickListener, 
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
         Toolbar mToolbar = (Toolbar) findViewById(R.id.toolbar);
+
        // dateText = (TextView) findViewById(R.id.date_picker);
         setSupportActionBar(mToolbar);
         datePickerText = (TextView) findViewById(R.id.date_picker_text);
@@ -54,7 +58,7 @@ public class MainActivity extends BaseActivity implements View.OnClickListener, 
          * Here , we are inflating the TabFragment as the first Fragment
          */
 
-        addFragment(new PrimaryFragment(), false);
+        addFragment(new PrimaryFragment(), false,"AddTransaction");
 
         FragmentManager mFragmentManager = getSupportFragmentManager();
         FragmentTransaction mFragmentTransaction = mFragmentManager.beginTransaction();
@@ -75,7 +79,22 @@ public class MainActivity extends BaseActivity implements View.OnClickListener, 
                     @Override
                     public void onDateSet(DatePicker view, int year, int monthOfYear, int dayOfMonth) {
 
-                        datePickerText.setText(year+","+getMonth(monthOfYear)+" "+ dayOfMonth);
+                        datePickerText.setText(year + "," + getMonth(monthOfYear) + " " + dayOfMonth);
+                        Calendar c = Calendar.getInstance();
+                        c.set(Calendar.DAY_OF_MONTH,monthOfYear);
+                        c.set(Calendar.YEAR,year);
+                        c.set(Calendar.MONTH, monthOfYear);
+
+                        long mills = c.getTimeInMillis();
+
+                        FragmentManager fm = getSupportFragmentManager();
+
+
+                            if (fm.findFragmentByTag("AddTransaction").isVisible()){
+                                AddTransactionFragment fragment = (AddTransactionFragment)fm.findFragmentByTag("AddTransaction");
+                                fragment.setChangeDate(mills);
+
+                            }
 
 
 
@@ -200,4 +219,8 @@ public class MainActivity extends BaseActivity implements View.OnClickListener, 
         }
         return super.onOptionsItemSelected(item);
     }
+
+
+
+
 }

@@ -72,19 +72,19 @@ public class NavigationDrawerFragment extends BaseFragment implements View.OnCli
         switch (v.getId()){
             case R.id.transactions:
                 closeNav();
-                getHelper().replaceFragment(new Transactions(),false);
+                getHelper().replaceFragment(new Transactions(),false,"Transactions");
                 break;
             case R.id.settings:
                 closeNav();
-                getHelper().replaceFragment(new Settings(),false);
+                getHelper().replaceFragment(new Settings(),false,"Settings");
                 break;
             case R.id.export_csv:
                 closeNav();
-                getHelper().replaceFragment(new ExportFile(),false);
+                getHelper().replaceFragment(new ExportFile(),false,"ExportFile");
                 break;
             case R.id.how_to_us:
                 closeNav();
-                getHelper().replaceFragment(new AboutUs(),false);
+                getHelper().replaceFragment(new AboutUs(),false,"AboutUs");
                 break;
         }
 

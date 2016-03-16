@@ -79,7 +79,7 @@ public class PrimaryFragment extends BaseFragment implements SheetLayout.OnFabAn
 
     @Override
     public void onFabAnimationEnd() {
-        getHelper().replaceFragment(new AddTransactionFragment(),false);
+        getHelper().replaceFragment(new AddTransactionFragment(),false,"AddTransaction");
         sheetLayout.contractFab();
         sheetLayout.hide();
 

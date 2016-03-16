@@ -1,5 +1,16 @@
-apply plugin: 'com.android.application'
+buildscript {
+    repositories {
 
+        jcenter()
+    }
+
+    dependencies {
+        classpath "io.realm:realm-gradle-plugin:0.88.0"
+    }
+}
+
+apply plugin: 'com.android.application'
+apply plugin: 'realm-android'
 
 android {
     compileSdkVersion 23
@@ -32,8 +43,8 @@ dependencies {
     testCompile 'junit:junit:4.12'
     compile 'com.android.support:appcompat-v7:23.2.0'
     compile 'com.android.support:recyclerview-v7:23.2.0'
-    compile 'io.realm:realm-android:0.84.1'
     compile 'com.github.coyarzun89:fabtransitionactivity:0.1.1'
     compile 'com.android.support:design:23.2.0'
+    compile 'com.squareup.picasso:picasso:2.5.2'
 }
 
