@@ -19,16 +19,19 @@ import android.support.annotation.NonNull;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
+import android.util.Log;
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.View;
+import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.Toast;
 
 
 import com.example.wsmm.R;
-import com.example.wsmm.activity.MainActivity;
 import com.example.wsmm.adapter.CategoryAdapter;
+import com.example.wsmm.db.DBClient;
+import com.example.wsmm.model.Category;
 import com.example.wsmm.util.ImageUtils;
 
 import java.io.File;
@@ -40,6 +43,10 @@ import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+
+import io.realm.Realm;
+import io.realm.RealmConfiguration;
+import io.realm.RealmResults;
 
 /**
  * Created by abubaker on 13/03/2016.
@@ -55,7 +62,14 @@ public class AddTransactionFragment extends BaseFragment implements View.OnClick
     private ImageView setImage;
     public static final int TAKE_PHOTO_CODE = 100;
     private String mCurrentPhotoPath;
-    private long mills;
+    private long mills = 0;
+    private EditText categoryTitle;
+    private EditText amount;
+    private String categoryName;
+    DBClient db;
+    private Realm realm;
+    private RealmConfiguration realmConfig;
+
 
     public AddTransactionFragment() {
 
@@ -71,9 +85,12 @@ public class AddTransactionFragment extends BaseFragment implements View.OnClick
         super.initViews(parent, savedInstanceState);
 
         setImage = (ImageView)parent.findViewById(R.id.set_image);
-
-
+        categoryTitle = (EditText)parent.findViewById(R.id.et_category_title);
+        amount = (EditText)parent.findViewById(R.id.et_add_amount);
         mRecyclerView = (RecyclerView) parent.findViewById(R.id.category_list);
+        realmConfig = new RealmConfiguration.Builder(getActivity()).build();
+        // Open the Realm for the UI thread.
+        realm = Realm.getInstance(realmConfig);
 
         // use this setting to improve performance if you know that changes
         // in content do not change the layout size of the RecyclerView
@@ -83,8 +100,20 @@ public class AddTransactionFragment extends BaseFragment implements View.OnClick
         categoryList = Arrays.asList(getResources().getStringArray(R.array.categories));
         categoryAdapter = new CategoryAdapter(getActivity(), categoryList);
         mRecyclerView.setAdapter(categoryAdapter);
+        parent.findViewById(R.id.btn_save).setOnClickListener(this);
+
         setHasOptionsMenu(true);
         parent.findViewById(R.id.btn_select_image).setOnClickListener(AddTransactionFragment.this);
+        categoryAdapter.setClickListener(new CategoryAdapter.ClickListener() {
+            @Override
+            public void onItemClicked(int itemPosition) {
+
+                categoryName = categoryList.get(itemPosition);
+
+
+            }
+        });
+
 
     }
 
@@ -104,6 +133,69 @@ public class AddTransactionFragment extends BaseFragment implements View.OnClick
             case R.id.btn_select_image:
 
                 dialogOption();
+                break;
+
+            case R.id.btn_save:
+
+              // db =new DBClient();
+
+                realm.beginTransaction();
+                Category categoryObject = new Category();
+
+
+                if (categoryObject.getCategoryId() < 1) {
+                    Number max = realm.where(Category.class).max("categoryId");
+                    if (max == null) {
+                        max = new Integer(0);
+                    }
+                    categoryObject.setCategoryId((int) (max.longValue() + 1));
+                }
+                    //categoryObject.setCategoryId(max.longValue() + 1);
+
+                categoryObject.setCategoryName(categoryName);
+                categoryObject.setCategoryTitle(categoryTitle.getText().toString());
+                categoryObject.setPrice(amount.getText().toString());
+                if (getCurrentPhotoPath() != null){
+                    categoryObject.setImagePath(getCurrentPhotoPath());
+                }
+
+                if (getDate() == 0){
+                    categoryObject.setDate(getCurrentSystemDate());
+                }else {
+                    categoryObject.setDate(getDate());
+                }
+                realm.copyToRealmOrUpdate(categoryObject);
+
+                realm.commitTransaction();
+                Log.d("Size of Records",getRecords()+"");
+
+
+
+
+
+
+/*
+                saveTransaction(new Realm.Transaction.Callback(){
+                    @Override
+                    public void onSuccess() {
+
+                    Toast.makeText(getActivity(), "saved", Toast.LENGTH_SHORT).show();
+                       // getHelper().replaceFragment(new PrimaryFragment(),true,PrimaryFragment.PRIMARY_FRAGMENT_TAG);
+                        //Contact saved
+                        Log.d("Size of Records",getRecords()+"");
+                    }
+
+
+                    @Override
+                    public void onError(Exception e) {
+
+                        Toast.makeText(getActivity(),"error",Toast.LENGTH_SHORT).show();
+
+
+                        //Transaction is rolled-back
+                    }
+                } );*/
+
                 break;
 
 
@@ -385,7 +477,35 @@ public class AddTransactionFragment extends BaseFragment implements View.OnClick
     }
 
 
-    public void setChangeDate(long mills){
-        this.mills = mills;
+    public void setChangeDate(long milliSeconed){
+        this.mills = milliSeconed;
     }
+
+    private long getDate(){
+        return mills;
+    }
+
+    private long getCurrentSystemDate(){
+        return System.currentTimeMillis();
+    }
+
+
+    @Override
+    public void onDestroy() {
+        super.onDestroy();
+        realm.close();
+
+
+
+    }
+
+
+    private int getRecords(){
+        Realm realm = Realm.getInstance(realmConfig);
+        RealmResults<Category> results = realm.where(Category.class).findAll();
+        realm.close();
+        return results.size();
+    }
+
+
 }

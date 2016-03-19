@@ -9,19 +9,20 @@ import io.realm.annotations.PrimaryKey;
  * Created by abubaker on 15/03/2016.
  */
 public class Category extends RealmObject {
+
     @PrimaryKey
     private int categoryId;
     private String categoryName;
     private String categoryTitle;
     private long date;
-    private int price;
+    private String price;
     private String imagePath;
 
-    public int getPrice() {
+    public String getPrice() {
         return price;
     }
 
-    public void setPrice(int price) {
+    public void setPrice(String price) {
         this.price = price;
     }
 

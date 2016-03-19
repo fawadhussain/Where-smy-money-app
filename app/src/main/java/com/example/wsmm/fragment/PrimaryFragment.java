@@ -10,19 +10,24 @@ import android.widget.ProgressBar;
 
 import com.example.wsmm.R;
 import com.example.wsmm.adapter.ExpenseAdapter;
-import com.example.wsmm.fragment.BaseFragment;
+import com.example.wsmm.db.DBClient;
+import com.example.wsmm.model.Category;
 import com.example.wsmm.model.Expense;
 import com.github.fabtransitionactivity.SheetLayout;
 
-import java.util.ArrayList;
+
+import java.util.List;
 
 
 public class PrimaryFragment extends BaseFragment implements SheetLayout.OnFabAnimationEndListener,View.OnClickListener{
+
+    public static final String PRIMARY_FRAGMENT_TAG = "PrimaryFragment";
+
     OnUpdateToolBar updateToolBar;
     private RecyclerView mRecyclerView;
     private ProgressBar mProgressBar;
     private ExpenseAdapter expenseAdapter;
-    private ArrayList<Expense> expenseList;
+    private List<Category> expenseList;
     private Expense expense;
     private SheetLayout sheetLayout;
     private FloatingActionButton mFab;
@@ -55,15 +60,15 @@ public class PrimaryFragment extends BaseFragment implements SheetLayout.OnFabAn
         sheetLayout.setFabAnimationEndListener(this);
         mProgressBar.setVisibility(View.VISIBLE);
         mFab.setOnClickListener(this);
-        expenseList = new ArrayList<Expense>();
+    //    expenseList = new List<Category>();
 
 
-        for (int i = 0 ; i < 100 ; i++){
-            expense = new Expense();
+        /*for (int i = 0 ; i < 100 ; i++){
+            expense = new Category();
             expense.setTitle("COFFEE");
             expense.setPrice("$10.00");
             expenseList.add(expense);
-        }
+        }*/
 
         //updateToolBar.onUpdatePrice("100");
         mRecyclerView = (RecyclerView) parent.findViewById(R.id.expense_list);
@@ -72,8 +77,10 @@ public class PrimaryFragment extends BaseFragment implements SheetLayout.OnFabAn
         layoutManager.setOrientation(LinearLayoutManager.VERTICAL);
         mRecyclerView.setLayoutManager(layoutManager);
         mProgressBar.setVisibility(View.GONE);
-        expenseAdapter = new ExpenseAdapter(getActivity(), expenseList);
-        mRecyclerView.setAdapter(expenseAdapter);
+       // DBClient dbClient = new DBClient();
+       // expenseList = dbClient.getAllItems();
+       // expenseAdapter = new ExpenseAdapter(getActivity(), expenseList);
+        //mRecyclerView.setAdapter(expenseAdapter);
 
     }
 

@@ -8,18 +8,20 @@ import android.view.ViewGroup;
 import android.widget.TextView;
 
 import com.example.wsmm.R;
+import com.example.wsmm.model.Category;
 import com.example.wsmm.model.Expense;
 
 import java.util.ArrayList;
+import java.util.List;
 
 /**
  * Created by abubaker on 05/03/2016.
  */
 public class ExpenseAdapter extends RecyclerView.Adapter<ExpenseAdapter.ViewHolder> {
-    private ArrayList<Expense> mDataSet;
+    private List<Category> mDataSet;
     private Context mContext;
 
-    public ExpenseAdapter(Context context , ArrayList<Expense> expenseList){
+    public ExpenseAdapter(Context context , List<Category> expenseList){
         this.mDataSet = expenseList;
         this.mContext = context;
     }
@@ -33,8 +35,8 @@ public class ExpenseAdapter extends RecyclerView.Adapter<ExpenseAdapter.ViewHold
     @Override
     public void onBindViewHolder(ExpenseAdapter.ViewHolder holder, int position) {
 
-        Expense expenseObject = mDataSet.get(position);
-        holder.title.setText(expenseObject.getTitle());
+        Category expenseObject = mDataSet.get(position);
+        holder.title.setText(expenseObject.getCategoryTitle());
         holder.price.setText(expenseObject.getPrice());
 
     }
@@ -44,7 +46,7 @@ public class ExpenseAdapter extends RecyclerView.Adapter<ExpenseAdapter.ViewHold
         return mDataSet.size();
     }
 
-    public ArrayList<Expense> getDataList() {
+    public List<Category> getDataList() {
         return this.mDataSet;
     }
 
