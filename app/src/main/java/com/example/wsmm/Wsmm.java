@@ -14,7 +14,7 @@ public class Wsmm extends Application{
     public void onCreate() {
         super.onCreate();
 
-       // RealmConfiguration realmConfig = new RealmConfiguration.Builder(this).build();
-       // Realm.setDefaultConfiguration(realmConfig);
+        RealmConfiguration realmConfig = new RealmConfiguration.Builder(this).build();
+        Realm.setDefaultConfiguration(realmConfig);
     }
 }

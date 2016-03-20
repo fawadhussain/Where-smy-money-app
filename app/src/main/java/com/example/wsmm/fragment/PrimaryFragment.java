@@ -18,6 +18,8 @@ import com.github.fabtransitionactivity.SheetLayout;
 
 import java.util.List;
 
+import io.realm.RealmResults;
+
 
 public class PrimaryFragment extends BaseFragment implements SheetLayout.OnFabAnimationEndListener,View.OnClickListener{
 
@@ -31,6 +33,9 @@ public class PrimaryFragment extends BaseFragment implements SheetLayout.OnFabAn
     private Expense expense;
     private SheetLayout sheetLayout;
     private FloatingActionButton mFab;
+    DBClient db;
+
+    RealmResults<Category> realmResults;
 
 
     public PrimaryFragment(){
@@ -60,7 +65,8 @@ public class PrimaryFragment extends BaseFragment implements SheetLayout.OnFabAn
         sheetLayout.setFabAnimationEndListener(this);
         mProgressBar.setVisibility(View.VISIBLE);
         mFab.setOnClickListener(this);
-    //    expenseList = new List<Category>();
+        db = new DBClient();
+       //expenseList = new List<>();
 
 
         /*for (int i = 0 ; i < 100 ; i++){
@@ -71,6 +77,8 @@ public class PrimaryFragment extends BaseFragment implements SheetLayout.OnFabAn
         }*/
 
         //updateToolBar.onUpdatePrice("100");
+
+
         mRecyclerView = (RecyclerView) parent.findViewById(R.id.expense_list);
         mProgressBar = (ProgressBar) parent.findViewById(R.id.progressBar);
         final LinearLayoutManager layoutManager = new LinearLayoutManager(getActivity());
@@ -78,9 +86,9 @@ public class PrimaryFragment extends BaseFragment implements SheetLayout.OnFabAn
         mRecyclerView.setLayoutManager(layoutManager);
         mProgressBar.setVisibility(View.GONE);
        // DBClient dbClient = new DBClient();
-       // expenseList = dbClient.getAllItems();
-       // expenseAdapter = new ExpenseAdapter(getActivity(), expenseList);
-        //mRecyclerView.setAdapter(expenseAdapter);
+        expenseList= db.getRecords();
+        expenseAdapter = new ExpenseAdapter(getActivity(), expenseList);
+        mRecyclerView.setAdapter(expenseAdapter);
 
     }
 

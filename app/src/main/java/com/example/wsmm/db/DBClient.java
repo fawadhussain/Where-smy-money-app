@@ -18,24 +18,24 @@ public class DBClient {
         mRealm = Realm.getDefaultInstance();
     }
 
-    public void saveTransaction(final Category category, Realm.Transaction.Callback callback) {
+    public void saveTransaction(final Category category, Realm.Transaction.OnSuccess callback) {
 
-        mRealm.executeTransaction(new Realm.Transaction() {
+        mRealm.executeTransactionAsync(new Realm.Transaction() {
             @Override
             public void execute(Realm realm) {
 
-                mRealm.beginTransaction();
+               // realm.beginTransaction();
 
                 if (category.getCategoryId() < 1) {
-                    Number max = mRealm.where(Category.class).max("categoryId");
+                    Number max = realm.where(Category.class).max("categoryId");
                     if (max == null) {
                         max = new Integer(0);
                     }
                     category.setCategoryId((int) (max.longValue() + 1));
                 }
-                mRealm.copyToRealmOrUpdate(category);
-                mRealm.commitTransaction();
-                close();
+                realm.copyToRealmOrUpdate(category);
+               // realm.commitTransaction();
+                //close();
 
             }
         }, callback);
@@ -49,12 +49,13 @@ public class DBClient {
         return results;
     }
 
-    public int getRecords(){
+    public RealmResults<Category> getRecords(){
         // Realm mRealm = Realm.getInstance(realmConfig);
         mRealm.beginTransaction();
         RealmResults<Category> results = mRealm.where(Category.class).findAll();
-        mRealm.close();
-        return results.size();
+        mRealm.commitTransaction();
+        //mRealm.close();
+        return results;
     }
 
 

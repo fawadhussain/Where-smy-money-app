@@ -88,9 +88,9 @@ public class AddTransactionFragment extends BaseFragment implements View.OnClick
         categoryTitle = (EditText)parent.findViewById(R.id.et_category_title);
         amount = (EditText)parent.findViewById(R.id.et_add_amount);
         mRecyclerView = (RecyclerView) parent.findViewById(R.id.category_list);
-        realmConfig = new RealmConfiguration.Builder(getActivity()).build();
+       // realmConfig = new RealmConfiguration.Builder(getActivity()).build();
         // Open the Realm for the UI thread.
-        realm = Realm.getInstance(realmConfig);
+        //realm = Realm.getInstance(realmConfig);
 
         // use this setting to improve performance if you know that changes
         // in content do not change the layout size of the RecyclerView
@@ -137,19 +137,19 @@ public class AddTransactionFragment extends BaseFragment implements View.OnClick
 
             case R.id.btn_save:
 
-              // db =new DBClient();
+               db =new DBClient();
 
-                realm.beginTransaction();
+                //realm.beginTransaction();
                 Category categoryObject = new Category();
 
 
-                if (categoryObject.getCategoryId() < 1) {
+                /*if (categoryObject.getCategoryId() < 1) {
                     Number max = realm.where(Category.class).max("categoryId");
                     if (max == null) {
                         max = new Integer(0);
                     }
                     categoryObject.setCategoryId((int) (max.longValue() + 1));
-                }
+                }*/
                     //categoryObject.setCategoryId(max.longValue() + 1);
 
                 categoryObject.setCategoryName(categoryName);
@@ -164,10 +164,21 @@ public class AddTransactionFragment extends BaseFragment implements View.OnClick
                 }else {
                     categoryObject.setDate(getDate());
                 }
-                realm.copyToRealmOrUpdate(categoryObject);
+                //realm.copyToRealmOrUpdate(categoryObject);
 
-                realm.commitTransaction();
-                Log.d("Size of Records",getRecords()+"");
+               // realm.commitTransaction();
+               // Log.d("Size of Records",getRecords()+"");
+
+                db.saveTransaction(categoryObject,new Realm.Transaction.OnSuccess(){
+
+                    @Override
+                    public void onSuccess() {
+
+                        Toast.makeText(getActivity(), "onSuccess", Toast.LENGTH_SHORT).show();
+                     getHelper().replaceFragment(new PrimaryFragment(),true,PrimaryFragment.PRIMARY_FRAGMENT_TAG);
+
+                    }
+                });
 
 
 
@@ -493,19 +504,12 @@ public class AddTransactionFragment extends BaseFragment implements View.OnClick
     @Override
     public void onDestroy() {
         super.onDestroy();
-        realm.close();
+//        realm.close();
 
 
 
     }
 
-
-    private int getRecords(){
-        Realm realm = Realm.getInstance(realmConfig);
-        RealmResults<Category> results = realm.where(Category.class).findAll();
-        realm.close();
-        return results.size();
-    }
 
 
 }
