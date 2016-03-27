@@ -46,5 +46,6 @@ dependencies {
     compile 'com.github.coyarzun89:fabtransitionactivity:0.1.1'
     compile 'com.android.support:design:23.2.0'
     compile 'com.squareup.picasso:picasso:2.5.2'
+    compile 'com.prolificinteractive:material-calendarview:1.2.0'
 }
 

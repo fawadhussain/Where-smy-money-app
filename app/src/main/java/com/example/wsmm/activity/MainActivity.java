@@ -3,7 +3,9 @@ package com.example.wsmm.activity;
 
 import android.app.DatePickerDialog;
 
+import android.app.Dialog;
 import android.os.Bundle;
+import android.support.annotation.NonNull;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentTransaction;
 import android.support.v4.widget.DrawerLayout;
@@ -13,6 +15,8 @@ import android.support.v7.widget.Toolbar;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
+import android.view.Window;
+import android.widget.Button;
 import android.widget.DatePicker;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -22,21 +26,29 @@ import com.example.wsmm.fragment.PrimaryFragment;
 import com.example.wsmm.R;
 import com.example.wsmm.TabFragment;
 import com.example.wsmm.fragment.NavigationDrawerFragment;
+import com.prolificinteractive.materialcalendarview.CalendarDay;
+import com.prolificinteractive.materialcalendarview.CalendarMode;
+import com.prolificinteractive.materialcalendarview.MaterialCalendarView;
+import com.prolificinteractive.materialcalendarview.OnDateSelectedListener;
 
 import java.util.Calendar;
 
 
-public class MainActivity extends BaseActivity implements View.OnClickListener, PrimaryFragment.OnUpdateToolBar ,PopupMenu.OnMenuItemClickListener {
+public class MainActivity extends BaseActivity implements View.OnClickListener, PrimaryFragment.OnUpdateToolBar ,PopupMenu.OnMenuItemClickListener, OnDateSelectedListener {
 
 
     Calendar cal;
     TextView datePickerText;
+    MaterialCalendarView widget;
+    private boolean week = false;
+    private boolean month = false;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
         Toolbar mToolbar = (Toolbar) findViewById(R.id.toolbar);
+        // widget = (MaterialCalendarView) parent.findViewById(R.id.calendarView);
 
        // dateText = (TextView) findViewById(R.id.date_picker);
         setSupportActionBar(mToolbar);
@@ -75,7 +87,9 @@ public class MainActivity extends BaseActivity implements View.OnClickListener, 
        switch (v.getId()) {
             case R.id.date_picker_text:
 
-                new DatePickerDialog(MainActivity.this, R.style.DialogTheme, new DatePickerDialog.OnDateSetListener() {
+                datePickerDialog();
+
+             /*   new DatePickerDialog(MainActivity.this, R.style.DialogTheme, new DatePickerDialog.OnDateSetListener() {
                     @Override
                     public void onDateSet(DatePicker view, int year, int monthOfYear, int dayOfMonth) {
 
@@ -100,7 +114,7 @@ public class MainActivity extends BaseActivity implements View.OnClickListener, 
 
                         //DO SOMETHING
                     }
-                },cal.get(Calendar.YEAR), cal.get(Calendar.MONTH), cal.get(Calendar.DAY_OF_MONTH)).show();
+                },cal.get(Calendar.YEAR), cal.get(Calendar.MONTH), cal.get(Calendar.DAY_OF_MONTH)).show();*/
                 break;
 
 
@@ -177,10 +191,14 @@ public class MainActivity extends BaseActivity implements View.OnClickListener, 
     public boolean onMenuItemClick(MenuItem item) {
         switch (item.getItemId()) {
             case R.id.item_day:
-                Toast.makeText(this, "Day", Toast.LENGTH_SHORT).show();
+                week = false;
+                month = true;
                 return true;
             case R.id.item_week:
-                Toast.makeText(this, "Week", Toast.LENGTH_SHORT).show();
+               // Toast.makeText(this, "Week", Toast.LENGTH_SHORT).show();
+                week = true;
+                month = false;
+                //widget.setCalendarDisplayMode(CalendarMode.WEEKS);
                 return true;
             case R.id.item_seven_days:
                 Toast.makeText(this, "Seven", Toast.LENGTH_SHORT).show();
@@ -221,6 +239,80 @@ public class MainActivity extends BaseActivity implements View.OnClickListener, 
     }
 
 
+    private void datePickerDialog() {
+        final Dialog dialog = new Dialog(this);
+        dialog.requestWindowFeature(Window.FEATURE_NO_TITLE);
+        dialog.setContentView(R.layout.date_picker_dialog_fragment);
+        widget = (MaterialCalendarView) dialog.findViewById(R.id.calendarView);
+        widget.setOnDateChangedListener(this);
+        Calendar mDataCalendar = Calendar.getInstance();
+        widget.setSelectedDate(mDataCalendar);
+        widget.setShowOtherDates(MaterialCalendarView.SHOW_ALL);
+        if (week){
+            widget.setCalendarDisplayMode(CalendarMode.WEEKS);
+        }else {
+            widget.setCalendarDisplayMode(CalendarMode.MONTHS);
+        }
+
+        //widget = (MaterialCalendarView) dialog.findViewById(R.id.calendarView);
+       // widget.setOnMonthChangedListener(this);
+        // widget.addDecorators(mEventDecorator);
+        Button btn_yes = (Button) dialog.findViewById(R.id.bt_yes);
+        Button btn_no = (Button) dialog.findViewById(R.id.bt_no);
+        btn_yes.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+
+            }
+        });
+        btn_no.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+
+                dialog.dismiss();
+            }
+        });
+
+        dialog.show();
+
+    }
 
 
+    @Override
+    public void onDateSelected(@NonNull MaterialCalendarView widget, @NonNull CalendarDay day, boolean selected) {
+
+       /* for (int i = 0; i < mSelectedDates.size(); i++) {
+            TSHCalendarEvent event = mSelectedDates.get(i);
+            Calendar mDate = DateTimeUtils.calendarDateFormat(event.getStartDate());
+            Calendar mDateEnd = null;
+
+            if (!event.isAllday()) {
+                mDateEnd = DateTimeUtils.calendarDateFormat(event.getEndDate());
+            }
+
+
+            if (day.getYear() == mDate.get(Calendar.YEAR) && day.getMonth() == mDate.get(Calendar.MONTH) && day.getDay() == mDate.get(Calendar.DAY_OF_MONTH)) {
+
+                tshCalendarEvents.add(event);
+
+            }
+            else if(mDateEnd!=null){
+                if (day.getYear() == mDateEnd.get(Calendar.YEAR) && day.getMonth() == mDateEnd.get(Calendar.MONTH) && day.getDay() == mDateEnd.get(Calendar.DAY_OF_MONTH)) {
+                    tshCalendarEvents.add(event);
+                }
+            }
+
+        }
+
+        if (tshCalendarEvents.size() > 0) {
+            widget.setCalendarDisplayMode(CalendarMode.WEEKS);
+            eventsList.setVisibility(View.VISIBLE);
+            eventsAdapter.clear();
+            eventsAdapter.addAll(tshCalendarEvents);
+            oneDayDecorator.setDate(day.getDate());
+            widget.invalidateDecorators();
+        }*/
+
+
+    }
 }
