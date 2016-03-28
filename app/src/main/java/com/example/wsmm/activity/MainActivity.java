@@ -1,7 +1,6 @@
 package com.example.wsmm.activity;
 
 
-import android.app.DatePickerDialog;
 
 import android.app.Dialog;
 import android.os.Bundle;
@@ -257,7 +256,7 @@ public class MainActivity extends BaseActivity implements View.OnClickListener, 
         //widget = (MaterialCalendarView) dialog.findViewById(R.id.calendarView);
        // widget.setOnMonthChangedListener(this);
         // widget.addDecorators(mEventDecorator);
-        Button btn_yes = (Button) dialog.findViewById(R.id.bt_yes);
+    /*    Button btn_yes = (Button) dialog.findViewById(R.id.bt_yes);
         Button btn_no = (Button) dialog.findViewById(R.id.bt_no);
         btn_yes.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -271,7 +270,7 @@ public class MainActivity extends BaseActivity implements View.OnClickListener, 
 
                 dialog.dismiss();
             }
-        });
+        });*/
 
         dialog.show();
 

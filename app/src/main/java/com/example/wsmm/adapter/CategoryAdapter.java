@@ -18,7 +18,7 @@ import java.util.List;
 /**
  * Created by abubaker on 14/03/2016.
  */
-public class CategoryAdapter extends RecyclerView.Adapter<CategoryAdapter.ViewHolder>{
+public class CategoryAdapter extends RecyclerView.Adapter<CategoryAdapter.ViewHolder> {
 
     private List<String> mDataSet;
     private Context mContext;
