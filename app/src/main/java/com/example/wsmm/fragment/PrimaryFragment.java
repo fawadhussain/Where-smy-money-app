@@ -7,6 +7,7 @@ import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.view.View;
 import android.widget.ProgressBar;
+import android.widget.TextView;
 
 import com.example.wsmm.R;
 import com.example.wsmm.adapter.ExpenseAdapter;
@@ -16,6 +17,7 @@ import com.example.wsmm.model.Expense;
 import com.github.fabtransitionactivity.SheetLayout;
 
 
+import java.util.Calendar;
 import java.util.List;
 
 import io.realm.RealmResults;
@@ -34,6 +36,7 @@ public class PrimaryFragment extends BaseFragment implements SheetLayout.OnFabAn
     private SheetLayout sheetLayout;
     private FloatingActionButton mFab;
     DBClient db;
+    private int day , month , year;
 
     RealmResults<Category> realmResults;
 
@@ -41,6 +44,7 @@ public class PrimaryFragment extends BaseFragment implements SheetLayout.OnFabAn
     public PrimaryFragment(){
 
     }
+
 
     @Override
     public void onAttach(Activity activity) {
@@ -57,6 +61,23 @@ public class PrimaryFragment extends BaseFragment implements SheetLayout.OnFabAn
     @Override
     public void initViews(View parent, Bundle savedInstanceState) {
         super.initViews(parent, savedInstanceState);
+
+
+        Bundle args = getArguments();
+
+       if (args != null){
+            day = getArguments().getInt("day");
+            month = getArguments().getInt("month");
+            year = getArguments().getInt("year");
+        }else {
+           Calendar calendar = Calendar.getInstance();
+           calendar.setTimeInMillis(System.currentTimeMillis());
+           day = calendar.get(Calendar.DAY_OF_MONTH);
+           month = calendar.get(Calendar.MONTH);
+           year = calendar.get(Calendar.YEAR);
+
+       }
+        TextView price = (TextView) parent.findViewById(R.id.price);
         mRecyclerView = (RecyclerView) parent.findViewById(R.id.expense_list);
         mProgressBar = (ProgressBar) parent.findViewById(R.id.progressBar);
         sheetLayout = (SheetLayout)parent.findViewById(R.id.bottom_sheet);
@@ -66,27 +87,22 @@ public class PrimaryFragment extends BaseFragment implements SheetLayout.OnFabAn
         mProgressBar.setVisibility(View.VISIBLE);
         mFab.setOnClickListener(this);
         db = new DBClient();
-       //expenseList = new List<>();
-
-
-        /*for (int i = 0 ; i < 100 ; i++){
-            expense = new Category();
-            expense.setTitle("COFFEE");
-            expense.setPrice("$10.00");
-            expenseList.add(expense);
-        }*/
-
-        //updateToolBar.onUpdatePrice("100");
-
-
         mRecyclerView = (RecyclerView) parent.findViewById(R.id.expense_list);
         mProgressBar = (ProgressBar) parent.findViewById(R.id.progressBar);
         final LinearLayoutManager layoutManager = new LinearLayoutManager(getActivity());
         layoutManager.setOrientation(LinearLayoutManager.VERTICAL);
         mRecyclerView.setLayoutManager(layoutManager);
         mProgressBar.setVisibility(View.GONE);
-       // DBClient dbClient = new DBClient();
-        expenseList= db.getRecords();
+
+        expenseList= db.getParticularRecord(day, month, year);
+
+        int totalAmount = 0;
+        for (int i = 0; i <expenseList.size();i++){
+
+            totalAmount +=Integer.parseInt(expenseList.get(i).getPrice());
+
+        }
+        price.setText("$ " + totalAmount);
         expenseAdapter = new ExpenseAdapter(getActivity(), expenseList);
         mRecyclerView.setAdapter(expenseAdapter);
 

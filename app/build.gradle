@@ -47,5 +47,6 @@ dependencies {
     compile 'com.android.support:design:23.2.0'
     compile 'com.squareup.picasso:picasso:2.5.2'
     compile 'com.prolificinteractive:material-calendarview:1.2.0'
+    compile 'com.github.mahmed8003:DroidValidatorLight:1.0.0'
 }
 

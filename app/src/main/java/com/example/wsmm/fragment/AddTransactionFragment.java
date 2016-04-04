@@ -33,6 +33,8 @@ import com.example.wsmm.adapter.CategoryAdapter;
 import com.example.wsmm.db.DBClient;
 import com.example.wsmm.model.Category;
 import com.example.wsmm.util.ImageUtils;
+import com.tmxlr.lib.driodvalidatorlight.Form;
+import com.tmxlr.lib.driodvalidatorlight.helper.RegexTemplate;
 
 import java.io.File;
 import java.io.IOException;
@@ -84,11 +86,11 @@ public class AddTransactionFragment extends BaseFragment implements View.OnClick
     public void initViews(View parent, Bundle savedInstanceState) {
         super.initViews(parent, savedInstanceState);
 
-        setImage = (ImageView)parent.findViewById(R.id.set_image);
-        categoryTitle = (EditText)parent.findViewById(R.id.et_category_title);
-        amount = (EditText)parent.findViewById(R.id.et_add_amount);
+        setImage = (ImageView) parent.findViewById(R.id.set_image);
+        categoryTitle = (EditText) parent.findViewById(R.id.et_category_title);
+        amount = (EditText) parent.findViewById(R.id.et_add_amount);
         mRecyclerView = (RecyclerView) parent.findViewById(R.id.category_list);
-       // realmConfig = new RealmConfiguration.Builder(getActivity()).build();
+        // realmConfig = new RealmConfiguration.Builder(getActivity()).build();
         // Open the Realm for the UI thread.
         //realm = Realm.getInstance(realmConfig);
 
@@ -137,75 +139,44 @@ public class AddTransactionFragment extends BaseFragment implements View.OnClick
 
             case R.id.btn_save:
 
-               db =new DBClient();
+                if (categoryTitle != null) {
 
-                //realm.beginTransaction();
-                Category categoryObject = new Category();
+                    if (formData().validate()){
 
+                        db = new DBClient();
 
-                /*if (categoryObject.getCategoryId() < 1) {
-                    Number max = realm.where(Category.class).max("categoryId");
-                    if (max == null) {
-                        max = new Integer(0);
+                        Category categoryObject = new Category();
+                        categoryObject.setCategoryName(categoryName);
+                        categoryObject.setCategoryTitle(categoryTitle.getText().toString());
+                        categoryObject.setPrice(amount.getText().toString());
+                        if (getCurrentPhotoPath() != null) {
+                            categoryObject.setImagePath(getCurrentPhotoPath());
+                        }
+
+                        if (getDate() == 0) {
+                            categoryObject.setDate(getCurrentSystemDate());
+                        } else {
+                            categoryObject.setDate(getDate());
+                        }
+
+                        db.saveTransaction(categoryObject, new Realm.Transaction.OnSuccess() {
+
+                            @Override
+                            public void onSuccess() {
+
+                                Toast.makeText(getActivity(), "onSuccess", Toast.LENGTH_SHORT).show();
+                                getHelper().replaceFragment(new PrimaryFragment(), true, PrimaryFragment.PRIMARY_FRAGMENT_TAG);
+
+                            }
+                        });
+
                     }
-                    categoryObject.setCategoryId((int) (max.longValue() + 1));
-                }*/
-                    //categoryObject.setCategoryId(max.longValue() + 1);
 
-                categoryObject.setCategoryName(categoryName);
-                categoryObject.setCategoryTitle(categoryTitle.getText().toString());
-                categoryObject.setPrice(amount.getText().toString());
-                if (getCurrentPhotoPath() != null){
-                    categoryObject.setImagePath(getCurrentPhotoPath());
-                }
-
-                if (getDate() == 0){
-                    categoryObject.setDate(getCurrentSystemDate());
                 }else {
-                    categoryObject.setDate(getDate());
+
+                    Toast.makeText(getActivity(), "Please select category", Toast.LENGTH_SHORT).show();
+
                 }
-                //realm.copyToRealmOrUpdate(categoryObject);
-
-               // realm.commitTransaction();
-               // Log.d("Size of Records",getRecords()+"");
-
-                db.saveTransaction(categoryObject,new Realm.Transaction.OnSuccess(){
-
-                    @Override
-                    public void onSuccess() {
-
-                        Toast.makeText(getActivity(), "onSuccess", Toast.LENGTH_SHORT).show();
-                     getHelper().replaceFragment(new PrimaryFragment(),true,PrimaryFragment.PRIMARY_FRAGMENT_TAG);
-
-                    }
-                });
-
-
-
-
-
-
-/*
-                saveTransaction(new Realm.Transaction.Callback(){
-                    @Override
-                    public void onSuccess() {
-
-                    Toast.makeText(getActivity(), "saved", Toast.LENGTH_SHORT).show();
-                       // getHelper().replaceFragment(new PrimaryFragment(),true,PrimaryFragment.PRIMARY_FRAGMENT_TAG);
-                        //Contact saved
-                        Log.d("Size of Records",getRecords()+"");
-                    }
-
-
-                    @Override
-                    public void onError(Exception e) {
-
-                        Toast.makeText(getActivity(),"error",Toast.LENGTH_SHORT).show();
-
-
-                        //Transaction is rolled-back
-                    }
-                } );*/
 
                 break;
 
@@ -242,7 +213,7 @@ public class AddTransactionFragment extends BaseFragment implements View.OnClick
 
                     } else {
 
-                       dispatchTakePictureIntent(getActivity());
+                        dispatchTakePictureIntent(getActivity());
 
                     }
 
@@ -395,13 +366,13 @@ public class AddTransactionFragment extends BaseFragment implements View.OnClick
         super.onActivityResult(requestCode, resultCode, data);
 
         if (resultCode == Activity.RESULT_OK) {
-            if (requestCode == SELECT_FILE){
+            if (requestCode == SELECT_FILE) {
                 onSelectFromGalleryResult(data);
-            } else if (requestCode == TAKE_PHOTO_CODE){
+            } else if (requestCode == TAKE_PHOTO_CODE) {
 
-                ImageUtils.loadImageLocally(getActivity(),setImage.getWidth()/2,200,setImage,getCurrentPhotoPath());
+                ImageUtils.loadImageLocally(getActivity(), setImage.getWidth() / 2, 200, setImage, getCurrentPhotoPath());
 
-                }
+            }
 
         }
     }
@@ -410,7 +381,7 @@ public class AddTransactionFragment extends BaseFragment implements View.OnClick
     @SuppressWarnings("deprecation")
     private void onSelectFromGalleryResult(Intent data) {
         Uri selectedImageUri = data.getData();
-        String[] projection = { MediaStore.MediaColumns.DATA };
+        String[] projection = {MediaStore.MediaColumns.DATA};
         Cursor cursor = getActivity().managedQuery(selectedImageUri, projection, null, null,
                 null);
         int column_index = cursor.getColumnIndexOrThrow(MediaStore.MediaColumns.DATA);
@@ -435,10 +406,7 @@ public class AddTransactionFragment extends BaseFragment implements View.OnClick
     }
 
 
-
-
-
-    private  void dispatchTakePictureIntent(Context context) {
+    private void dispatchTakePictureIntent(Context context) {
         Intent takePictureIntent = new Intent(MediaStore.ACTION_IMAGE_CAPTURE);
         // Ensure that there's a camera activity to handle the intent
         if (takePictureIntent.resolveActivity(context.getPackageManager()) != null) {
@@ -460,15 +428,14 @@ public class AddTransactionFragment extends BaseFragment implements View.OnClick
     }
 
 
-
-    private   File createImageFile(Context context) throws IOException {
+    private File createImageFile(Context context) throws IOException {
 
         // Create an image file name
         String timeStamp = new SimpleDateFormat("yyyyMMdd_HHmmss").format(new Date());
         String imageFileName = "JPEG_" + timeStamp + "_";
         File storageDir = Environment.getExternalStorageDirectory();
         File appFolder = new File(storageDir, context.getResources().getString(R.string.app_name));
-        if(!appFolder.exists()) {
+        if (!appFolder.exists()) {
             appFolder.mkdirs();
         }
         File image = File.createTempFile(
@@ -482,21 +449,21 @@ public class AddTransactionFragment extends BaseFragment implements View.OnClick
         return image;
     }
 
-    public String getCurrentPhotoPath(){
+    public String getCurrentPhotoPath() {
         return mCurrentPhotoPath;
 
     }
 
 
-    public void setChangeDate(long milliSeconed){
+    public void setChangeDate(long milliSeconed) {
         this.mills = milliSeconed;
     }
 
-    private long getDate(){
+    private long getDate() {
         return mills;
     }
 
-    private long getCurrentSystemDate(){
+    private long getCurrentSystemDate() {
         return System.currentTimeMillis();
     }
 
@@ -507,9 +474,16 @@ public class AddTransactionFragment extends BaseFragment implements View.OnClick
 //        realm.close();
 
 
-
     }
 
+
+    private Form formData() {
+        Form form = new Form(getActivity());
+        form.check(categoryTitle, RegexTemplate.NOT_EMPTY_PATTERN, "Please add Category title");
+        form.check(amount, RegexTemplate.NOT_EMPTY_PATTERN, "Please add amount");
+        return form;
+
+    }
 
 
 }

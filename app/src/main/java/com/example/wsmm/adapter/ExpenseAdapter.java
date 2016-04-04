@@ -5,6 +5,7 @@ import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.example.wsmm.R;
@@ -37,7 +38,14 @@ public class ExpenseAdapter extends RecyclerView.Adapter<ExpenseAdapter.ViewHold
 
         Category expenseObject = mDataSet.get(position);
         holder.title.setText(expenseObject.getCategoryTitle());
-        holder.price.setText(expenseObject.getPrice());
+        holder.price.setText(expenseObject.getPrice()+" $");
+
+        if (expenseObject.getCategoryName()!=null){
+            int id = mContext.getResources().getIdentifier(expenseObject.getCategoryName().replaceAll("\\s+", "").toLowerCase(), "drawable", mContext.getPackageName());
+            holder.icon.setImageResource(id);
+
+        }
+
 
     }
 
@@ -54,6 +62,7 @@ public class ExpenseAdapter extends RecyclerView.Adapter<ExpenseAdapter.ViewHold
 
         private TextView title;
         private TextView price;
+        private ImageView icon;
         private View viewHolder;
 
         public ViewHolder(View itemView) {
@@ -61,6 +70,7 @@ public class ExpenseAdapter extends RecyclerView.Adapter<ExpenseAdapter.ViewHold
             viewHolder = itemView;
             price = (TextView)viewHolder.findViewById(R.id.text_price);
             title = (TextView)viewHolder.findViewById(R.id.row_title);
+            icon = (ImageView)viewHolder.findViewById(R.id.category_icon);
         }
     }
 }

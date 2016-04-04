@@ -15,12 +15,9 @@ import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.Window;
-import android.widget.Button;
-import android.widget.DatePicker;
 import android.widget.TextView;
 import android.widget.Toast;
 
-import com.example.wsmm.fragment.AddTransactionFragment;
 import com.example.wsmm.fragment.PrimaryFragment;
 import com.example.wsmm.R;
 import com.example.wsmm.TabFragment;
@@ -41,15 +38,15 @@ public class MainActivity extends BaseActivity implements View.OnClickListener, 
     MaterialCalendarView widget;
     private boolean week = false;
     private boolean month = false;
+    private PrimaryFragment primaryFragment;
+    private Bundle bundle;
+    private Dialog dialog;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
         Toolbar mToolbar = (Toolbar) findViewById(R.id.toolbar);
-        // widget = (MaterialCalendarView) parent.findViewById(R.id.calendarView);
-
-       // dateText = (TextView) findViewById(R.id.date_picker);
         setSupportActionBar(mToolbar);
         datePickerText = (TextView) findViewById(R.id.date_picker_text);
         NavigationDrawerFragment drawerFragment = (NavigationDrawerFragment)
@@ -57,11 +54,10 @@ public class MainActivity extends BaseActivity implements View.OnClickListener, 
         drawerFragment.setUp(R.id.fragment_navigation_drawer, (DrawerLayout) findViewById(R.id.drawerLayout), mToolbar);
         getSupportActionBar().setDisplayShowTitleEnabled(false);
         cal = Calendar.getInstance();
+        bundle = new Bundle();
         datePickerText.setText("TODAY " + getMonth(cal.get(Calendar.MONTH)) + " " + cal.get(Calendar.DAY_OF_MONTH));
-
-
         datePickerText.setOnClickListener(this);
-       // findViewById(R.id.period_picker).setOnClickListener(this);
+
 
 
         /**
@@ -69,12 +65,12 @@ public class MainActivity extends BaseActivity implements View.OnClickListener, 
          * Here , we are inflating the TabFragment as the first Fragment
          */
 
-        addFragment(new PrimaryFragment(), false,"AddTransaction");
+       // addFragment(new PrimaryFragment(), false,"primary");
 
         FragmentManager mFragmentManager = getSupportFragmentManager();
         FragmentTransaction mFragmentTransaction = mFragmentManager.beginTransaction();
         mFragmentTransaction.replace(R.id.containerView, new TabFragment()).commit();
-      //  findViewById(R.id.date_picker).setOnClickListener(this);
+
 
 
 
@@ -178,14 +174,6 @@ public class MainActivity extends BaseActivity implements View.OnClickListener, 
     }
 
 
-    private String getDay(int day){
-        switch (day){
-
-
-        }
-        return "";
-    }
-
     @Override
     public boolean onMenuItemClick(MenuItem item) {
         switch (item.getItemId()) {
@@ -239,7 +227,7 @@ public class MainActivity extends BaseActivity implements View.OnClickListener, 
 
 
     private void datePickerDialog() {
-        final Dialog dialog = new Dialog(this);
+        dialog = new Dialog(this);
         dialog.requestWindowFeature(Window.FEATURE_NO_TITLE);
         dialog.setContentView(R.layout.date_picker_dialog_fragment);
         widget = (MaterialCalendarView) dialog.findViewById(R.id.calendarView);
@@ -253,25 +241,6 @@ public class MainActivity extends BaseActivity implements View.OnClickListener, 
             widget.setCalendarDisplayMode(CalendarMode.MONTHS);
         }
 
-        //widget = (MaterialCalendarView) dialog.findViewById(R.id.calendarView);
-       // widget.setOnMonthChangedListener(this);
-        // widget.addDecorators(mEventDecorator);
-    /*    Button btn_yes = (Button) dialog.findViewById(R.id.bt_yes);
-        Button btn_no = (Button) dialog.findViewById(R.id.bt_no);
-        btn_yes.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-
-            }
-        });
-        btn_no.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-
-                dialog.dismiss();
-            }
-        });*/
-
         dialog.show();
 
     }
@@ -280,38 +249,19 @@ public class MainActivity extends BaseActivity implements View.OnClickListener, 
     @Override
     public void onDateSelected(@NonNull MaterialCalendarView widget, @NonNull CalendarDay day, boolean selected) {
 
-       /* for (int i = 0; i < mSelectedDates.size(); i++) {
-            TSHCalendarEvent event = mSelectedDates.get(i);
-            Calendar mDate = DateTimeUtils.calendarDateFormat(event.getStartDate());
-            Calendar mDateEnd = null;
+        dialog.dismiss();
+        datePickerText.setText("TODAY " + getMonth(day.getMonth()) + " " + day.getDay());
 
-            if (!event.isAllday()) {
-                mDateEnd = DateTimeUtils.calendarDateFormat(event.getEndDate());
-            }
+        bundle.putInt("day", day.getDay());
+        bundle.putInt("month", day.getMonth());
+        bundle.putInt("year", day.getYear());
+        primaryFragment = new PrimaryFragment();
+        primaryFragment.setArguments(bundle);
+        replaceFragment(primaryFragment, false,"primary");
 
-
-            if (day.getYear() == mDate.get(Calendar.YEAR) && day.getMonth() == mDate.get(Calendar.MONTH) && day.getDay() == mDate.get(Calendar.DAY_OF_MONTH)) {
-
-                tshCalendarEvents.add(event);
-
-            }
-            else if(mDateEnd!=null){
-                if (day.getYear() == mDateEnd.get(Calendar.YEAR) && day.getMonth() == mDateEnd.get(Calendar.MONTH) && day.getDay() == mDateEnd.get(Calendar.DAY_OF_MONTH)) {
-                    tshCalendarEvents.add(event);
-                }
-            }
-
-        }
-
-        if (tshCalendarEvents.size() > 0) {
-            widget.setCalendarDisplayMode(CalendarMode.WEEKS);
-            eventsList.setVisibility(View.VISIBLE);
-            eventsAdapter.clear();
-            eventsAdapter.addAll(tshCalendarEvents);
-            oneDayDecorator.setDate(day.getDate());
-            widget.invalidateDecorators();
-        }*/
-
+       /* FragmentManager mFragmentManager = getSupportFragmentManager();
+        FragmentTransaction mFragmentTransaction = mFragmentManager.beginTransaction();
+        mFragmentTransaction.replace(R.id.containerView, new TabFragment()).commit();*/
 
     }
 }

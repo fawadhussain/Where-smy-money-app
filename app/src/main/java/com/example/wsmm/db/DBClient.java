@@ -4,7 +4,10 @@ package com.example.wsmm.db;
 import com.example.wsmm.model.Category;
 
 
+import java.util.Calendar;
+
 import io.realm.Realm;
+import io.realm.RealmList;
 import io.realm.RealmResults;
 
 /**
@@ -58,6 +61,26 @@ public class DBClient {
         return results;
     }
 
+    public RealmList<Category>  getParticularRecord(int day , int month , int year){
+
+        mRealm.beginTransaction();
+        RealmList<Category> records = new RealmList<Category>();
+
+        RealmResults<Category> results = mRealm.where(Category.class).findAll();
+
+        for (int i = results.size() -1; i >=0; i--) {
+
+            if (convertDate(results.get(i).getDate(),day , month, year)){
+
+                records.add(results.get(i));
+            }
+
+        }
+        mRealm.commitTransaction();
+        return records;
+
+    }
+
 
 
     public void close() {
@@ -66,5 +89,15 @@ public class DBClient {
 
     public boolean isClosed() {
         return mRealm.isClosed();
+    }
+
+    private boolean convertDate(long date , int day , int month , int year) {
+
+        Calendar calendar = Calendar.getInstance();
+        calendar.setTimeInMillis(date);
+
+        return calendar.get(Calendar.DAY_OF_MONTH) == day && calendar.get(Calendar.MONTH) == month && calendar.get(Calendar.YEAR) == year;
+
+
     }
 }
