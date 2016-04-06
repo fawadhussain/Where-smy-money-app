@@ -16,6 +16,8 @@ import android.os.Bundle;
 import android.os.Environment;
 import android.provider.MediaStore;
 import android.support.annotation.NonNull;
+import android.support.v4.app.FragmentManager;
+import android.support.v4.app.FragmentTransaction;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
@@ -29,6 +31,7 @@ import android.widget.Toast;
 
 
 import com.example.wsmm.R;
+import com.example.wsmm.TabFragment;
 import com.example.wsmm.adapter.CategoryAdapter;
 import com.example.wsmm.db.DBClient;
 import com.example.wsmm.model.Category;
@@ -165,7 +168,11 @@ public class AddTransactionFragment extends BaseFragment implements View.OnClick
                             public void onSuccess() {
 
                                 Toast.makeText(getActivity(), "onSuccess", Toast.LENGTH_SHORT).show();
-                                getHelper().replaceFragment(new PrimaryFragment(), true, PrimaryFragment.PRIMARY_FRAGMENT_TAG);
+                               // getHelper().replaceFragment(new PrimaryFragment(), true, PrimaryFragment.PRIMARY_FRAGMENT_TAG);
+
+                                FragmentManager mFragmentManager = getActivity().getSupportFragmentManager();
+                                FragmentTransaction mFragmentTransaction = mFragmentManager.beginTransaction();
+                                mFragmentTransaction.replace(R.id.containerView, new TabFragment()).commit();
 
                             }
                         });

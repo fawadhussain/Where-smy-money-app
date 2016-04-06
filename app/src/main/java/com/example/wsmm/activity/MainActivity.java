@@ -120,17 +120,6 @@ public class MainActivity extends BaseActivity implements View.OnClickListener, 
     }
 
 
-    @Override
-    public void onUpdatePrice(String price) {
-
-        //  Toast.makeText(getApplicationContext(),price,Toast.LENGTH_SHORT).show();
-
-    }
-
-
-
-
-
 
     private String getMonth(int i) {
 
@@ -251,7 +240,7 @@ public class MainActivity extends BaseActivity implements View.OnClickListener, 
     public void onDateSelected(@NonNull MaterialCalendarView widget, @NonNull CalendarDay day, boolean selected) {
 
         dialog.dismiss();
-        datePickerText.setText("TODAY " + getMonth(day.getMonth()) + " " + day.getDay());
+       // datePickerText.setText("TODAY " + getMonth(day.getMonth()) + " " + day.getDay());
 
         /*bundle.putInt("day", day.getDay());
         bundle.putInt("month", day.getMonth());
@@ -259,7 +248,7 @@ public class MainActivity extends BaseActivity implements View.OnClickListener, 
         primaryFragment = new PrimaryFragment();
         primaryFragment.setArguments(bundle);
         replaceFragment(primaryFragment, false,"primary");*/
-        SPManager.setDay(this,day.getDay());
+        SPManager.setDay(this, day.getDay());
         SPManager.setMonth(this, day.getMonth());
         SPManager.setYear(this, day.getYear());
 
@@ -272,9 +261,27 @@ public class MainActivity extends BaseActivity implements View.OnClickListener, 
     @Override
     protected void onPause() {
         super.onPause();
-        SPManager.setDay(this,-1);
+        SPManager.setDay(this, -1);
         SPManager.setMonth(this,-1);
-        SPManager.setYear(this,-1);
+        SPManager.setYear(this, -1);
     }
 
+    @Override
+    public void onUpdateDate(int day , int month , int year) {
+
+        setDate(month,day,year);
+
+    }
+
+
+    private void setDate(int month , int day,int year){
+        Calendar today = Calendar.getInstance();
+        today.setTimeInMillis(System.currentTimeMillis());
+
+        if (today.get(Calendar.MONTH) == month && today.get(Calendar.DAY_OF_MONTH) == day){
+            datePickerText.setText("TODAY " + getMonth(month) + "  " + day);
+        }else {
+            datePickerText.setText(getMonth(month) + "  " + day + " " +year);
+        }
+    }
 }

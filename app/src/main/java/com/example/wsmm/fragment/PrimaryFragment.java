@@ -64,9 +64,9 @@ public class PrimaryFragment extends BaseFragment implements SheetLayout.OnFabAn
         super.initViews(parent, savedInstanceState);
 
 
-       // Bundle args = getArguments();
+       Bundle args = getArguments();
 
-       if (SPManager.getDay(getActivity()) != -1 && SPManager.getMonth(getActivity()) != -1 && SPManager.getYear(getActivity()) != -1){
+  /*     if (SPManager.getDay(getActivity()) != -1 && SPManager.getMonth(getActivity()) != -1 && SPManager.getYear(getActivity()) != -1){
 
            day = SPManager.getDay(getActivity());
            month = SPManager.getMonth(getActivity());
@@ -79,7 +79,21 @@ public class PrimaryFragment extends BaseFragment implements SheetLayout.OnFabAn
            month = calendar.get(Calendar.MONTH);
            year = calendar.get(Calendar.YEAR);
 
-       }
+       }*/
+
+        if (args != null){
+
+
+            day = getArguments().getInt("day");
+            month = getArguments().getInt("month");
+            year = getArguments().getInt("year");
+
+
+        }
+
+
+        updateToolBar.onUpdateDate(day , month , year);
+
         TextView price = (TextView) parent.findViewById(R.id.price);
         mRecyclerView = (RecyclerView) parent.findViewById(R.id.expense_list);
         mProgressBar = (ProgressBar) parent.findViewById(R.id.progressBar);
@@ -136,7 +150,7 @@ public class PrimaryFragment extends BaseFragment implements SheetLayout.OnFabAn
     }
 
     public interface OnUpdateToolBar {
-        public void onUpdatePrice(String price);
+        public void onUpdateDate(int day , int month , int year);
     }
 
 
