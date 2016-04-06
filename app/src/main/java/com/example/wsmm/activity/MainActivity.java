@@ -22,6 +22,7 @@ import com.example.wsmm.fragment.PrimaryFragment;
 import com.example.wsmm.R;
 import com.example.wsmm.TabFragment;
 import com.example.wsmm.fragment.NavigationDrawerFragment;
+import com.example.wsmm.util.SPManager;
 import com.prolificinteractive.materialcalendarview.CalendarDay;
 import com.prolificinteractive.materialcalendarview.CalendarMode;
 import com.prolificinteractive.materialcalendarview.MaterialCalendarView;
@@ -252,16 +253,28 @@ public class MainActivity extends BaseActivity implements View.OnClickListener, 
         dialog.dismiss();
         datePickerText.setText("TODAY " + getMonth(day.getMonth()) + " " + day.getDay());
 
-        bundle.putInt("day", day.getDay());
+        /*bundle.putInt("day", day.getDay());
         bundle.putInt("month", day.getMonth());
         bundle.putInt("year", day.getYear());
         primaryFragment = new PrimaryFragment();
         primaryFragment.setArguments(bundle);
-        replaceFragment(primaryFragment, false,"primary");
+        replaceFragment(primaryFragment, false,"primary");*/
+        SPManager.setDay(this,day.getDay());
+        SPManager.setMonth(this, day.getMonth());
+        SPManager.setYear(this, day.getYear());
 
-       /* FragmentManager mFragmentManager = getSupportFragmentManager();
+        FragmentManager mFragmentManager = getSupportFragmentManager();
         FragmentTransaction mFragmentTransaction = mFragmentManager.beginTransaction();
-        mFragmentTransaction.replace(R.id.containerView, new TabFragment()).commit();*/
+        mFragmentTransaction.replace(R.id.containerView, new TabFragment()).commit();
 
     }
+
+    @Override
+    protected void onPause() {
+        super.onPause();
+        SPManager.setDay(this,-1);
+        SPManager.setMonth(this,-1);
+        SPManager.setYear(this,-1);
+    }
+
 }

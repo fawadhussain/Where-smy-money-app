@@ -14,6 +14,7 @@ import com.example.wsmm.adapter.ExpenseAdapter;
 import com.example.wsmm.db.DBClient;
 import com.example.wsmm.model.Category;
 import com.example.wsmm.model.Expense;
+import com.example.wsmm.util.SPManager;
 import com.github.fabtransitionactivity.SheetLayout;
 
 
@@ -63,12 +64,14 @@ public class PrimaryFragment extends BaseFragment implements SheetLayout.OnFabAn
         super.initViews(parent, savedInstanceState);
 
 
-        Bundle args = getArguments();
+       // Bundle args = getArguments();
 
-       if (args != null){
-            day = getArguments().getInt("day");
-            month = getArguments().getInt("month");
-            year = getArguments().getInt("year");
+       if (SPManager.getDay(getActivity()) != -1 && SPManager.getMonth(getActivity()) != -1 && SPManager.getYear(getActivity()) != -1){
+
+           day = SPManager.getDay(getActivity());
+           month = SPManager.getMonth(getActivity());
+           year = SPManager.getYear(getActivity());
+
         }else {
            Calendar calendar = Calendar.getInstance();
            calendar.setTimeInMillis(System.currentTimeMillis());

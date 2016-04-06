@@ -10,12 +10,18 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 
+import com.example.wsmm.db.DBClient;
 import com.example.wsmm.fragment.PrimaryFragment;
+import com.example.wsmm.model.Category;
+
+import java.util.List;
 
 
 public class TabFragment extends Fragment {
 
     public static ViewPager viewPager;
+    DBClient db;
+    private List<Category> expenseList;
 
     @Nullable
     @Override
@@ -23,13 +29,16 @@ public class TabFragment extends Fragment {
 
         View x =  inflater.inflate(R.layout.tab_layout,null);
         viewPager = (ViewPager) x.findViewById(R.id.viewpager);
+        db = new DBClient();
+        expenseList = db.getRecords();
+
 
 
         /**
          *Set an Apater for the View Pager
          */
         viewPager.setAdapter(new MyAdapter(getChildFragmentManager()));
-        viewPager.setCurrentItem(Integer.MAX_VALUE - 1,true);
+        viewPager.setCurrentItem(expenseList.size() - 1,true);
 
         return x;
 
@@ -57,7 +66,7 @@ public class TabFragment extends Fragment {
         @Override
         public int getCount() {
 
-            return Integer.MAX_VALUE;
+            return expenseList.size();
 
         }
 
