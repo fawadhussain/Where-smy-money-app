@@ -3,6 +3,7 @@ package com.example.wsmm.model;
 import java.util.Date;
 
 import io.realm.RealmObject;
+import io.realm.annotations.Index;
 import io.realm.annotations.PrimaryKey;
 
 /**
@@ -12,6 +13,8 @@ public class Category extends RealmObject {
 
     @PrimaryKey
     private int categoryId;
+    @Index
+    private String stringDate;
     private String categoryName;
     private String categoryTitle;
     private long date;
@@ -64,5 +67,13 @@ public class Category extends RealmObject {
 
     public void setCategoryName(String categoryName) {
         this.categoryName = categoryName;
+    }
+
+    public String getStringDate() {
+        return stringDate;
+    }
+
+    public void setStringDate(String stringDate) {
+        this.stringDate = stringDate;
     }
 }

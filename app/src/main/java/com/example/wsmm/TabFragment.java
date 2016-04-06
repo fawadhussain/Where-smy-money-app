@@ -24,8 +24,12 @@ public class TabFragment extends Fragment {
 
     public static ViewPager viewPager;
     DBClient db;
-    private List<Category> expenseList;
-    private ArrayList<Long> dateList;
+    private List<Category> distinctRecords;
+    private List<Category> particularRecords;
+    private  int day , month, year;
+    PrimaryFragment primaryFragment;
+
+
 
     @Nullable
     @Override
@@ -34,12 +38,27 @@ public class TabFragment extends Fragment {
         View x = inflater.inflate(R.layout.tab_layout, null);
         viewPager = (ViewPager) x.findViewById(R.id.viewpager);
         db = new DBClient();
-        expenseList = db.getRecords();
-        dateList = new ArrayList<Long>();
+        distinctRecords = db.getRecords();
+        //expenseList = db.getRecords();
+        //dateList = new ArrayList<Long>();
 
-        for (int i=0; i<expenseList.size(); i++){
+        /*for (int i=0; i<expenseList.size(); i++){
             dateList.add(expenseList.get(i).getDate());
+        }*/
+
+        Bundle args = getArguments();
+
+        if (args != null){
+
+            day = getArguments().getInt("day");
+            month = getArguments().getInt("month");
+            year = getArguments().getInt("year");
+
         }
+
+        particularRecords = db.getParticularRecord(day, month,year);
+
+
 
 
 
@@ -50,7 +69,16 @@ public class TabFragment extends Fragment {
          *Set an Apater for the View Pager
          */
         viewPager.setAdapter(new MyAdapter(getChildFragmentManager()));
-        viewPager.setCurrentItem(expenseList.size()-1, true);
+
+        if (distinctRecords.size() > 0){
+            viewPager.setCurrentItem(distinctRecords.size()-1, true);
+
+        }else {
+
+            viewPager.setCurrentItem(0, true);
+
+        }
+
         viewPager.setOnPageChangeListener(new ViewPager.OnPageChangeListener() {
             @Override
             public void onPageScrolled(int position, float positionOffset, int positionOffsetPixels) {
@@ -86,26 +114,41 @@ public class TabFragment extends Fragment {
         public Fragment getItem(int position) {
 
 
-            PrimaryFragment primaryFragment = new PrimaryFragment();
-            Bundle bundle = new Bundle();
-            bundle.putInt("day", getDay(dateList.get(position)));
-            bundle.putInt("month", getMonth(dateList.get(position)));
-            bundle.putInt("year", getYear(dateList.get(position)));
-            primaryFragment = new PrimaryFragment();
-            primaryFragment.setArguments(bundle);
 
-            Log.d("TabFragment", "getItem: =" + viewPager.getCurrentItem());
+             if (distinctRecords.size() > 0 && particularRecords.size() > 0){
+
+                 Bundle bundle = new Bundle();
+                 bundle.putInt("day", day);
+                 bundle.putInt("month", month);
+                 bundle.putInt("year", year);
+                 primaryFragment = new PrimaryFragment();
+                 primaryFragment.setArguments(bundle);
+
+
+                 Log.d("TabFragment", "getItem: =" + viewPager.getCurrentItem());
+                 return primaryFragment;
+             }else {
+                 return new PrimaryFragment();
+             }
 
 
 
-            return primaryFragment;
+
+
 
         }
 
         @Override
         public int getCount() {
 
-            return expenseList.size();
+            //return expenseList.size();
+
+            if (distinctRecords.size() > 0){
+                return distinctRecords.size();
+            }else {
+                return 1;
+            }
+
 
         }
 

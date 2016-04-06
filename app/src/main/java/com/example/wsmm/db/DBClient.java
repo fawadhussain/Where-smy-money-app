@@ -61,7 +61,8 @@ public class DBClient {
     public RealmResults<Category> getRecords(){
         // Realm mRealm = Realm.getInstance(realmConfig);
         mRealm.beginTransaction();
-        RealmResults<Category> results = mRealm.where(Category.class).findAll();
+       // RealmResults<Category> results = mRealm.where(Category.class).findAll();
+        RealmResults<Category> results = mRealm.where(Category.class).findAll().distinct("stringDate");
         mRealm.commitTransaction();
 
 

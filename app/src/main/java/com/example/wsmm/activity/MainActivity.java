@@ -241,13 +241,12 @@ public class MainActivity extends BaseActivity implements View.OnClickListener, 
 
         dialog.dismiss();
        // datePickerText.setText("TODAY " + getMonth(day.getMonth()) + " " + day.getDay());
-
-        /*bundle.putInt("day", day.getDay());
+        bundle.putInt("day", day.getDay());
         bundle.putInt("month", day.getMonth());
         bundle.putInt("year", day.getYear());
         primaryFragment = new PrimaryFragment();
         primaryFragment.setArguments(bundle);
-        replaceFragment(primaryFragment, false,"primary");*/
+        replaceFragment(primaryFragment, false,"primary");
         SPManager.setDay(this, day.getDay());
         SPManager.setMonth(this, day.getMonth());
         SPManager.setYear(this, day.getYear());

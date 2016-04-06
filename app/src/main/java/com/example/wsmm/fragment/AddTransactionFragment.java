@@ -162,6 +162,10 @@ public class AddTransactionFragment extends BaseFragment implements View.OnClick
                             categoryObject.setDate(getDate());
                         }
 
+                        categoryObject.setStringDate(formatCurrentDate(getCurrentSystemDate()));
+
+
+
                         db.saveTransaction(categoryObject, new Realm.Transaction.OnSuccess() {
 
                             @Override
@@ -489,6 +493,14 @@ public class AddTransactionFragment extends BaseFragment implements View.OnClick
         form.check(categoryTitle, RegexTemplate.NOT_EMPTY_PATTERN, "Please add Category title");
         form.check(amount, RegexTemplate.NOT_EMPTY_PATTERN, "Please add amount");
         return form;
+
+    }
+
+
+    private String formatCurrentDate(long mills){
+
+        SimpleDateFormat sdfDate = new SimpleDateFormat("yyyy-MM-dd");
+        return sdfDate.format(mills);
 
     }
 

@@ -33,6 +33,7 @@ public class PrimaryFragment extends BaseFragment implements SheetLayout.OnFabAn
     private ProgressBar mProgressBar;
     private ExpenseAdapter expenseAdapter;
     private List<Category> expenseList;
+    private List<Category> distinctRecords;
     private Expense expense;
     private SheetLayout sheetLayout;
     private FloatingActionButton mFab;
@@ -89,7 +90,17 @@ public class PrimaryFragment extends BaseFragment implements SheetLayout.OnFabAn
             year = getArguments().getInt("year");
 
 
+        }else {
+
+            Calendar calendar = Calendar.getInstance();
+            calendar.setTimeInMillis(System.currentTimeMillis());
+            day = calendar.get(Calendar.DAY_OF_MONTH);
+            month = calendar.get(Calendar.MONTH);
+            year = calendar.get(Calendar.YEAR);
+
         }
+
+
 
 
         updateToolBar.onUpdateDate(day , month , year);
@@ -112,6 +123,7 @@ public class PrimaryFragment extends BaseFragment implements SheetLayout.OnFabAn
         mProgressBar.setVisibility(View.GONE);
 
         expenseList= db.getParticularRecord(day, month, year);
+
 
         int totalAmount = 0;
         for (int i = 0; i <expenseList.size();i++){
