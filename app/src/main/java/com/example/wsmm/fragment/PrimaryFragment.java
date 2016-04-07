@@ -14,6 +14,7 @@ import com.example.wsmm.adapter.ExpenseAdapter;
 import com.example.wsmm.db.DBClient;
 import com.example.wsmm.model.Category;
 import com.example.wsmm.model.Expense;
+import com.example.wsmm.util.GeneralUtils;
 import com.github.fabtransitionactivity.SheetLayout;
 
 import java.util.Calendar;
@@ -67,21 +68,6 @@ public class PrimaryFragment extends BaseFragment implements SheetLayout.OnFabAn
 
        Bundle args = getArguments();
 
-  /*     if (SPManager.getDay(getActivity()) != -1 && SPManager.getMonth(getActivity()) != -1 && SPManager.getYear(getActivity()) != -1){
-
-           day = SPManager.getDay(getActivity());
-           month = SPManager.getMonth(getActivity());
-           year = SPManager.getYear(getActivity());
-
-        }else {
-           Calendar calendar = Calendar.getInstance();
-           calendar.setTimeInMillis(System.currentTimeMillis());
-           day = calendar.get(Calendar.DAY_OF_MONTH);
-           month = calendar.get(Calendar.MONTH);
-           year = calendar.get(Calendar.YEAR);
-
-       }*/
-
         price = (TextView) parent.findViewById(R.id.price);
         mRecyclerView = (RecyclerView) parent.findViewById(R.id.expense_list);
         mProgressBar = (ProgressBar) parent.findViewById(R.id.progressBar);
@@ -120,17 +106,15 @@ public class PrimaryFragment extends BaseFragment implements SheetLayout.OnFabAn
 
     public void setCurrentPostionAndData(int position){
 
-        day = getDay(distinctRecords.get(position).getDate());
-        month = getMonth(distinctRecords.get(position).getDate());
-        year = getYear(distinctRecords.get(position).getDate());
+        day = GeneralUtils.getDay(distinctRecords.get(position).getDate());
+        month = GeneralUtils.getMonth(distinctRecords.get(position).getDate());
+        year = GeneralUtils.getYear(distinctRecords.get(position).getDate());
         setDataByDate(day,month,year);
 
     }
     public void setDataByDate(int day, int month,int year){
         updateToolBar.onUpdateDate(day , month , year);
-
         expenseList= db.getParticularRecord(day, month, year);
-
 
         int totalAmount = 0;
         for (int i = 0; i <expenseList.size();i++){
@@ -170,31 +154,7 @@ public class PrimaryFragment extends BaseFragment implements SheetLayout.OnFabAn
         public void onUpdateDate(int day , int month , int year);
     }
 
-    public int getDay(long date){
 
-        Calendar calendar =Calendar.getInstance();
-        calendar.setTimeInMillis(date);
-        return calendar.get(Calendar.DAY_OF_MONTH);
-
-    }
-
-
-    public int getMonth(long date){
-
-        Calendar calendar =Calendar.getInstance();
-        calendar.setTimeInMillis(date);
-        return calendar.get(Calendar.MONTH);
-
-    }
-
-
-    public int getYear(long date){
-
-        Calendar calendar =Calendar.getInstance();
-        calendar.setTimeInMillis(date);
-        return calendar.get(Calendar.YEAR);
-
-    }
 
 
 }

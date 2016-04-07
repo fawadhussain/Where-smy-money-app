@@ -33,6 +33,7 @@ import com.example.wsmm.TabFragment;
 import com.example.wsmm.adapter.CategoryAdapter;
 import com.example.wsmm.db.DBClient;
 import com.example.wsmm.model.Category;
+import com.example.wsmm.util.GeneralUtils;
 import com.example.wsmm.util.ImageUtils;
 import com.tmxlr.lib.driodvalidatorlight.Form;
 import com.tmxlr.lib.driodvalidatorlight.helper.RegexTemplate;
@@ -64,7 +65,7 @@ public class AddTransactionFragment extends BaseFragment implements View.OnClick
     private ImageView setImage;
     public static final int TAKE_PHOTO_CODE = 100;
     private String mCurrentPhotoPath;
-    private long mills = 0;
+    private long selectedDate = 0;
     private EditText categoryTitle;
     private EditText amount;
     private String categoryName;
@@ -139,7 +140,7 @@ public class AddTransactionFragment extends BaseFragment implements View.OnClick
 
             case R.id.btn_save:
 
-                if (categoryTitle != null) {
+                if (categoryName != null) {
 
                     if (formData().validate()){
 
@@ -154,26 +155,24 @@ public class AddTransactionFragment extends BaseFragment implements View.OnClick
                         }
 
                         if (getDate() == 0) {
-                            categoryObject.setDate(getCurrentSystemDate());
+                            categoryObject.setDate(GeneralUtils.getCurrentSystemDate());
                         } else {
                             categoryObject.setDate(getDate());
                         }
 
-                        categoryObject.setStringDate(formatCurrentDate(getCurrentSystemDate()));
+                        if (getDate() == 0){
+                            categoryObject.setStringDate(GeneralUtils.getCurrentFormattedDate());
+                        }else {
+                            categoryObject.setStringDate(GeneralUtils.getFormattedDateString(getDate()));
 
-
+                        }
 
                         db.saveTransaction(categoryObject, new Realm.Transaction.OnSuccess() {
 
                             @Override
                             public void onSuccess() {
 
-                                Toast.makeText(getActivity(), "onSuccess", Toast.LENGTH_SHORT).show();
-                               // getHelper().replaceFragment(new PrimaryFragment(), true, PrimaryFragment.PRIMARY_FRAGMENT_TAG);
-
-                                FragmentManager mFragmentManager = getActivity().getSupportFragmentManager();
-                                FragmentTransaction mFragmentTransaction = mFragmentManager.beginTransaction();
-                                mFragmentTransaction.replace(R.id.containerView, new TabFragment()).commit();
+                                getHelper().replaceFragment(new TabFragment(),false,"TabFragment");
 
                             }
                         });
@@ -464,16 +463,14 @@ public class AddTransactionFragment extends BaseFragment implements View.OnClick
 
 
     public void setChangeDate(long milliSeconed) {
-        this.mills = milliSeconed;
+        this.selectedDate = milliSeconed;
     }
 
     private long getDate() {
-        return mills;
+        return selectedDate;
     }
 
-    private long getCurrentSystemDate() {
-        return System.currentTimeMillis();
-    }
+
 
 
     @Override
@@ -494,12 +491,7 @@ public class AddTransactionFragment extends BaseFragment implements View.OnClick
     }
 
 
-    private String formatCurrentDate(long mills){
 
-        SimpleDateFormat sdfDate = new SimpleDateFormat("yyyy-MM-dd");
-        return sdfDate.format(mills);
-
-    }
 
 
 }

@@ -19,6 +19,7 @@ import android.widget.Toast;
 
 import com.example.wsmm.R;
 import com.example.wsmm.TabFragment;
+import com.example.wsmm.fragment.AddTransactionFragment;
 import com.example.wsmm.fragment.NavigationDrawerFragment;
 import com.example.wsmm.fragment.PrimaryFragment;
 import com.prolificinteractive.materialcalendarview.CalendarDay;
@@ -58,21 +59,12 @@ public class MainActivity extends BaseActivity implements View.OnClickListener, 
         datePickerText.setText("TODAY " + getMonth(cal.get(Calendar.MONTH)) + " " + cal.get(Calendar.DAY_OF_MONTH));
         datePickerText.setOnClickListener(this);
 
-
-
         /**
          * Lets inflate the very first fragment
          * Here , we are inflating the TabFragment as the first Fragment
          */
 
-       // addFragment(new PrimaryFragment(), false,"primary");
-
-        FragmentManager mFragmentManager = getSupportFragmentManager();
-        mFragmentTransaction = mFragmentManager.beginTransaction();
-        mFragmentTransaction.replace(R.id.containerView, new TabFragment()).commit();
-
-
-
+        replaceFragment(new TabFragment(),false,"TabFragment");
 
     }
 
@@ -212,9 +204,21 @@ public class MainActivity extends BaseActivity implements View.OnClickListener, 
 
         dialog.dismiss();
 
-        primaryFragment = new PrimaryFragment();
-        primaryFragment.setArguments(bundle);
-        replaceFragment(primaryFragment, true,"primary");
+        FragmentManager fm = getSupportFragmentManager();
+
+            AddTransactionFragment fragment = (AddTransactionFragment)fm.findFragmentByTag("AddTransaction");
+             TabFragment tabFragment = (TabFragment)fm.findFragmentByTag("TabFragment");
+
+            if (fragment != null && fragment.isVisible()){
+                fragment.setChangeDate(day.getCalendar().getTimeInMillis());
+            }
+
+            else if (tabFragment != null && tabFragment.isVisible()){
+
+                tabFragment.setPosition(day.getCalendar().getTimeInMillis());
+
+        }
+
 
     }
 

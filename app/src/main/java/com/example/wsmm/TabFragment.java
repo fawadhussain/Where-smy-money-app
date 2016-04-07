@@ -12,13 +12,15 @@ import android.view.View;
 import android.view.ViewGroup;
 
 import com.example.wsmm.db.DBClient;
+import com.example.wsmm.fragment.BaseFragment;
 import com.example.wsmm.fragment.PrimaryFragment;
 import com.example.wsmm.model.Category;
+import com.example.wsmm.util.GeneralUtils;
 
 import java.util.List;
 
 
-public class TabFragment extends Fragment{
+public class TabFragment extends BaseFragment{
 
     public static ViewPager viewPager;
     DBClient db;
@@ -27,15 +29,24 @@ public class TabFragment extends Fragment{
     private  int day , month, year;
     PrimaryFragment primaryFragment;
     Bundle bundle = null;
+    long dateMilli = 0;
+    int recordPosition = 0;
 
+    public TabFragment(){
 
+    }
 
-    @Nullable
     @Override
-    public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
+    public int getLayoutId() {
+        return R.layout.tab_layout;
+    }
 
-        View x = inflater.inflate(R.layout.tab_layout, null);
-        viewPager = (ViewPager) x.findViewById(R.id.viewpager);
+
+    @Override
+    public void initViews(View parent, Bundle savedInstanceState) {
+        super.initViews(parent, savedInstanceState);
+
+        viewPager = (ViewPager) parent.findViewById(R.id.viewpager);
         db = new DBClient();
         distinctRecords = db.getRecords();
 
@@ -78,12 +89,10 @@ public class TabFragment extends Fragment{
             @Override
             public void onPageSelected(int position) {
 
-                bundle = new Bundle();
-                bundle.putInt("position", position);
-                primaryFragment.setCurrentPostionAndData(position);
-                Log.d("onPageSelected","positio "+position);
-
-
+                    bundle = new Bundle();
+                    bundle.putInt("position", position);
+                    primaryFragment.setCurrentPostionAndData(position);
+                    Log.d("onPageSelected","position "+position);
 
             }
 
@@ -93,9 +102,10 @@ public class TabFragment extends Fragment{
             }
         });
 
-        return x;
+
 
     }
+
 
 
     class MyAdapter extends FragmentPagerAdapter {
@@ -144,6 +154,23 @@ public class TabFragment extends Fragment{
 
 
 
+
+    }
+
+    public void setPosition(long position){
+        dateMilli = position;
+        String date = GeneralUtils.getFormattedDateString(dateMilli);
+
+        for (int i = 0; i<distinctRecords.size(); i++){
+            if (distinctRecords.get(i).getStringDate().equals(date)) {
+                recordPosition = i;
+
+            }
+
+        }
+
+
+       viewPager.setCurrentItem(recordPosition);
 
     }
 
