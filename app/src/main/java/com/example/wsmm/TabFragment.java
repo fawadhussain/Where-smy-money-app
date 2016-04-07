@@ -28,6 +28,7 @@ public class TabFragment extends Fragment {
     private List<Category> particularRecords;
     private  int day , month, year;
     PrimaryFragment primaryFragment;
+    Bundle bundle;
 
 
 
@@ -52,7 +53,7 @@ public class TabFragment extends Fragment {
 
             day = getArguments().getInt("day");
             month = getArguments().getInt("month");
-            year = getArguments().getInt("year");
+             year = getArguments().getInt("year");
 
         }
 
@@ -114,17 +115,28 @@ public class TabFragment extends Fragment {
         public Fragment getItem(int position) {
 
 
+            if (day != 0 && month != 0 && year!=0){
 
-             if (distinctRecords.size() > 0 && particularRecords.size() > 0){
+                bundle = new Bundle();
+                bundle.putInt("day", day);
+                bundle.putInt("month", month);
+                bundle.putInt("year", year);
 
-                 Bundle bundle = new Bundle();
-                 bundle.putInt("day", day);
-                 bundle.putInt("month", month);
-                 bundle.putInt("year", year);
+
+            }else {
+
+                bundle = new Bundle();
+                bundle.putInt("day", getDay(distinctRecords.get(position).getDate()));
+                bundle.putInt("month", getMonth(distinctRecords.get(position).getDate()));
+                bundle.putInt("year", getYear(distinctRecords.get(position).getDate()));
+
+            }
+
+
+             if (distinctRecords.size() > 0){
+
                  primaryFragment = new PrimaryFragment();
                  primaryFragment.setArguments(bundle);
-
-
                  Log.d("TabFragment", "getItem: =" + viewPager.getCurrentItem());
                  return primaryFragment;
              }else {
