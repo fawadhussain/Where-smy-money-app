@@ -40,6 +40,7 @@ public class PrimaryFragment extends BaseFragment implements SheetLayout.OnFabAn
     DBClient db;
     private int day , month , year;
 
+
     RealmResults<Category> realmResults;
 
 
@@ -83,11 +84,14 @@ public class PrimaryFragment extends BaseFragment implements SheetLayout.OnFabAn
        }*/
 
         if (args != null){
+            db = new DBClient();
+            distinctRecords = db.getRecords();
 
 
-            day = getArguments().getInt("day");
-            month = getArguments().getInt("month");
-            year = getArguments().getInt("year");
+            int position = getArguments().getInt("position");
+            day = getDay(distinctRecords.get(position).getDate());
+            month = getMonth(distinctRecords.get(position).getDate());
+            year = getYear(distinctRecords.get(position).getDate());
 
 
         }else {
@@ -163,6 +167,32 @@ public class PrimaryFragment extends BaseFragment implements SheetLayout.OnFabAn
 
     public interface OnUpdateToolBar {
         public void onUpdateDate(int day , int month , int year);
+    }
+
+    public int getDay(long date){
+
+        Calendar calendar =Calendar.getInstance();
+        calendar.setTimeInMillis(date);
+        return calendar.get(Calendar.DAY_OF_MONTH);
+
+    }
+
+
+    public int getMonth(long date){
+
+        Calendar calendar =Calendar.getInstance();
+        calendar.setTimeInMillis(date);
+        return calendar.get(Calendar.MONTH);
+
+    }
+
+
+    public int getYear(long date){
+
+        Calendar calendar =Calendar.getInstance();
+        calendar.setTimeInMillis(date);
+        return calendar.get(Calendar.YEAR);
+
     }
 
 

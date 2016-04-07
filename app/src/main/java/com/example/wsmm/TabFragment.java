@@ -10,6 +10,7 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.Toast;
 
 import com.example.wsmm.db.DBClient;
 import com.example.wsmm.fragment.PrimaryFragment;
@@ -17,10 +18,11 @@ import com.example.wsmm.model.Category;
 
 import java.util.ArrayList;
 import java.util.Calendar;
+import java.util.Collections;
 import java.util.List;
 
 
-public class TabFragment extends Fragment {
+public class TabFragment extends Fragment{
 
     public static ViewPager viewPager;
     DBClient db;
@@ -28,7 +30,7 @@ public class TabFragment extends Fragment {
     private List<Category> particularRecords;
     private  int day , month, year;
     PrimaryFragment primaryFragment;
-    Bundle bundle;
+    Bundle bundle = null;
 
 
 
@@ -40,6 +42,8 @@ public class TabFragment extends Fragment {
         viewPager = (ViewPager) x.findViewById(R.id.viewpager);
         db = new DBClient();
         distinctRecords = db.getRecords();
+
+//        Collections.sort(distinctRecords, Collections.reverseOrder());
         //expenseList = db.getRecords();
         //dateList = new ArrayList<Long>();
 
@@ -53,7 +57,7 @@ public class TabFragment extends Fragment {
 
             day = getArguments().getInt("day");
             month = getArguments().getInt("month");
-             year = getArguments().getInt("year");
+            year = getArguments().getInt("year");
 
         }
 
@@ -80,14 +84,23 @@ public class TabFragment extends Fragment {
 
         }
 
-        viewPager.setOnPageChangeListener(new ViewPager.OnPageChangeListener() {
+        viewPager.addOnPageChangeListener(new ViewPager.OnPageChangeListener() {
             @Override
             public void onPageScrolled(int position, float positionOffset, int positionOffsetPixels) {
+
+                bundle = new Bundle();
+                bundle.putInt("position", position);
+                /*bundle.putInt("month", getMonth(distinctRecords.get(position).getDate() ));
+                bundle.putInt("year", getYear(distinctRecords.get(position).getDate()));*/
 
             }
 
             @Override
             public void onPageSelected(int position) {
+
+
+
+
 
             }
 
@@ -100,6 +113,7 @@ public class TabFragment extends Fragment {
         return x;
 
     }
+
 
     class MyAdapter extends FragmentPagerAdapter {
 
@@ -115,7 +129,7 @@ public class TabFragment extends Fragment {
         public Fragment getItem(int position) {
 
 
-            if (day != 0 && month != 0 && year!=0){
+     /*       if (day != 0 && month != 0 && year!=0){
 
                 bundle = new Bundle();
                 bundle.putInt("day", day);
@@ -123,19 +137,21 @@ public class TabFragment extends Fragment {
                 bundle.putInt("year", year);
 
 
-            }else {
+            }else if (bundle == null){
 
                 bundle = new Bundle();
                 bundle.putInt("day", getDay(distinctRecords.get(position).getDate()));
-                bundle.putInt("month", getMonth(distinctRecords.get(position).getDate()));
+                bundle.putInt("month", getMonth(distinctRecords.get(position).getDate() ));
                 bundle.putInt("year", getYear(distinctRecords.get(position).getDate()));
 
-            }
+            }*/
 
 
              if (distinctRecords.size() > 0){
 
                  primaryFragment = new PrimaryFragment();
+                 bundle = new Bundle();
+                 bundle.putInt("position", position);
                  primaryFragment.setArguments(bundle);
                  Log.d("TabFragment", "getItem: =" + viewPager.getCurrentItem());
                  return primaryFragment;
@@ -158,42 +174,16 @@ public class TabFragment extends Fragment {
             if (distinctRecords.size() > 0){
                 return distinctRecords.size();
             }else {
-                return 1;
+                return 0;
             }
 
 
         }
 
-        private int getDay(long date){
-
-            Calendar calendar =Calendar.getInstance();
-            calendar.setTimeInMillis(date);
-            return calendar.get(Calendar.DAY_OF_MONTH);
-
-        }
-
-
-        private int getMonth(long date){
-
-            Calendar calendar =Calendar.getInstance();
-            calendar.setTimeInMillis(date);
-            return calendar.get(Calendar.MONTH);
-
-        }
-
-
-        private int getYear(long date){
-
-            Calendar calendar =Calendar.getInstance();
-            calendar.setTimeInMillis(date);
-            return calendar.get(Calendar.YEAR);
-
-        }
 
 
 
     }
-
 
 
 

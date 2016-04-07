@@ -246,14 +246,14 @@ public class MainActivity extends BaseActivity implements View.OnClickListener, 
         bundle.putInt("year", day.getYear());
         primaryFragment = new PrimaryFragment();
         primaryFragment.setArguments(bundle);
-        replaceFragment(primaryFragment, false,"primary");
+        replaceFragment(primaryFragment, true,"primary");
         SPManager.setDay(this, day.getDay());
         SPManager.setMonth(this, day.getMonth());
         SPManager.setYear(this, day.getYear());
 
-        FragmentManager mFragmentManager = getSupportFragmentManager();
+     /*   FragmentManager mFragmentManager = getSupportFragmentManager();
         FragmentTransaction mFragmentTransaction = mFragmentManager.beginTransaction();
-        mFragmentTransaction.replace(R.id.containerView, new TabFragment()).commit();
+        mFragmentTransaction.replace(R.id.containerView, new TabFragment()).commit();*/
 
     }
 

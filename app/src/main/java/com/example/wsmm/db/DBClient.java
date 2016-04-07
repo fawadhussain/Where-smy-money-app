@@ -15,6 +15,7 @@ import java.util.Set;
 import io.realm.Realm;
 import io.realm.RealmList;
 import io.realm.RealmResults;
+import io.realm.Sort;
 
 /**
  * Created by abubaker on 12/03/2016.
@@ -63,6 +64,8 @@ public class DBClient {
         mRealm.beginTransaction();
        // RealmResults<Category> results = mRealm.where(Category.class).findAll();
         RealmResults<Category> results = mRealm.where(Category.class).findAll().distinct("stringDate");
+        results.sort("stringDate", Sort.ASCENDING);
+
         mRealm.commitTransaction();
 
 
