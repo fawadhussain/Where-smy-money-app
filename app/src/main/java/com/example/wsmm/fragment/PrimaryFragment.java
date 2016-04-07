@@ -14,9 +14,7 @@ import com.example.wsmm.adapter.ExpenseAdapter;
 import com.example.wsmm.db.DBClient;
 import com.example.wsmm.model.Category;
 import com.example.wsmm.model.Expense;
-import com.example.wsmm.util.SPManager;
 import com.github.fabtransitionactivity.SheetLayout;
-
 
 import java.util.Calendar;
 import java.util.List;
@@ -39,6 +37,7 @@ public class PrimaryFragment extends BaseFragment implements SheetLayout.OnFabAn
     private FloatingActionButton mFab;
     DBClient db;
     private int day , month , year;
+    TextView price;
 
 
     RealmResults<Category> realmResults;
@@ -83,33 +82,7 @@ public class PrimaryFragment extends BaseFragment implements SheetLayout.OnFabAn
 
        }*/
 
-        if (args != null){
-            db = new DBClient();
-            distinctRecords = db.getRecords();
-
-
-            int position = getArguments().getInt("position");
-            day = getDay(distinctRecords.get(position).getDate());
-            month = getMonth(distinctRecords.get(position).getDate());
-            year = getYear(distinctRecords.get(position).getDate());
-
-
-        }else {
-
-            Calendar calendar = Calendar.getInstance();
-            calendar.setTimeInMillis(System.currentTimeMillis());
-            day = calendar.get(Calendar.DAY_OF_MONTH);
-            month = calendar.get(Calendar.MONTH);
-            year = calendar.get(Calendar.YEAR);
-
-        }
-
-
-
-
-        updateToolBar.onUpdateDate(day , month , year);
-
-        TextView price = (TextView) parent.findViewById(R.id.price);
+        price = (TextView) parent.findViewById(R.id.price);
         mRecyclerView = (RecyclerView) parent.findViewById(R.id.expense_list);
         mProgressBar = (ProgressBar) parent.findViewById(R.id.progressBar);
         sheetLayout = (SheetLayout)parent.findViewById(R.id.bottom_sheet);
@@ -126,6 +99,36 @@ public class PrimaryFragment extends BaseFragment implements SheetLayout.OnFabAn
         mRecyclerView.setLayoutManager(layoutManager);
         mProgressBar.setVisibility(View.GONE);
 
+
+        if (args != null){
+            db = new DBClient();
+            distinctRecords = db.getRecords();
+            int position = getArguments().getInt("position");
+            setCurrentPostionAndData(position);
+
+        }else {
+
+            Calendar calendar = Calendar.getInstance();
+            calendar.setTimeInMillis(System.currentTimeMillis());
+            day = calendar.get(Calendar.DAY_OF_MONTH);
+            month = calendar.get(Calendar.MONTH);
+            year = calendar.get(Calendar.YEAR);
+
+        }
+
+    }
+
+    public void setCurrentPostionAndData(int position){
+
+        day = getDay(distinctRecords.get(position).getDate());
+        month = getMonth(distinctRecords.get(position).getDate());
+        year = getYear(distinctRecords.get(position).getDate());
+        setDataByDate(day,month,year);
+
+    }
+    public void setDataByDate(int day, int month,int year){
+        updateToolBar.onUpdateDate(day , month , year);
+
         expenseList= db.getParticularRecord(day, month, year);
 
 
@@ -138,9 +141,7 @@ public class PrimaryFragment extends BaseFragment implements SheetLayout.OnFabAn
         price.setText("$ " + totalAmount);
         expenseAdapter = new ExpenseAdapter(getActivity(), expenseList);
         mRecyclerView.setAdapter(expenseAdapter);
-
     }
-
     @Override
     public void onFabAnimationEnd() {
         getHelper().replaceFragment(new AddTransactionFragment(),false,"AddTransaction");

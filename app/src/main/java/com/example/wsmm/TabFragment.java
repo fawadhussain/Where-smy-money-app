@@ -10,15 +10,11 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.Toast;
 
 import com.example.wsmm.db.DBClient;
 import com.example.wsmm.fragment.PrimaryFragment;
 import com.example.wsmm.model.Category;
 
-import java.util.ArrayList;
-import java.util.Calendar;
-import java.util.Collections;
 import java.util.List;
 
 
@@ -43,14 +39,6 @@ public class TabFragment extends Fragment{
         db = new DBClient();
         distinctRecords = db.getRecords();
 
-//        Collections.sort(distinctRecords, Collections.reverseOrder());
-        //expenseList = db.getRecords();
-        //dateList = new ArrayList<Long>();
-
-        /*for (int i=0; i<expenseList.size(); i++){
-            dateList.add(expenseList.get(i).getDate());
-        }*/
-
         Bundle args = getArguments();
 
         if (args != null){
@@ -63,11 +51,6 @@ public class TabFragment extends Fragment{
 
         particularRecords = db.getParticularRecord(day, month,year);
 
-
-
-
-
-        //Collections.sort(dateList, Collections.reverseOrder());
 
 
         /**
@@ -88,17 +71,17 @@ public class TabFragment extends Fragment{
             @Override
             public void onPageScrolled(int position, float positionOffset, int positionOffsetPixels) {
 
-                bundle = new Bundle();
-                bundle.putInt("position", position);
-                /*bundle.putInt("month", getMonth(distinctRecords.get(position).getDate() ));
-                bundle.putInt("year", getYear(distinctRecords.get(position).getDate()));*/
+
 
             }
 
             @Override
             public void onPageSelected(int position) {
 
-
+                bundle = new Bundle();
+                bundle.putInt("position", position);
+                primaryFragment.setCurrentPostionAndData(position);
+                Log.d("onPageSelected","positio "+position);
 
 
 
@@ -128,53 +111,32 @@ public class TabFragment extends Fragment{
         @Override
         public Fragment getItem(int position) {
 
-
-     /*       if (day != 0 && month != 0 && year!=0){
-
-                bundle = new Bundle();
-                bundle.putInt("day", day);
-                bundle.putInt("month", month);
-                bundle.putInt("year", year);
-
-
-            }else if (bundle == null){
-
-                bundle = new Bundle();
-                bundle.putInt("day", getDay(distinctRecords.get(position).getDate()));
-                bundle.putInt("month", getMonth(distinctRecords.get(position).getDate() ));
-                bundle.putInt("year", getYear(distinctRecords.get(position).getDate()));
-
-            }*/
+            Log.d("getItem","position "+position);
 
 
              if (distinctRecords.size() > 0){
 
                  primaryFragment = new PrimaryFragment();
-                 bundle = new Bundle();
-                 bundle.putInt("position", position);
+                 if(bundle == null)
+                 {bundle = new Bundle();
+                 bundle.putInt("position", position);}
                  primaryFragment.setArguments(bundle);
                  Log.d("TabFragment", "getItem: =" + viewPager.getCurrentItem());
                  return primaryFragment;
-             }else {
+             }else  {
                  return new PrimaryFragment();
              }
-
-
-
-
-
 
         }
 
         @Override
         public int getCount() {
 
-            //return expenseList.size();
 
             if (distinctRecords.size() > 0){
                 return distinctRecords.size();
             }else {
-                return 0;
+                return 1;
             }
 
 

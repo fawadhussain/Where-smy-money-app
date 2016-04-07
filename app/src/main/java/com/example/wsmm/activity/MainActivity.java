@@ -10,7 +10,6 @@ import android.support.v4.app.FragmentTransaction;
 import android.support.v4.widget.DrawerLayout;
 import android.support.v7.widget.PopupMenu;
 import android.support.v7.widget.Toolbar;
-
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
@@ -18,11 +17,10 @@ import android.view.Window;
 import android.widget.TextView;
 import android.widget.Toast;
 
-import com.example.wsmm.fragment.PrimaryFragment;
 import com.example.wsmm.R;
 import com.example.wsmm.TabFragment;
 import com.example.wsmm.fragment.NavigationDrawerFragment;
-import com.example.wsmm.util.SPManager;
+import com.example.wsmm.fragment.PrimaryFragment;
 import com.prolificinteractive.materialcalendarview.CalendarDay;
 import com.prolificinteractive.materialcalendarview.CalendarMode;
 import com.prolificinteractive.materialcalendarview.MaterialCalendarView;
@@ -42,6 +40,7 @@ public class MainActivity extends BaseActivity implements View.OnClickListener, 
     private PrimaryFragment primaryFragment;
     private Bundle bundle;
     private Dialog dialog;
+    FragmentTransaction mFragmentTransaction;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -69,7 +68,7 @@ public class MainActivity extends BaseActivity implements View.OnClickListener, 
        // addFragment(new PrimaryFragment(), false,"primary");
 
         FragmentManager mFragmentManager = getSupportFragmentManager();
-        FragmentTransaction mFragmentTransaction = mFragmentManager.beginTransaction();
+        mFragmentTransaction = mFragmentManager.beginTransaction();
         mFragmentTransaction.replace(R.id.containerView, new TabFragment()).commit();
 
 
@@ -85,35 +84,7 @@ public class MainActivity extends BaseActivity implements View.OnClickListener, 
 
                 datePickerDialog();
 
-             /*   new DatePickerDialog(MainActivity.this, R.style.DialogTheme, new DatePickerDialog.OnDateSetListener() {
-                    @Override
-                    public void onDateSet(DatePicker view, int year, int monthOfYear, int dayOfMonth) {
-
-                        datePickerText.setText(year + "," + getMonth(monthOfYear) + " " + dayOfMonth);
-                        Calendar c = Calendar.getInstance();
-                        c.set(Calendar.DAY_OF_MONTH,monthOfYear);
-                        c.set(Calendar.YEAR,year);
-                        c.set(Calendar.MONTH, monthOfYear);
-
-                        long mills = c.getTimeInMillis();
-
-                        FragmentManager fm = getSupportFragmentManager();
-
-
-                            if (fm.findFragmentByTag("AddTransaction").isVisible()){
-                                AddTransactionFragment fragment = (AddTransactionFragment)fm.findFragmentByTag("AddTransaction");
-                                fragment.setChangeDate(mills);
-
-                            }
-
-
-
-                        //DO SOMETHING
-                    }
-                },cal.get(Calendar.YEAR), cal.get(Calendar.MONTH), cal.get(Calendar.DAY_OF_MONTH)).show();*/
                 break;
-
-
 
         }
 
@@ -240,29 +211,17 @@ public class MainActivity extends BaseActivity implements View.OnClickListener, 
     public void onDateSelected(@NonNull MaterialCalendarView widget, @NonNull CalendarDay day, boolean selected) {
 
         dialog.dismiss();
-       // datePickerText.setText("TODAY " + getMonth(day.getMonth()) + " " + day.getDay());
-        bundle.putInt("day", day.getDay());
-        bundle.putInt("month", day.getMonth());
-        bundle.putInt("year", day.getYear());
+
         primaryFragment = new PrimaryFragment();
         primaryFragment.setArguments(bundle);
         replaceFragment(primaryFragment, true,"primary");
-        SPManager.setDay(this, day.getDay());
-        SPManager.setMonth(this, day.getMonth());
-        SPManager.setYear(this, day.getYear());
-
-     /*   FragmentManager mFragmentManager = getSupportFragmentManager();
-        FragmentTransaction mFragmentTransaction = mFragmentManager.beginTransaction();
-        mFragmentTransaction.replace(R.id.containerView, new TabFragment()).commit();*/
 
     }
 
     @Override
     protected void onPause() {
         super.onPause();
-        SPManager.setDay(this, -1);
-        SPManager.setMonth(this,-1);
-        SPManager.setYear(this, -1);
+
     }
 
     @Override
