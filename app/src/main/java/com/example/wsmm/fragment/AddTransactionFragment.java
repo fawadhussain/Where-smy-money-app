@@ -3,6 +3,7 @@ package com.example.wsmm.fragment;
 import android.Manifest;
 import android.annotation.TargetApi;
 import android.app.Activity;
+import android.app.Dialog;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
@@ -16,14 +17,13 @@ import android.os.Bundle;
 import android.os.Environment;
 import android.provider.MediaStore;
 import android.support.annotation.NonNull;
-import android.support.v4.app.FragmentManager;
-import android.support.v4.app.FragmentTransaction;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.View;
+import android.view.Window;
 import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.Toast;
@@ -35,6 +35,8 @@ import com.example.wsmm.db.DBClient;
 import com.example.wsmm.model.Category;
 import com.example.wsmm.util.GeneralUtils;
 import com.example.wsmm.util.ImageUtils;
+import com.example.wsmm.util.TouchImageView;
+import com.squareup.picasso.Picasso;
 import com.tmxlr.lib.driodvalidatorlight.Form;
 import com.tmxlr.lib.driodvalidatorlight.helper.RegexTemplate;
 
@@ -72,6 +74,8 @@ public class AddTransactionFragment extends BaseFragment implements View.OnClick
     DBClient db;
     private Realm realm;
     private RealmConfiguration realmConfig;
+    private Category editCategory;
+
 
 
     public AddTransactionFragment() {
@@ -86,6 +90,8 @@ public class AddTransactionFragment extends BaseFragment implements View.OnClick
     @Override
     public void initViews(View parent, Bundle savedInstanceState) {
         super.initViews(parent, savedInstanceState);
+
+
 
         setImage = (ImageView) parent.findViewById(R.id.set_image);
         categoryTitle = (EditText) parent.findViewById(R.id.et_category_title);
@@ -102,7 +108,30 @@ public class AddTransactionFragment extends BaseFragment implements View.OnClick
         mRecyclerView.setLayoutManager(mLayoutManager);
         categoryList = Arrays.asList(getResources().getStringArray(R.array.categories));
         categoryAdapter = new CategoryAdapter(getActivity(), categoryList);
+        setImage.setOnClickListener(AddTransactionFragment.this);
         mRecyclerView.setAdapter(categoryAdapter);
+
+        Bundle args = getArguments();
+
+        if (args!=null){
+
+            editCategory = new Category();
+            editCategory = (Category) getArguments().getSerializable(PrimaryFragment.DESCRIBABLE_KEY);
+            if (editCategory!=null){
+
+                categoryTitle.setText(editCategory.getCategoryTitle());
+                amount.setText(editCategory.getPrice());
+                ImageUtils.loadImageLocally(getActivity(), 150, parent.findViewById(R.id.image_display_layout).getWidth(), setImage, editCategory.getImagePath());
+                mCurrentPhotoPath = editCategory.getImagePath();
+                categoryName = editCategory.getCategoryName();
+                selectedDate = editCategory.getDate();
+
+
+            }
+
+        }
+
+
         parent.findViewById(R.id.btn_save).setOnClickListener(this);
 
         setHasOptionsMenu(true);
@@ -138,6 +167,21 @@ public class AddTransactionFragment extends BaseFragment implements View.OnClick
                 dialogOption();
                 break;
 
+            case R.id.set_image:
+
+                if (editCategory!=null){
+
+                    ZoomView(editCategory.getImagePath());
+
+                }else {
+                    if (getCurrentPhotoPath()!=null){
+                        ZoomView(getCurrentPhotoPath());
+                    }
+
+                }
+
+                break;
+
             case R.id.btn_save:
 
                 if (categoryName != null) {
@@ -167,15 +211,37 @@ public class AddTransactionFragment extends BaseFragment implements View.OnClick
 
                         }
 
-                        db.saveTransaction(categoryObject, new Realm.Transaction.OnSuccess() {
+                        if (editCategory!=null){
 
-                            @Override
-                            public void onSuccess() {
+                            categoryObject.setCategoryId(editCategory.getCategoryId());
 
-                                getHelper().replaceFragment(new TabFragment(),false,"TabFragment");
+                            db.updateTransaction(categoryObject, new Realm.Transaction.OnSuccess() {
+                                @Override
+                                public void onSuccess() {
+                                    Toast.makeText(getActivity(), "Update Successfully ", Toast.LENGTH_SHORT).show();
 
-                            }
-                        });
+                                    getHelper().replaceFragment(new TabFragment(),false,"TabFragment");
+
+                                }
+                            });
+
+
+
+                        }else {
+
+                            db.saveTransaction(categoryObject, new Realm.Transaction.OnSuccess() {
+
+                                @Override
+                                public void onSuccess() {
+
+                                    getHelper().replaceFragment(new TabFragment(),false,"TabFragment");
+
+                                }
+                            });
+
+                        }
+
+
 
                     }
 
@@ -487,6 +553,19 @@ public class AddTransactionFragment extends BaseFragment implements View.OnClick
         form.check(categoryTitle, RegexTemplate.NOT_EMPTY_PATTERN, "Please add Category title");
         form.check(amount, RegexTemplate.NOT_EMPTY_PATTERN, "Please add amount");
         return form;
+
+    }
+
+
+    private void ZoomView(String url) {
+
+        final Dialog dialog = new Dialog(getActivity());
+        dialog.requestWindowFeature(Window.FEATURE_NO_TITLE);
+        dialog.setContentView(R.layout.zoom_dialog);
+        TouchImageView view = (TouchImageView) dialog.findViewById(R.id.zoom_image);
+      // Picasso.with(getActivity()).load(url).into(view);
+        ImageUtils.loadImageLocally(getActivity(),view,url);
+        dialog.show();
 
     }
 

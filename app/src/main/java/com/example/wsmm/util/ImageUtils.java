@@ -25,6 +25,10 @@ public class ImageUtils {
         Picasso.with(context).load("file://" + url).resize(width,height).into(imageView);
     }
 
+    public static void loadImageLocally(Context context, ImageView imageView, String url) {
+        Picasso.with(context).load("file://" + url).into(imageView);
+    }
+
     public static void loadImageFromServer(Context context,ImageView imageView,String url){
         Picasso.with(context).load(url).into(imageView);
     }

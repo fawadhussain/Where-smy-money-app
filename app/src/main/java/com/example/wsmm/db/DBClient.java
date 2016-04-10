@@ -14,6 +14,7 @@ import java.util.Set;
 
 import io.realm.Realm;
 import io.realm.RealmList;
+import io.realm.RealmQuery;
 import io.realm.RealmResults;
 import io.realm.Sort;
 
@@ -164,6 +165,59 @@ public class DBClient {
         return dateCalendar.get(Calendar.DAY_OF_MONTH) == otherCalendar.get(Calendar.DAY_OF_MONTH)
                 && dateCalendar.get(Calendar.MONTH) == otherCalendar.get(Calendar.MONTH)
                 && dateCalendar.get(Calendar.YEAR) == otherCalendar.get(Calendar.YEAR);
+
+    }
+
+    public void deleteTransaction(final int categoryId, Realm.Transaction.OnSuccess callback){
+
+        mRealm.executeTransactionAsync(new Realm.Transaction() {
+            @Override
+            public void execute(Realm realm) {
+
+                RealmQuery<Category> realmQuery = realm.where(Category.class);
+                realmQuery.equalTo("categoryId", categoryId);
+                realmQuery.findAll().clear();
+
+            }
+        }, callback);
+
+
+
+    }
+
+
+    public Category getResultFromId(int categoryId){
+
+        mRealm.beginTransaction();
+        Category record = new Category();
+        record = mRealm.where(Category.class).equalTo("categoryId",categoryId).findFirst();
+        mRealm.commitTransaction();
+        return record;
+
+
+
+    }
+
+
+    public void updateTransaction(final Category category , Realm.Transaction.OnSuccess callback){
+
+        mRealm.executeTransactionAsync(new Realm.Transaction() {
+            @Override
+            public void execute(Realm realm) {
+
+                Category record = new Category();
+                record = realm.where(Category.class).equalTo("categoryId", category.getCategoryId()).findFirst();
+                record.setStringDate(category.getStringDate());
+                record.setDate(category.getDate());
+                record.setCategoryName(category.getCategoryName());
+                record.setCategoryTitle(category.getCategoryTitle());
+                record.setImagePath(category.getImagePath());
+                record.setPrice(category.getPrice());
+
+
+            }
+        }, callback);
+
 
     }
 }

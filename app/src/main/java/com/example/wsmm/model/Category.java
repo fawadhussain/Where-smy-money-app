@@ -1,5 +1,6 @@
 package com.example.wsmm.model;
 
+import java.io.Serializable;
 import java.util.Date;
 
 import io.realm.RealmObject;
@@ -9,7 +10,7 @@ import io.realm.annotations.PrimaryKey;
 /**
  * Created by abubaker on 15/03/2016.
  */
-public class Category extends RealmObject {
+public class Category extends RealmObject implements Serializable {
 
     @PrimaryKey
     private int categoryId;

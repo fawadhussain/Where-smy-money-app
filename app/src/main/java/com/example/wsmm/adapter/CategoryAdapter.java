@@ -10,8 +10,10 @@ import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.example.wsmm.R;
+import com.example.wsmm.fragment.PrimaryFragment;
 
 import java.util.List;
 
@@ -24,6 +26,7 @@ public class CategoryAdapter extends RecyclerView.Adapter<CategoryAdapter.ViewHo
     private Context mContext;
     private SparseBooleanArray selectedItems;
     int previous;
+    PrimaryFragment primaryFragment;
 
 
     private ClickListener itemClickListener;
@@ -35,6 +38,9 @@ public class CategoryAdapter extends RecyclerView.Adapter<CategoryAdapter.ViewHo
 
     }
 
+
+
+
     public void setClickListener(ClickListener itemClickListener) {
         this.itemClickListener = itemClickListener;
     }
@@ -43,6 +49,7 @@ public class CategoryAdapter extends RecyclerView.Adapter<CategoryAdapter.ViewHo
         this.mDataSet = list;
         this.mContext = context;
         selectedItems = new SparseBooleanArray();
+
     }
 
     @Override
@@ -67,28 +74,32 @@ public class CategoryAdapter extends RecyclerView.Adapter<CategoryAdapter.ViewHo
                 if (selectedItems.get(position, false)) {
                     selectedItems.delete(position);
                     holder.myRelativeBackground.setSelected(false);
-                }
-                else {
+                } else {
 
                     selectedItems.put(position, true);
                     holder.myRelativeBackground.setSelected(true);
 
                 }
 
-                if (selectedItems.size() >= 2){
+                if (selectedItems.size() >= 2) {
                     selectedItems.delete(previous);
                     selectedItems.put(previous, false);
                     notifyDataSetChanged();
                 }
 
 
-                if (itemClickListener != null){
+                if (itemClickListener != null) {
                     itemClickListener.onItemClicked(position);
                 }
 
                 previous = position;
             }
         });
+
+
+
+
+
 
     }
 
@@ -112,5 +123,10 @@ public class CategoryAdapter extends RecyclerView.Adapter<CategoryAdapter.ViewHo
             title = (TextView)viewHolder.findViewById(R.id.category_text);
             myRelativeBackground = (RelativeLayout)viewHolder.findViewById(R.id.relative_background);
         }
+    }
+
+
+    public void setCategory(){
+
     }
 }

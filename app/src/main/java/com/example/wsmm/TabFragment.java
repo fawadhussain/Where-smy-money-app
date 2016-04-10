@@ -31,6 +31,7 @@ public class TabFragment extends BaseFragment{
     Bundle bundle = null;
     long dateMilli = 0;
     int recordPosition = 0;
+    int lastPosition = -1;
 
     public TabFragment(){
 
@@ -94,6 +95,16 @@ public class TabFragment extends BaseFragment{
                     primaryFragment.setCurrentPostionAndData(position);
                     Log.d("onPageSelected","position "+position);
 
+
+             /*   if (lastPosition !=-1 && position > lastPosition){
+
+                    bundle.putInt("position", position-1);
+
+                }else {
+                    bundle.putInt("position", position);
+
+                }*/
+
             }
 
             @Override
@@ -121,9 +132,9 @@ public class TabFragment extends BaseFragment{
         @Override
         public Fragment getItem(int position) {
 
+
+
             Log.d("getItem","position "+position);
-
-
              if (distinctRecords.size() > 0){
 
                  primaryFragment = new PrimaryFragment();
@@ -131,7 +142,6 @@ public class TabFragment extends BaseFragment{
                  {bundle = new Bundle();
                  bundle.putInt("position", position);}
                  primaryFragment.setArguments(bundle);
-                 Log.d("TabFragment", "getItem: =" + viewPager.getCurrentItem());
                  return primaryFragment;
              }else  {
                  return new PrimaryFragment();
@@ -151,9 +161,6 @@ public class TabFragment extends BaseFragment{
 
 
         }
-
-
-
 
     }
 
