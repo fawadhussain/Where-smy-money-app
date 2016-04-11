@@ -1,12 +1,19 @@
 package com.example.wsmm.fragment;
 
+import android.content.Context;
+import android.content.Intent;
 import android.os.Bundle;
 import android.support.v4.widget.DrawerLayout;
 import android.support.v7.app.ActionBarDrawerToggle;
 import android.support.v7.widget.Toolbar;
 import android.view.View;
+import android.widget.Toast;
 
 import com.example.wsmm.R;
+import com.example.wsmm.db.DBClient;
+import com.example.wsmm.util.GeneralUtils;
+
+import io.realm.Realm;
 
 
 /**
@@ -80,7 +87,9 @@ public class NavigationDrawerFragment extends BaseFragment implements View.OnCli
                 break;
             case R.id.export_csv:
                 closeNav();
-                getHelper().replaceFragment(new ExportFile(),false,"ExportFile");
+                //getHelper().replaceFragment(new ExportFile(),false,"ExportFile");
+                exportCsvData();
+
                 break;
             case R.id.how_to_us:
                 closeNav();
@@ -94,6 +103,33 @@ public class NavigationDrawerFragment extends BaseFragment implements View.OnCli
     public  void closeNav() {
 
         mDrawerLayout.closeDrawer(mContainerView);
+    }
+
+
+    private void exportCsvData(){
+
+       DBClient db = new DBClient();
+
+        db.exportDataToCSV(getActivity(),new Realm.Transaction.OnSuccess() {
+            @Override
+            public void onSuccess() {
+
+                if (GeneralUtils.getUri()!=null){
+
+
+                    Intent sendIntent = new Intent(Intent.ACTION_SEND);
+                    sendIntent.putExtra(Intent.EXTRA_SUBJECT, "Expense Detail");
+                    sendIntent.putExtra(Intent.EXTRA_STREAM, GeneralUtils.getUri());
+                    sendIntent.setType("text/html");
+                    startActivity(sendIntent);
+
+                }else {
+                    Toast.makeText(getActivity(),"No Record Found",Toast.LENGTH_SHORT).show();
+                }
+
+            }
+        });
+
     }
 
 

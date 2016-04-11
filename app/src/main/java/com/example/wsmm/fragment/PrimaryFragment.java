@@ -111,8 +111,6 @@ public class PrimaryFragment extends BaseFragment implements SheetLayout.OnFabAn
 
 
 
-
-
     }
 
     public void setCurrentPostionAndData(int position){
@@ -213,6 +211,22 @@ public class PrimaryFragment extends BaseFragment implements SheetLayout.OnFabAn
             @Override
             public void onSuccess() {
                 Toast.makeText(getActivity(), "Transaction Deleted", Toast.LENGTH_SHORT).show();
+                int totalAmount = 0;
+                if (expenseList!=null && expenseList.size()>0){
+
+                    for (int i = 0; i <expenseList.size();i++){
+
+                        totalAmount +=Integer.parseInt(expenseList.get(i).getPrice());
+
+                    }
+                    price.setText("$ " + totalAmount);
+
+                }else {
+                    price.setText("$ " + totalAmount);
+
+                }
+
+
             }
         });
 

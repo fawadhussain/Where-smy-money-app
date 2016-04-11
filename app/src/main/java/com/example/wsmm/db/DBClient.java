@@ -1,9 +1,16 @@
 package com.example.wsmm.db;
 
 
+import android.content.Context;
+import android.util.Log;
+
 import com.example.wsmm.model.Category;
+import com.example.wsmm.util.GeneralUtils;
 
 
+import java.io.FileOutputStream;
+import java.io.IOException;
+import java.io.OutputStreamWriter;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Collections;
@@ -217,6 +224,56 @@ public class DBClient {
 
             }
         }, callback);
+
+
+    }
+
+
+    public void exportDataToCSV(final Context context, Realm.Transaction.OnSuccess callback){
+
+
+        mRealm.executeTransactionAsync(new Realm.Transaction() {
+            @Override
+            public void execute(Realm realm) {
+
+                RealmResults<Category> results = realm.where(Category.class).findAll();
+
+
+                if (results.size()>0){
+
+                    try {
+                        FileOutputStream outputStream = new FileOutputStream(GeneralUtils.createCSVFile(context),false);
+                        OutputStreamWriter osw = new OutputStreamWriter(outputStream);
+
+
+                        String csvData = "categoryId,categoryName,categoryTitle,price,date,stringDate,imagePath";
+                        csvData+="\n";
+
+
+                        for (int i = 0; i<results.size();i++){
+
+                            csvData+=results.get(i).getCategoryId()+","+results.get(i).getCategoryName()+","+results.get(i).getCategoryTitle()+","+
+                                    results.get(i).getPrice()+","+results.get(i).getDate()+","+results.get(i).getStringDate()+","+
+                                    results.get(i).getImagePath();
+
+                            csvData+="\n";
+                        }
+
+                        Log.d("csvFile",csvData);
+
+                        osw.write(csvData);
+                        osw.flush();
+                        osw.close();
+                    } catch (IOException e) {
+                        e.printStackTrace();
+                    }
+
+                }
+
+
+
+            }
+        },callback);
 
 
     }

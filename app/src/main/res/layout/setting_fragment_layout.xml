@@ -2,14 +2,161 @@
 <RelativeLayout
     xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
-    android:layout_height="match_parent">
+    android:layout_height="match_parent"
+    android:padding="20dp"
+    android:background="@color/setting_background">
 
 
-    <TextView
-        android:layout_width="wrap_content"
+
+    <RelativeLayout
+        android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:text="@string/settings"
-        android:textSize="40sp"
-        android:layout_centerInParent="true"/>
+        android:background="@color/white"
+       >
+
+
+        <RelativeLayout
+            android:id="@+id/currency_layout"
+            android:layout_width="match_parent"
+            android:paddingTop="15dp"
+            android:paddingBottom="15dp"
+            android:paddingLeft="10dp"
+            android:layout_height="wrap_content">
+
+            <TextView
+                android:id="@+id/currency"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:textSize="20sp"
+                android:textStyle="bold"
+                android:textColor="@color/black"
+                android:text="@string/currency"/>
+
+            <TextView
+                android:id="@+id/dollar"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:textSize="20sp"
+                android:textStyle="bold"
+                android:layout_toLeftOf="@+id/right_arrow"
+                android:textColor="@color/black"
+                android:text="@string/dollar"
+                />
+
+            <ImageView
+                android:id="@+id/right_arrow"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_alignParentRight="true"
+                android:paddingRight="10dp"
+                android:paddingLeft="10dp"
+                android:src="@drawable/right_arrow"/>
+
+
+
+
+        </RelativeLayout>
+
+        <View
+            android:id="@+id/currency_view"
+            android:layout_width="match_parent"
+            android:layout_height="1dp"
+            android:layout_below="@+id/currency_layout"
+            android:background="@color/setting_background">
+
+        </View>
+
+
+        <RelativeLayout
+            android:id="@+id/categories_layout"
+            android:layout_width="match_parent"
+            android:paddingTop="15dp"
+            android:paddingBottom="15dp"
+            android:paddingLeft="10dp"
+            android:layout_below="@+id/currency_view"
+            android:layout_height="wrap_content">
+
+            <TextView
+                android:id="@+id/categories"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:textSize="20sp"
+                android:textStyle="bold"
+                android:textColor="@color/black"
+                android:text="@string/categories"/>
+
+
+            <ImageView
+                android:id="@+id/right"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_alignParentRight="true"
+                android:paddingRight="10dp"
+                android:paddingLeft="10dp"
+                android:src="@drawable/right_arrow"/>
+
+
+
+
+        </RelativeLayout>
+
+
+        <View
+            android:id="@+id/category_view"
+            android:layout_width="match_parent"
+            android:layout_height="1dp"
+            android:layout_below="@+id/categories_layout"
+            android:background="@color/setting_background">
+
+        </View>
+
+
+        <RelativeLayout
+            android:id="@+id/reminder_layout"
+            android:layout_width="match_parent"
+            android:paddingTop="15dp"
+            android:paddingBottom="15dp"
+            android:paddingLeft="10dp"
+            android:layout_below="@+id/category_view"
+            android:layout_height="wrap_content">
+
+            <TextView
+                android:id="@+id/reminder"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:textSize="20sp"
+                android:textStyle="bold"
+                android:textColor="@color/black"
+                android:text="@string/reminder"/>
+
+            <TextView
+                android:id="@+id/time"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:textSize="18sp"
+                android:layout_toLeftOf="@+id/right_arrow_icon"
+                android:textColor="@color/black"
+                android:text="@string/time"
+                />
+
+            <ImageView
+                android:id="@+id/right_arrow_icon"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_alignParentRight="true"
+                android:paddingRight="10dp"
+                android:paddingLeft="10dp"
+                android:src="@drawable/right_arrow"/>
+
+
+
+
+        </RelativeLayout>
+
+
+
+
+
+    </RelativeLayout>
 
 </RelativeLayout>

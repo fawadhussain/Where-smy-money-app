@@ -1,6 +1,5 @@
 <resources>
     <string name="app_name">Money app</string>
-
     <string name="hello_world">Hello world!</string>
     <string name="action_settings">Settings</string>
     <string name="drawer_open">Open</string>
@@ -22,6 +21,11 @@
     <string name="add_item_amount">Add Amount</string>
     <string name="select_image">Select Image</string>
     <string name="save">SAVE</string>
+    <string name="currency">CURENCY</string>
+    <string name="dollar">$USD</string>
+    <string name="categories">CATEGORIES</string>
+    <string name="time">DAILY AT 15:00</string>
+    <string name="reminder">REMINDER</string>
 
 
     <string-array
