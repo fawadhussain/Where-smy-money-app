@@ -1,5 +1,6 @@
 package com.example.wsmm.fragment;
 
+import android.annotation.SuppressLint;
 import android.app.Activity;
 import android.content.DialogInterface;
 import android.os.Bundle;
@@ -7,6 +8,7 @@ import android.support.design.widget.FloatingActionButton;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
+import android.util.Log;
 import android.view.View;
 import android.widget.ProgressBar;
 import android.widget.TextView;
@@ -14,10 +16,10 @@ import android.widget.Toast;
 
 import com.example.wsmm.R;
 
+import com.example.wsmm.TabFragment;
 import com.example.wsmm.adapter.ExpenseAdapter;
 import com.example.wsmm.db.DBClient;
 import com.example.wsmm.model.Category;
-import com.example.wsmm.model.Expense;
 import com.example.wsmm.util.GeneralUtils;
 import com.github.fabtransitionactivity.SheetLayout;
 
@@ -25,10 +27,10 @@ import java.util.Calendar;
 import java.util.List;
 
 import io.realm.Realm;
-import io.realm.RealmResults;
 
 
-public class PrimaryFragment extends BaseFragment implements SheetLayout.OnFabAnimationEndListener,View.OnClickListener{
+
+public class PrimaryFragment extends BaseFragment implements SheetLayout.OnFabAnimationEndListener, View.OnClickListener {
 
     public static final String PRIMARY_FRAGMENT_TAG = "PrimaryFragment";
     public static final String DESCRIBABLE_KEY = "editTransaction";
@@ -39,21 +41,19 @@ public class PrimaryFragment extends BaseFragment implements SheetLayout.OnFabAn
     private ExpenseAdapter expenseAdapter;
     private List<Category> expenseList;
     private List<Category> distinctRecords;
-    private Expense expense;
     private SheetLayout sheetLayout;
     private FloatingActionButton mFab;
+    private List<Category> previousRecordsList = null;
     DBClient db;
-    private int day , month , year;
+    private int day, month, year;
     TextView price;
-    PrimaryFragment fragment;
+    private int currentPosition=-1;
 
 
-    RealmResults<Category> realmResults;
-
-
-    public PrimaryFragment(){
+    public PrimaryFragment() {
 
     }
+
 
 
     @Override
@@ -72,14 +72,11 @@ public class PrimaryFragment extends BaseFragment implements SheetLayout.OnFabAn
     public void initViews(View parent, Bundle savedInstanceState) {
         super.initViews(parent, savedInstanceState);
 
-
-       Bundle args = getArguments();
-
         price = (TextView) parent.findViewById(R.id.price);
         mRecyclerView = (RecyclerView) parent.findViewById(R.id.expense_list);
         mProgressBar = (ProgressBar) parent.findViewById(R.id.progressBar);
-        sheetLayout = (SheetLayout)parent.findViewById(R.id.bottom_sheet);
-        mFab = (FloatingActionButton)parent.findViewById(R.id.fab);
+        sheetLayout = (SheetLayout) parent.findViewById(R.id.bottom_sheet);
+        mFab = (FloatingActionButton) parent.findViewById(R.id.fab);
         sheetLayout.setFab(mFab);
         sheetLayout.setFabAnimationEndListener(this);
         mProgressBar.setVisibility(View.VISIBLE);
@@ -91,29 +88,37 @@ public class PrimaryFragment extends BaseFragment implements SheetLayout.OnFabAn
         layoutManager.setOrientation(LinearLayoutManager.VERTICAL);
         mRecyclerView.setLayoutManager(layoutManager);
         mProgressBar.setVisibility(View.GONE);
+        Bundle args = getArguments();
 
+        if (getPreviousRecords()!= null) {
+            setTotalAmount(getPreviousRecords());
+            expenseAdapter = new ExpenseAdapter(getActivity(), getPreviousRecords());
+            mRecyclerView.setAdapter(expenseAdapter);
+            expenseAdapter.setLongClickListener(new ExpenseAdapter.OnItemLongClickListener() {
+                @Override
+                public boolean onItemLongClicked(int position) {
 
-        if (args != null){
-            db = new DBClient();
-            distinctRecords = db.getRecords();
-            int position = getArguments().getInt("position");
-            setCurrentPostionAndData(position);
+                    dialogOption(getPreviousRecords(),position);
+                    return true;
+                }
+            });
 
-        }else {
+        } else {
 
-            Calendar calendar = Calendar.getInstance();
-            calendar.setTimeInMillis(System.currentTimeMillis());
-            day = calendar.get(Calendar.DAY_OF_MONTH);
-            month = calendar.get(Calendar.MONTH);
-            year = calendar.get(Calendar.YEAR);
+            if (args != null){
+                db = new DBClient();
+                distinctRecords = db.getRecords();
+                int position = getArguments().getInt("position");
+                setCurrentPostionAndData(position);
+
+            }
 
         }
 
 
-
     }
 
-    public void setCurrentPostionAndData(int position){
+    public void setCurrentPostionAndData(int position) {
 
         day = GeneralUtils.getDay(distinctRecords.get(position).getDate());
         month = GeneralUtils.getMonth(distinctRecords.get(position).getDate());
@@ -121,33 +126,43 @@ public class PrimaryFragment extends BaseFragment implements SheetLayout.OnFabAn
         setDataByDate(day, month, year);
 
     }
-    public void setDataByDate(int day, int month,int year){
-        updateToolBar.onUpdateDate(day , month , year);
-        expenseList= db.getParticularRecord(day, month, year);
+
+    public void setDataByDate(int day, int month, int year) {
+        updateToolBar.onUpdateDate(day, month, year);
+        expenseList = db.getParticularRecord(day, month, year);
 
         int totalAmount = 0;
-        for (int i = 0; i <expenseList.size();i++){
+        for (int i = 0; i < expenseList.size(); i++) {
 
-            totalAmount +=Integer.parseInt(expenseList.get(i).getPrice());
+            totalAmount += Integer.parseInt(expenseList.get(i).getPrice());
 
         }
         price.setText("$ " + totalAmount);
-        expenseAdapter = new ExpenseAdapter(getActivity(), expenseList,fragment);
+        expenseAdapter = new ExpenseAdapter(getActivity(), expenseList);
         mRecyclerView.setAdapter(expenseAdapter);
 
         expenseAdapter.setLongClickListener(new ExpenseAdapter.OnItemLongClickListener() {
             @Override
             public boolean onItemLongClicked(int position) {
 
-                dialogOption(position);
+                dialogOption(expenseList,position);
                 return true;
             }
         });
 
     }
+
     @Override
     public void onFabAnimationEnd() {
-        getHelper().replaceFragment(new AddTransactionFragment(),false,"AddTransaction");
+
+        Calendar calendar = Calendar.getInstance();
+        calendar.setTimeInMillis(System.currentTimeMillis());
+        day = calendar.get(Calendar.DAY_OF_MONTH);
+        month = calendar.get(Calendar.MONTH);
+        year = calendar.get(Calendar.YEAR);
+        updateToolBar.onUpdateDate(day, month, year);
+        getHelper().replaceFragment(new AddTransactionFragment(), false, "AddTransaction");
+
         sheetLayout.contractFab();
         sheetLayout.hide();
 
@@ -156,10 +171,11 @@ public class PrimaryFragment extends BaseFragment implements SheetLayout.OnFabAn
 
     @Override
     public void onClick(View v) {
-        switch (v.getId()){
+        switch (v.getId()) {
             case R.id.fab:
 
                 sheetLayout.expandFab();
+
                 break;
         }
     }
@@ -170,13 +186,12 @@ public class PrimaryFragment extends BaseFragment implements SheetLayout.OnFabAn
     }
 
 
-
     public interface OnUpdateToolBar {
-        public void onUpdateDate(int day , int month , int year);
+        public void onUpdateDate(int day, int month, int year);
     }
 
 
-    private void dialogOption(final int position) {
+    private void dialogOption(final List<Category> list, final int position) {
         final CharSequence[] items = {"Edit Transaction", "Remove Transaction",
                 "Cancel"};
 
@@ -191,7 +206,7 @@ public class PrimaryFragment extends BaseFragment implements SheetLayout.OnFabAn
 
                 } else if (items[item].equals("Remove Transaction")) {
 
-                    removeTransaction(position);
+                    removeTransaction(list,position);
 
                 } else if (items[item].equals("Cancel")) {
                     dialog.dismiss();
@@ -202,26 +217,26 @@ public class PrimaryFragment extends BaseFragment implements SheetLayout.OnFabAn
     }
 
 
-
-    private void removeTransaction(int position){
-        Category category = expenseList.get(position);
+    private void removeTransaction(final List<Category> list, int position) {
+        Category category = list.get(position);
         expenseAdapter.remove(position);
+        db = new DBClient();
 
         db.deleteTransaction(category.getCategoryId(), new Realm.Transaction.OnSuccess() {
             @Override
             public void onSuccess() {
                 Toast.makeText(getActivity(), "Transaction Deleted", Toast.LENGTH_SHORT).show();
                 int totalAmount = 0;
-                if (expenseList!=null && expenseList.size()>0){
+                if (expenseAdapter.getDataList() != null && expenseAdapter.getDataList().size() > 0) {
 
-                    for (int i = 0; i <expenseList.size();i++){
+                    for (int i = 0; i < expenseAdapter.getDataList().size(); i++) {
 
-                        totalAmount +=Integer.parseInt(expenseList.get(i).getPrice());
+                        totalAmount += Integer.parseInt(expenseAdapter.getDataList().get(i).getPrice());
 
                     }
                     price.setText("$ " + totalAmount);
 
-                }else {
+                } else {
                     price.setText("$ " + totalAmount);
 
                 }
@@ -233,19 +248,41 @@ public class PrimaryFragment extends BaseFragment implements SheetLayout.OnFabAn
     }
 
 
-    private void editTransaction(int position){
+    private void editTransaction(int position) {
 
-        Category transaction =  new Category();
+        Category transaction = new Category();
         transaction = db.getResultFromId(expenseList.get(position).getCategoryId());
         AddTransactionFragment add = new AddTransactionFragment();
         Bundle bundle = new Bundle();
         bundle.putSerializable(DESCRIBABLE_KEY, transaction);
         add.setArguments(bundle);
-        getHelper().replaceFragment(add,false,"AddTransaction");
+        getHelper().replaceFragment(add, false, "AddTransaction");
+
+    }
+
+    public void setPreviousRecords(List<Category> categoryList){
+        this.previousRecordsList = categoryList;
 
     }
 
 
+    public List<Category> getPreviousRecords(){
+        return previousRecordsList;
+    }
+
+
+    public void setTotalAmount(List<Category> categoryList){
+
+        int totalAmount = 0;
+        for (int i = 0; i < categoryList.size(); i++) {
+
+            totalAmount += Integer.parseInt(categoryList.get(i).getPrice());
+
+        }
+        price.setText("$ " + totalAmount);
+
+
+    }
 
 
 }

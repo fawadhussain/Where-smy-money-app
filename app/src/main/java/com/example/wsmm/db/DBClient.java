@@ -15,6 +15,8 @@ import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Collections;
 import java.util.Comparator;
+import java.util.Date;
+import java.util.GregorianCalendar;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
@@ -42,7 +44,7 @@ public class DBClient {
             @Override
             public void execute(Realm realm) {
 
-               // realm.beginTransaction();
+                // realm.beginTransaction();
 
                 if (category.getCategoryId() < 1) {
                     Number max = realm.where(Category.class).max("categoryId");
@@ -52,7 +54,7 @@ public class DBClient {
                     category.setCategoryId((int) (max.longValue() + 1));
                 }
                 realm.copyToRealmOrUpdate(category);
-               // realm.commitTransaction();
+                // realm.commitTransaction();
                 //close();
 
             }
@@ -67,32 +69,30 @@ public class DBClient {
         return results;
     }
 
-    public RealmResults<Category> getRecords(){
+    public RealmResults<Category> getRecords() {
         // Realm mRealm = Realm.getInstance(realmConfig);
         mRealm.beginTransaction();
-       // RealmResults<Category> results = mRealm.where(Category.class).findAll();
+        // RealmResults<Category> results = mRealm.where(Category.class).findAll();
         RealmResults<Category> results = mRealm.where(Category.class).findAll().distinct("stringDate");
         results.sort("stringDate", Sort.ASCENDING);
 
         mRealm.commitTransaction();
 
 
-
-
         //mRealm.close();
         return results;
     }
 
-    public RealmList<Category>  getParticularRecord(int day , int month , int year){
+    public RealmList<Category> getParticularRecord(int day, int month, int year) {
 
         mRealm.beginTransaction();
         RealmList<Category> records = new RealmList<Category>();
 
         RealmResults<Category> results = mRealm.where(Category.class).findAll();
 
-        for (int i = results.size() -1; i >=0; i--) {
+        for (int i = results.size() - 1; i >= 0; i--) {
 
-            if (convertDate(results.get(i).getDate(),day , month, year)){
+            if (convertDate(results.get(i).getDate(), day, month, year)) {
 
                 records.add(results.get(i));
             }
@@ -104,7 +104,6 @@ public class DBClient {
     }
 
 
-
     public void close() {
         mRealm.close();
     }
@@ -113,7 +112,7 @@ public class DBClient {
         return mRealm.isClosed();
     }
 
-    private boolean convertDate(long date , int day , int month , int year) {
+    private boolean convertDate(long date, int day, int month, int year) {
 
         Calendar calendar = Calendar.getInstance();
         calendar.setTimeInMillis(date);
@@ -124,23 +123,22 @@ public class DBClient {
     }
 
 
-    public ArrayList<Category> getAllDateRecordsList(){
+    public ArrayList<Category> getAllDateRecordsList() {
 
         mRealm.beginTransaction();
         ArrayList<Category> records = new ArrayList<Category>();
 
         RealmResults<Category> results = mRealm.where(Category.class).findAll();
 
-        for (int i = 0 ; i < results.size();i++) {
+        for (int i = 0; i < results.size(); i++) {
 
-            for (int j = 0 ; j < results.size(); j++) {
+            for (int j = 0; j < results.size(); j++) {
 
-                if (j == 0 && i == 0){
+                if (j == 0 && i == 0) {
                     records.add(results.get(i));
-                }else {
+                } else {
 
-                    if (!convertMilliToDate(results.get(i).getDate() , results.get(j).getDate())){
-
+                    if (!convertMilliToDate(results.get(i).getDate(), results.get(j).getDate())) {
 
 
                         records.add(results.get(i));
@@ -156,11 +154,11 @@ public class DBClient {
 
         int size = records.size();
         mRealm.commitTransaction();
-        return  records;
+        return records;
 
     }
 
-    private boolean convertMilliToDate(Long date, Long otherDate){
+    private boolean convertMilliToDate(Long date, Long otherDate) {
 
         Calendar dateCalendar = Calendar.getInstance();
         dateCalendar.setTimeInMillis(date);
@@ -175,7 +173,7 @@ public class DBClient {
 
     }
 
-    public void deleteTransaction(final int categoryId, Realm.Transaction.OnSuccess callback){
+    public void deleteTransaction(final int categoryId, Realm.Transaction.OnSuccess callback) {
 
         mRealm.executeTransactionAsync(new Realm.Transaction() {
             @Override
@@ -189,24 +187,22 @@ public class DBClient {
         }, callback);
 
 
-
     }
 
 
-    public Category getResultFromId(int categoryId){
+    public Category getResultFromId(int categoryId) {
 
         mRealm.beginTransaction();
         Category record = new Category();
-        record = mRealm.where(Category.class).equalTo("categoryId",categoryId).findFirst();
+        record = mRealm.where(Category.class).equalTo("categoryId", categoryId).findFirst();
         mRealm.commitTransaction();
         return record;
 
 
-
     }
 
 
-    public void updateTransaction(final Category category , Realm.Transaction.OnSuccess callback){
+    public void updateTransaction(final Category category, Realm.Transaction.OnSuccess callback) {
 
         mRealm.executeTransactionAsync(new Realm.Transaction() {
             @Override
@@ -229,7 +225,7 @@ public class DBClient {
     }
 
 
-    public void exportDataToCSV(final Context context, Realm.Transaction.OnSuccess callback){
+    public void exportDataToCSV(final Context context, Realm.Transaction.OnSuccess callback) {
 
 
         mRealm.executeTransactionAsync(new Realm.Transaction() {
@@ -239,27 +235,27 @@ public class DBClient {
                 RealmResults<Category> results = realm.where(Category.class).findAll();
 
 
-                if (results.size()>0){
+                if (results.size() > 0) {
 
                     try {
-                        FileOutputStream outputStream = new FileOutputStream(GeneralUtils.createCSVFile(context),false);
+                        FileOutputStream outputStream = new FileOutputStream(GeneralUtils.createCSVFile(context), false);
                         OutputStreamWriter osw = new OutputStreamWriter(outputStream);
 
 
                         String csvData = "categoryId,categoryName,categoryTitle,price,date,stringDate,imagePath";
-                        csvData+="\n";
+                        csvData += "\n";
 
 
-                        for (int i = 0; i<results.size();i++){
+                        for (int i = 0; i < results.size(); i++) {
 
-                            csvData+=results.get(i).getCategoryId()+","+results.get(i).getCategoryName()+","+results.get(i).getCategoryTitle()+","+
-                                    results.get(i).getPrice()+","+results.get(i).getDate()+","+results.get(i).getStringDate()+","+
+                            csvData += results.get(i).getCategoryId() + "," + results.get(i).getCategoryName() + "," + results.get(i).getCategoryTitle() + "," +
+                                    results.get(i).getPrice() + "," + results.get(i).getDate() + "," + results.get(i).getStringDate() + "," +
                                     results.get(i).getImagePath();
 
-                            csvData+="\n";
+                            csvData += "\n";
                         }
 
-                        Log.d("csvFile",csvData);
+                        Log.d("csvFile", csvData);
 
                         osw.write(csvData);
                         osw.flush();
@@ -271,10 +267,64 @@ public class DBClient {
                 }
 
 
-
             }
-        },callback);
+        }, callback);
 
 
     }
-}
+
+
+    public RealmResults<Category> getLastSevenDaysData() {
+        mRealm.beginTransaction();
+
+
+        RealmResults<Category> results = mRealm.where(Category.class).between("date",
+                GeneralUtils.getPreviousDate(7), GeneralUtils.getCurrentSystemDate())
+                .findAll();
+
+        mRealm.commitTransaction();
+
+
+        return results;
+
+
+   }
+
+
+    public RealmResults<Category> getLastMonthDaysData(){
+
+        mRealm.beginTransaction();
+
+
+        RealmResults<Category> results = mRealm.where(Category.class).between("date",
+                GeneralUtils.getPreviousDate(30), GeneralUtils.getCurrentSystemDate())
+                .findAll();
+
+        mRealm.commitTransaction();
+
+
+        return results;
+
+    }
+
+
+    public RealmResults<Category> getCustomDateData(long from , long to){
+
+        mRealm.beginTransaction();
+
+
+        RealmResults<Category> results = mRealm.where(Category.class).between("date",
+                from, to).findAll();
+
+        mRealm.commitTransaction();
+
+
+        return results;
+
+    }
+
+
+
+
+
+    }

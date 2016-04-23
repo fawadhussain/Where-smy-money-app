@@ -10,6 +10,7 @@ import android.view.View;
 import android.widget.Toast;
 
 import com.example.wsmm.R;
+import com.example.wsmm.TabFragment;
 import com.example.wsmm.db.DBClient;
 import com.example.wsmm.util.GeneralUtils;
 
@@ -79,11 +80,11 @@ public class NavigationDrawerFragment extends BaseFragment implements View.OnCli
         switch (v.getId()){
             case R.id.transactions:
                 closeNav();
-                getHelper().replaceFragment(new Transactions(),false,"Transactions");
+                getHelper().replaceFragment(new TabFragment(),true,"TabFragment");
                 break;
             case R.id.settings:
                 closeNav();
-                getHelper().replaceFragment(new Settings(),false,"Settings");
+                getHelper().replaceFragment(new Settings(),true,"Settings");
                 break;
             case R.id.export_csv:
                 closeNav();
@@ -93,7 +94,7 @@ public class NavigationDrawerFragment extends BaseFragment implements View.OnCli
                 break;
             case R.id.how_to_us:
                 closeNav();
-                getHelper().replaceFragment(new AboutUs(),false,"AboutUs");
+                getHelper().replaceFragment(new AboutUs(),true,"AboutUs");
                 break;
         }
 

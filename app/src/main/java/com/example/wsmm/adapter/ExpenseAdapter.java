@@ -22,7 +22,6 @@ import java.util.List;
 public class ExpenseAdapter extends RecyclerView.Adapter<ExpenseAdapter.ViewHolder> {
     private List<Category> mDataSet;
     private Context mContext;
-    PrimaryFragment fragment;
     private OnItemLongClickListener onItemLongClickListener;
 
 
@@ -35,10 +34,10 @@ public class ExpenseAdapter extends RecyclerView.Adapter<ExpenseAdapter.ViewHold
         this.onItemLongClickListener = longClickListener;
     }
 
-    public ExpenseAdapter(Context context , List<Category> expenseList,PrimaryFragment fragment){
+    public ExpenseAdapter(Context context , List<Category> expenseList){
         this.mDataSet = expenseList;
         this.mContext = context;
-        this.fragment = fragment;
+
     }
 
     @Override
@@ -99,9 +98,7 @@ public class ExpenseAdapter extends RecyclerView.Adapter<ExpenseAdapter.ViewHold
         }
     }
 
-    public List<Category> getDateSet(){
-        return mDataSet;
-    }
+
 
     public void remove(int position) {
         mDataSet.remove(position);

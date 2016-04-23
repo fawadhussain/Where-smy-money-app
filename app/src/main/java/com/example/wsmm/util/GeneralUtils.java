@@ -89,8 +89,29 @@ public class GeneralUtils {
     }
 
 
-    public static Uri getUri(){
+    public static Uri getUri() {
         return uri;
+    }
+
+
+    public static long getPreviousDate(int days) {
+
+        Calendar cal = Calendar.getInstance();
+        cal.setTime(new Date());
+        cal.add(Calendar.DAY_OF_YEAR, -days);
+        return cal.getTimeInMillis();
+
+    }
+
+
+    public static long getTimeInMillis(int day, int month, int year) {
+
+        Calendar calendar = Calendar.getInstance();
+        calendar.set(Calendar.DAY_OF_MONTH, day);
+        calendar.set(Calendar.MONTH, month);
+        calendar.set(Calendar.YEAR, year);
+        return calendar.getTimeInMillis();
+
     }
 
 

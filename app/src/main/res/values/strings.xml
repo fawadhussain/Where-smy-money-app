@@ -26,6 +26,9 @@
     <string name="categories">CATEGORIES</string>
     <string name="time">DAILY AT 15:00</string>
     <string name="reminder">REMINDER</string>
+    <string name="all_transactions">All Transactions</string>
+    <string name="lastSevenDays">Last 7 Days</string>
+    <string name="lastThirtyDays">Last 30 Days</string>
 
 
     <string-array

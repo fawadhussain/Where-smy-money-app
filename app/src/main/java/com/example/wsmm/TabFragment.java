@@ -6,10 +6,8 @@ import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentPagerAdapter;
 import android.support.v4.view.ViewPager;
-import android.util.Log;
-import android.view.LayoutInflater;
+
 import android.view.View;
-import android.view.ViewGroup;
 
 import com.example.wsmm.db.DBClient;
 import com.example.wsmm.fragment.BaseFragment;
@@ -20,20 +18,18 @@ import com.example.wsmm.util.GeneralUtils;
 import java.util.List;
 
 
-public class TabFragment extends BaseFragment{
+public class TabFragment extends BaseFragment {
 
     public static ViewPager viewPager;
     DBClient db;
     private List<Category> distinctRecords;
-    private List<Category> particularRecords;
-    private  int day , month, year;
     PrimaryFragment primaryFragment;
-    Bundle bundle = null;
     long dateMilli = 0;
     int recordPosition = 0;
-    int lastPosition = -1;
+    static int currentPosition = -1;
+    Bundle bundle = null;
 
-    public TabFragment(){
+    public TabFragment() {
 
     }
 
@@ -53,36 +49,38 @@ public class TabFragment extends BaseFragment{
 
         Bundle args = getArguments();
 
-        if (args != null){
-
-            day = getArguments().getInt("day");
-            month = getArguments().getInt("month");
-            year = getArguments().getInt("year");
-
-        }
-
-        particularRecords = db.getParticularRecord(day, month,year);
-
-
 
         /**
          *Set an Apater for the View Pager
          */
         viewPager.setAdapter(new MyAdapter(getChildFragmentManager()));
 
-        if (distinctRecords.size() > 0){
-            viewPager.setCurrentItem(distinctRecords.size()-1, true);
 
-        }else {
+        if (args != null) {
 
-            viewPager.setCurrentItem(0, true);
+            long selectedPosition = getArguments().getLong("date");
+            setPosition(selectedPosition);
+
+
+        } else {
+
+            if (distinctRecords.size() > 0) {
+                viewPager.setCurrentItem(distinctRecords.size() - 1, true);
+                currentPosition = distinctRecords.size() - 1;
+
+            } else {
+
+                viewPager.setCurrentItem(0, true);
+
+
+            }
 
         }
+
 
         viewPager.addOnPageChangeListener(new ViewPager.OnPageChangeListener() {
             @Override
             public void onPageScrolled(int position, float positionOffset, int positionOffsetPixels) {
-
 
 
             }
@@ -90,19 +88,16 @@ public class TabFragment extends BaseFragment{
             @Override
             public void onPageSelected(int position) {
 
-                    bundle = new Bundle();
-                    bundle.putInt("position", position);
-                    primaryFragment.setCurrentPostionAndData(position);
-                    Log.d("onPageSelected","position "+position);
+                bundle = new Bundle();
+                bundle.putInt("position", position);
+                primaryFragment.setCurrentPostionAndData(position);
+
 
 
              /*   if (lastPosition !=-1 && position > lastPosition){
-
                     bundle.putInt("position", position-1);
-
                 }else {
                     bundle.putInt("position", position);
-
                 }*/
 
             }
@@ -114,9 +109,7 @@ public class TabFragment extends BaseFragment{
         });
 
 
-
     }
-
 
 
     class MyAdapter extends FragmentPagerAdapter {
@@ -132,20 +125,18 @@ public class TabFragment extends BaseFragment{
         @Override
         public Fragment getItem(int position) {
 
+            if (distinctRecords.size() > 0) {
 
-
-            Log.d("getItem","position "+position);
-             if (distinctRecords.size() > 0){
-
-                 primaryFragment = new PrimaryFragment();
-                 if(bundle == null)
-                 {bundle = new Bundle();
-                 bundle.putInt("position", position);}
-                 primaryFragment.setArguments(bundle);
-                 return primaryFragment;
-             }else  {
-                 return new PrimaryFragment();
-             }
+                primaryFragment = new PrimaryFragment();
+                if (bundle == null) {
+                    bundle = new Bundle();
+                    bundle.putInt("position", position);
+                }
+                primaryFragment.setArguments(bundle);
+                return primaryFragment;
+            } else {
+                return new PrimaryFragment();
+            }
 
         }
 
@@ -153,9 +144,9 @@ public class TabFragment extends BaseFragment{
         public int getCount() {
 
 
-            if (distinctRecords.size() > 0){
+            if (distinctRecords.size() > 0) {
                 return distinctRecords.size();
-            }else {
+            } else {
                 return 1;
             }
 
@@ -164,11 +155,12 @@ public class TabFragment extends BaseFragment{
 
     }
 
-    public void setPosition(long position){
+
+    public void setPosition(long position) {
         dateMilli = position;
         String date = GeneralUtils.getFormattedDateString(dateMilli);
 
-        for (int i = 0; i<distinctRecords.size(); i++){
+        for (int i = 0; i < distinctRecords.size(); i++) {
             if (distinctRecords.get(i).getStringDate().equals(date)) {
                 recordPosition = i;
 
@@ -176,12 +168,9 @@ public class TabFragment extends BaseFragment{
 
         }
 
-
-       viewPager.setCurrentItem(recordPosition);
+        viewPager.setCurrentItem(recordPosition);
 
     }
-
-
 
 
 }

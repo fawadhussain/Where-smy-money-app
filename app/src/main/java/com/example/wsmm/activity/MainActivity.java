@@ -1,7 +1,6 @@
 package com.example.wsmm.activity;
 
 
-
 import android.app.Dialog;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
@@ -10,27 +9,34 @@ import android.support.v4.app.FragmentTransaction;
 import android.support.v4.widget.DrawerLayout;
 import android.support.v7.widget.PopupMenu;
 import android.support.v7.widget.Toolbar;
+import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.Window;
 import android.widget.TextView;
-import android.widget.Toast;
 
+import com.borax12.materialdaterangepicker.date.DatePickerDialog;
 import com.example.wsmm.R;
 import com.example.wsmm.TabFragment;
+import com.example.wsmm.db.DBClient;
 import com.example.wsmm.fragment.AddTransactionFragment;
 import com.example.wsmm.fragment.NavigationDrawerFragment;
 import com.example.wsmm.fragment.PrimaryFragment;
+import com.example.wsmm.model.Category;
+import com.example.wsmm.util.GeneralUtils;
 import com.prolificinteractive.materialcalendarview.CalendarDay;
 import com.prolificinteractive.materialcalendarview.CalendarMode;
 import com.prolificinteractive.materialcalendarview.MaterialCalendarView;
 import com.prolificinteractive.materialcalendarview.OnDateSelectedListener;
 
 import java.util.Calendar;
+import java.util.List;
+
+import io.realm.RealmResults;
 
 
-public class MainActivity extends BaseActivity implements View.OnClickListener, PrimaryFragment.OnUpdateToolBar ,PopupMenu.OnMenuItemClickListener, OnDateSelectedListener {
+public class MainActivity extends BaseActivity implements View.OnClickListener, PrimaryFragment.OnUpdateToolBar, PopupMenu.OnMenuItemClickListener, OnDateSelectedListener, DatePickerDialog.OnDateSetListener {
 
 
     Calendar cal;
@@ -41,7 +47,9 @@ public class MainActivity extends BaseActivity implements View.OnClickListener, 
     private PrimaryFragment primaryFragment;
     private Bundle bundle;
     private Dialog dialog;
+    DBClient db;
     FragmentTransaction mFragmentTransaction;
+    private List<Category> categories;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -64,14 +72,14 @@ public class MainActivity extends BaseActivity implements View.OnClickListener, 
          * Here , we are inflating the TabFragment as the first Fragment
          */
 
-        replaceFragment(new TabFragment(),false,"TabFragment");
+        replaceFragment(new TabFragment(), false, "TabFragment");
 
     }
 
     @Override
     public void onClick(View v) {
 
-       switch (v.getId()) {
+        switch (v.getId()) {
             case R.id.date_picker_text:
 
                 datePickerDialog();
@@ -81,7 +89,6 @@ public class MainActivity extends BaseActivity implements View.OnClickListener, 
         }
 
     }
-
 
 
     private String getMonth(int i) {
@@ -135,19 +142,43 @@ public class MainActivity extends BaseActivity implements View.OnClickListener, 
                 month = true;
                 return true;
             case R.id.item_week:
-               // Toast.makeText(this, "Week", Toast.LENGTH_SHORT).show();
+                // Toast.makeText(this, "Week", Toast.LENGTH_SHORT).show();
                 week = true;
                 month = false;
                 //widget.setCalendarDisplayMode(CalendarMode.WEEKS);
                 return true;
             case R.id.item_seven_days:
-                Toast.makeText(this, "Seven", Toast.LENGTH_SHORT).show();
+                db = new DBClient();
+                categories = db.getLastSevenDaysData();
+
+                primaryFragment = new PrimaryFragment();
+
+                primaryFragment.setPreviousRecords(categories);
+
+                replaceFragment(primaryFragment, true, "PrimaryFragment");
+                datePickerText.setText(getResources().getString(R.string.lastSevenDays));
+
+
                 return true;
             case R.id.item_thirty_days:
-                Toast.makeText(this, "Thirty", Toast.LENGTH_SHORT).show();
+
+                categories = db.getLastMonthDaysData();
+                primaryFragment = new PrimaryFragment();
+                primaryFragment.setPreviousRecords(categories);
+                replaceFragment(primaryFragment, true, "PrimaryFragment");
+                datePickerText.setText(getResources().getString(R.string.lastThirtyDays));
+
                 return true;
             case R.id.item_custom_range:
-                Toast.makeText(this, "Custom", Toast.LENGTH_SHORT).show();
+
+                Calendar now = Calendar.getInstance();
+                DatePickerDialog dpd = com.borax12.materialdaterangepicker.date.DatePickerDialog.newInstance(
+                        MainActivity.this,
+                        now.get(Calendar.YEAR),
+                        now.get(Calendar.MONTH),
+                        now.get(Calendar.DAY_OF_MONTH)
+                );
+                dpd.show(getFragmentManager(), "Datepickerdialog");
                 return true;
         }
 
@@ -188,9 +219,9 @@ public class MainActivity extends BaseActivity implements View.OnClickListener, 
         Calendar mDataCalendar = Calendar.getInstance();
         widget.setSelectedDate(mDataCalendar);
         widget.setShowOtherDates(MaterialCalendarView.SHOW_ALL);
-        if (week){
+        if (week) {
             widget.setCalendarDisplayMode(CalendarMode.WEEKS);
-        }else {
+        } else {
             widget.setCalendarDisplayMode(CalendarMode.MONTHS);
         }
 
@@ -204,18 +235,25 @@ public class MainActivity extends BaseActivity implements View.OnClickListener, 
 
         dialog.dismiss();
 
+        setDate(day.getDay(), day.getMonth(), day.getYear());
+
         FragmentManager fm = getSupportFragmentManager();
 
-            AddTransactionFragment fragment = (AddTransactionFragment)fm.findFragmentByTag("AddTransaction");
-             TabFragment tabFragment = (TabFragment)fm.findFragmentByTag("TabFragment");
+        AddTransactionFragment fragment = (AddTransactionFragment) fm.findFragmentByTag("AddTransaction");
+        TabFragment tabFragment = (TabFragment) fm.findFragmentByTag("TabFragment");
 
-            if (fragment != null && fragment.isVisible()){
-                fragment.setChangeDate(day.getCalendar().getTimeInMillis());
-            }
-
-            else if (tabFragment != null && tabFragment.isVisible()){
-
-                tabFragment.setPosition(day.getCalendar().getTimeInMillis());
+        if (fragment != null && fragment.isVisible()) {
+            fragment.setChangeDate(day.getCalendar().getTimeInMillis());
+        } else if (tabFragment != null && tabFragment.isVisible()) {
+            TabFragment tabF = new TabFragment();
+            bundle.putLong("date",day.getCalendar().getTimeInMillis());
+            tabF.setArguments(bundle);
+            replaceFragment(tabF,true,"TabFragment");
+        } else  {
+            TabFragment tabF = new TabFragment();
+            bundle.putLong("date",day.getCalendar().getTimeInMillis());
+            tabF.setArguments(bundle);
+            replaceFragment(tabF,true,"TabFragment");
 
         }
 
@@ -229,21 +267,40 @@ public class MainActivity extends BaseActivity implements View.OnClickListener, 
     }
 
     @Override
-    public void onUpdateDate(int day , int month , int year) {
+    public void onUpdateDate(int day, int month, int year) {
 
-        setDate(month,day,year);
+        setDate(day, month, year);
 
     }
 
 
-    private void setDate(int month , int day,int year){
+    private void setDate(int day, int month, int year) {
         Calendar today = Calendar.getInstance();
         today.setTimeInMillis(System.currentTimeMillis());
 
-        if (today.get(Calendar.MONTH) == month && today.get(Calendar.DAY_OF_MONTH) == day){
+        Log.d("MainActivity", "setDate " + " month " + month + " day " + day + " year " + year);
+
+        if (today.get(Calendar.MONTH) == month && today.get(Calendar.DAY_OF_MONTH) == day) {
             datePickerText.setText("TODAY " + getMonth(month) + "  " + day);
-        }else {
-            datePickerText.setText(getMonth(month) + "  " + day + " " +year);
+        } else {
+            datePickerText.setText(getMonth(month) + "  " + day + " " + year);
         }
+    }
+
+    @Override
+    public void onDateSet(DatePickerDialog view, int year, int monthOfYear, int dayOfMonth, int yearEnd, int monthOfYearEnd, int dayOfMonthEnd) {
+
+
+        db = new DBClient();
+        categories = db.getCustomDateData(GeneralUtils.getTimeInMillis(dayOfMonth-1,monthOfYear,year)
+                ,GeneralUtils.getTimeInMillis(dayOfMonthEnd+1,monthOfYearEnd,yearEnd));
+
+        primaryFragment = new PrimaryFragment();
+
+        primaryFragment.setPreviousRecords(categories);
+
+        replaceFragment(primaryFragment, true, "PrimaryFragment");
+        datePickerText.setText(getResources().getString(R.string.custom_range));
+
     }
 }
