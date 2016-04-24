@@ -29,6 +29,8 @@
     <string name="all_transactions">All Transactions</string>
     <string name="lastSevenDays">Last 7 Days</string>
     <string name="lastThirtyDays">Last 30 Days</string>
+    <string name="edit_category_title">Edit Category</string>
+    <string name="category_name">Category Name</string>
 
 
     <string-array
@@ -52,20 +54,35 @@
         <item>WATER</item>
         <item>CASH</item>
         <item>CHARITY</item>
-        <item>CHILD CARE</item>Î
-        <item>CLOTHING</item>Î
-        <item>CREDIT CARD PAYMENT</item>Î
-        <item>EATING</item>Î
-        <item>EDUCATION</item>Î
-        <item>ENTERTAINMENT</item>Î
-        <item>GIFTS</item>Î
-        <item>GROCERY</item>Î
-        <item>GIFTS</item>Î
-        <item>HEALTH</item>Î
-        <item>HOME REPAIR</item>Î
-        <item>HOUSEHOLD</item>Î
-        <item>INSURANCE</item>Î
-        <item>LOAN</item>Î
+        <item>CHILD CARE</item>
+        <item>CLOTHING</item>
+        <item>CREDIT CARD PAYMENT</item>
+        <item>EATING</item>
+        <item>EDUCATION</item>
+        <item>ENTERTAINMENT</item>
+        <item>GIFTS</item>
+        <item>GROCERY</item>
+        <item>GIFTS</item>
+        <item>HEALTH</item>
+        <item>HOME REPAIR</item>
+        <item>HOUSEHOLD</item>
+        <item>INSURANCE</item>
+        <item>LOAN</item>
+
+    </string-array>
+
+
+
+    <string-array
+        name="currency">
+        <item>Euro</item>
+        <item>United States dollar</item>
+        <item>British pound</item>
+        <item>Barbadian dollar</item>
+        <item>Albanian lek</item>
+        <item>Netherlands</item>
+
+
 
     </string-array>
 

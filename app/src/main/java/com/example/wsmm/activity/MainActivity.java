@@ -24,12 +24,14 @@ import com.example.wsmm.fragment.AddTransactionFragment;
 import com.example.wsmm.fragment.NavigationDrawerFragment;
 import com.example.wsmm.fragment.PrimaryFragment;
 import com.example.wsmm.model.Category;
+import com.example.wsmm.model.CategoryItem;
 import com.example.wsmm.util.GeneralUtils;
 import com.prolificinteractive.materialcalendarview.CalendarDay;
 import com.prolificinteractive.materialcalendarview.CalendarMode;
 import com.prolificinteractive.materialcalendarview.MaterialCalendarView;
 import com.prolificinteractive.materialcalendarview.OnDateSelectedListener;
 
+import java.util.Arrays;
 import java.util.Calendar;
 import java.util.List;
 
@@ -50,6 +52,9 @@ public class MainActivity extends BaseActivity implements View.OnClickListener, 
     DBClient db;
     FragmentTransaction mFragmentTransaction;
     private List<Category> categories;
+    public static boolean checkPreviousRecords = false;
+    private List<String> categoryList;
+    private CategoryItem categoryItem;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -72,7 +77,31 @@ public class MainActivity extends BaseActivity implements View.OnClickListener, 
          * Here , we are inflating the TabFragment as the first Fragment
          */
 
-        replaceFragment(new TabFragment(), false, "TabFragment");
+        DBClient dbClient = new DBClient();
+        categoryList = Arrays.asList(getResources().getStringArray(R.array.categories));
+
+        if (dbClient.getCategoryList().size()> 0){
+
+            replaceFragment(new TabFragment(), false, "TabFragment");
+
+        }else {
+
+            for (int i =0; i<categoryList.size();i++){
+
+                categoryItem = new CategoryItem();
+                categoryItem.setCategoryItemName(categoryList.get(i));
+                categoryItem.setCategoryTitle(categoryList.get(i));
+                dbClient.saveCategoryList(categoryItem);
+            }
+
+            replaceFragment(new TabFragment(), false, "TabFragment");
+
+        }
+
+
+
+
+
 
     }
 
@@ -148,6 +177,7 @@ public class MainActivity extends BaseActivity implements View.OnClickListener, 
                 //widget.setCalendarDisplayMode(CalendarMode.WEEKS);
                 return true;
             case R.id.item_seven_days:
+                checkPreviousRecords = true;
                 db = new DBClient();
                 categories = db.getLastSevenDaysData();
 
@@ -162,6 +192,9 @@ public class MainActivity extends BaseActivity implements View.OnClickListener, 
                 return true;
             case R.id.item_thirty_days:
 
+                checkPreviousRecords = true;
+                db =new DBClient();
+
                 categories = db.getLastMonthDaysData();
                 primaryFragment = new PrimaryFragment();
                 primaryFragment.setPreviousRecords(categories);
@@ -170,6 +203,8 @@ public class MainActivity extends BaseActivity implements View.OnClickListener, 
 
                 return true;
             case R.id.item_custom_range:
+
+                checkPreviousRecords = true;
 
                 Calendar now = Calendar.getInstance();
                 DatePickerDialog dpd = com.borax12.materialdaterangepicker.date.DatePickerDialog.newInstance(
@@ -245,11 +280,13 @@ public class MainActivity extends BaseActivity implements View.OnClickListener, 
         if (fragment != null && fragment.isVisible()) {
             fragment.setChangeDate(day.getCalendar().getTimeInMillis());
         } else if (tabFragment != null && tabFragment.isVisible()) {
+            checkPreviousRecords = false;
             TabFragment tabF = new TabFragment();
             bundle.putLong("date",day.getCalendar().getTimeInMillis());
             tabF.setArguments(bundle);
             replaceFragment(tabF,true,"TabFragment");
         } else  {
+            checkPreviousRecords = false;
             TabFragment tabF = new TabFragment();
             bundle.putLong("date",day.getCalendar().getTimeInMillis());
             tabF.setArguments(bundle);

@@ -101,7 +101,14 @@ public class ExpenseAdapter extends RecyclerView.Adapter<ExpenseAdapter.ViewHold
 
 
     public void remove(int position) {
+
+        notifyItemRemoved(position);
+        notifyDataSetChanged();
         mDataSet.remove(position);
+    }
+
+    public void removeItem(int position) {
+       // mDataSet.remove(position);
         notifyItemRemoved(position);
         notifyDataSetChanged();
     }

@@ -14,6 +14,7 @@ import android.widget.Toast;
 
 import com.example.wsmm.R;
 import com.example.wsmm.fragment.PrimaryFragment;
+import com.example.wsmm.model.CategoryItem;
 
 import java.util.List;
 
@@ -22,11 +23,10 @@ import java.util.List;
  */
 public class CategoryAdapter extends RecyclerView.Adapter<CategoryAdapter.ViewHolder> {
 
-    private List<String> mDataSet;
+    private List<CategoryItem> mDataSet;
     private Context mContext;
     private SparseBooleanArray selectedItems;
     int previous;
-    PrimaryFragment primaryFragment;
 
 
     private ClickListener itemClickListener;
@@ -45,7 +45,7 @@ public class CategoryAdapter extends RecyclerView.Adapter<CategoryAdapter.ViewHo
         this.itemClickListener = itemClickListener;
     }
 
-    public CategoryAdapter(Context context , List<String> list){
+    public CategoryAdapter(Context context , List<CategoryItem> list){
         this.mDataSet = list;
         this.mContext = context;
         selectedItems = new SparseBooleanArray();
@@ -62,9 +62,9 @@ public class CategoryAdapter extends RecyclerView.Adapter<CategoryAdapter.ViewHo
     public void onBindViewHolder(final ViewHolder holder, final int position) {
 
 
-        final String category = mDataSet.get(position);
-        holder.title.setText(category);
-        int id = mContext.getResources().getIdentifier(category.replaceAll("\\s+","").toLowerCase() ,"drawable", mContext.getPackageName());
+        final CategoryItem category = mDataSet.get(position);
+        holder.title.setText(category.getCategoryTitle());
+        int id = mContext.getResources().getIdentifier(category.getCategoryItemName().replaceAll("\\s+","").toLowerCase() ,"drawable", mContext.getPackageName());
         holder.categoryIcon.setImageResource(id);
         holder.myRelativeBackground.setSelected(selectedItems.get(position, false));
         holder.viewHolder.setOnClickListener(new View.OnClickListener() {

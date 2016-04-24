@@ -33,6 +33,7 @@ import com.example.wsmm.TabFragment;
 import com.example.wsmm.adapter.CategoryAdapter;
 import com.example.wsmm.db.DBClient;
 import com.example.wsmm.model.Category;
+import com.example.wsmm.model.CategoryItem;
 import com.example.wsmm.util.GeneralUtils;
 import com.example.wsmm.util.ImageUtils;
 import com.example.wsmm.util.TouchImageView;
@@ -59,7 +60,6 @@ import io.realm.RealmConfiguration;
 public class AddTransactionFragment extends BaseFragment implements View.OnClickListener {
 
     private RecyclerView mRecyclerView;
-    private List<String> categoryList;
     private CategoryAdapter categoryAdapter;
     int REQUEST_CAMERA = 0, SELECT_FILE = 1;
     final private int REQUEST_CODE_ASK_PERMISSIONS = 123;
@@ -75,6 +75,7 @@ public class AddTransactionFragment extends BaseFragment implements View.OnClick
     private Realm realm;
     private RealmConfiguration realmConfig;
     private Category editCategory;
+    private List<CategoryItem> categoryItemList;
 
 
 
@@ -106,8 +107,10 @@ public class AddTransactionFragment extends BaseFragment implements View.OnClick
         mRecyclerView.setHasFixedSize(true);
         RecyclerView.LayoutManager mLayoutManager = new LinearLayoutManager(getActivity(), LinearLayoutManager.HORIZONTAL, false);
         mRecyclerView.setLayoutManager(mLayoutManager);
-        categoryList = Arrays.asList(getResources().getStringArray(R.array.categories));
-        categoryAdapter = new CategoryAdapter(getActivity(), categoryList);
+        db = new DBClient();
+        categoryItemList = db.getCategoryList();
+       // categoryList = Arrays.asList(getResources().getStringArray(R.array.categories));
+        categoryAdapter = new CategoryAdapter(getActivity(), categoryItemList);
         setImage.setOnClickListener(AddTransactionFragment.this);
         mRecyclerView.setAdapter(categoryAdapter);
 
@@ -140,7 +143,7 @@ public class AddTransactionFragment extends BaseFragment implements View.OnClick
             @Override
             public void onItemClicked(int itemPosition) {
 
-                categoryName = categoryList.get(itemPosition);
+                categoryName = categoryItemList.get(itemPosition).getCategoryItemName();
 
 
             }

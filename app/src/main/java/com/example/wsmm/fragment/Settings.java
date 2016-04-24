@@ -1,6 +1,8 @@
 package com.example.wsmm.fragment;
 
 import android.os.Bundle;
+import android.view.Menu;
+import android.view.MenuInflater;
 import android.view.View;
 
 import com.example.wsmm.R;
@@ -26,6 +28,7 @@ public class Settings extends BaseFragment implements View.OnClickListener{
         parent.findViewById(R.id.currency_layout).setOnClickListener(this);
         parent.findViewById(R.id.categories_layout).setOnClickListener(this);
         parent.findViewById(R.id.reminder_layout).setOnClickListener(this);
+        setHasOptionsMenu(true);
     }
 
     @Override
@@ -33,12 +36,25 @@ public class Settings extends BaseFragment implements View.OnClickListener{
 
         switch (v.getId()){
             case R.id.currency_layout:
+
+                getHelper().replaceFragment(new CurrencyFragment(),false,"CurrencyFragment");
+
                 break;
             case R.id.categories_layout:
+                getHelper().replaceFragment(new CategoryListFragment(),false,"CategoryListFragment");
                 break;
             case R.id.reminder_layout:
                 break;
         }
+
+    }
+
+
+    @Override
+    public void onCreateOptionsMenu(Menu menu, MenuInflater inflater) {
+        // TODO Add your menu entries here
+        menu.clear();
+        inflater.inflate(R.menu.add_transction, menu);
 
     }
 }

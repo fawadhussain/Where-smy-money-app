@@ -11,6 +11,7 @@ import android.widget.Toast;
 
 import com.example.wsmm.R;
 import com.example.wsmm.TabFragment;
+import com.example.wsmm.activity.MainActivity;
 import com.example.wsmm.db.DBClient;
 import com.example.wsmm.util.GeneralUtils;
 
@@ -81,6 +82,7 @@ public class NavigationDrawerFragment extends BaseFragment implements View.OnCli
             case R.id.transactions:
                 closeNav();
                 getHelper().replaceFragment(new TabFragment(),true,"TabFragment");
+                MainActivity.checkPreviousRecords =false;
                 break;
             case R.id.settings:
                 closeNav();

@@ -5,6 +5,7 @@ import android.app.Activity;
 import android.content.DialogInterface;
 import android.os.Bundle;
 import android.support.design.widget.FloatingActionButton;
+import android.support.design.widget.TabLayout;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
@@ -17,6 +18,7 @@ import android.widget.Toast;
 import com.example.wsmm.R;
 
 import com.example.wsmm.TabFragment;
+import com.example.wsmm.activity.MainActivity;
 import com.example.wsmm.adapter.ExpenseAdapter;
 import com.example.wsmm.db.DBClient;
 import com.example.wsmm.model.Category;
@@ -48,6 +50,7 @@ public class PrimaryFragment extends BaseFragment implements SheetLayout.OnFabAn
     private int day, month, year;
     TextView price;
     private int currentPosition=-1;
+
 
 
     public PrimaryFragment() {
@@ -202,7 +205,7 @@ public class PrimaryFragment extends BaseFragment implements SheetLayout.OnFabAn
             public void onClick(DialogInterface dialog, int item) {
                 if (items[item].equals("Edit Transaction")) {
 
-                    editTransaction(position);
+                    editTransaction(list,position);
 
                 } else if (items[item].equals("Remove Transaction")) {
 
@@ -219,8 +222,18 @@ public class PrimaryFragment extends BaseFragment implements SheetLayout.OnFabAn
 
     private void removeTransaction(final List<Category> list, int position) {
         Category category = list.get(position);
-        expenseAdapter.remove(position);
+
+        if(MainActivity.checkPreviousRecords){
+
+            expenseAdapter.removeItem(position);
+
+        }else {
+
+            expenseAdapter.remove(position);
+        }
+
         db = new DBClient();
+
 
         db.deleteTransaction(category.getCategoryId(), new Realm.Transaction.OnSuccess() {
             @Override
@@ -237,7 +250,7 @@ public class PrimaryFragment extends BaseFragment implements SheetLayout.OnFabAn
                     price.setText("$ " + totalAmount);
 
                 } else {
-                    price.setText("$ " + totalAmount);
+                    getHelper().replaceFragment(new TabFragment(),true,"TabFragment");
 
                 }
 
@@ -248,10 +261,10 @@ public class PrimaryFragment extends BaseFragment implements SheetLayout.OnFabAn
     }
 
 
-    private void editTransaction(int position) {
-
+    private void editTransaction(List<Category> list,int position) {
+        db = new DBClient();
         Category transaction = new Category();
-        transaction = db.getResultFromId(expenseList.get(position).getCategoryId());
+        transaction = db.getResultFromId(list.get(position).getCategoryId());
         AddTransactionFragment add = new AddTransactionFragment();
         Bundle bundle = new Bundle();
         bundle.putSerializable(DESCRIBABLE_KEY, transaction);
@@ -262,6 +275,7 @@ public class PrimaryFragment extends BaseFragment implements SheetLayout.OnFabAn
 
     public void setPreviousRecords(List<Category> categoryList){
         this.previousRecordsList = categoryList;
+
 
     }
 
@@ -283,6 +297,8 @@ public class PrimaryFragment extends BaseFragment implements SheetLayout.OnFabAn
 
 
     }
+
+
 
 
 }

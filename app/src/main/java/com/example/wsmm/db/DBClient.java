@@ -5,6 +5,7 @@ import android.content.Context;
 import android.util.Log;
 
 import com.example.wsmm.model.Category;
+import com.example.wsmm.model.CategoryItem;
 import com.example.wsmm.util.GeneralUtils;
 
 
@@ -13,13 +14,6 @@ import java.io.IOException;
 import java.io.OutputStreamWriter;
 import java.util.ArrayList;
 import java.util.Calendar;
-import java.util.Collections;
-import java.util.Comparator;
-import java.util.Date;
-import java.util.GregorianCalendar;
-import java.util.HashSet;
-import java.util.List;
-import java.util.Set;
 
 import io.realm.Realm;
 import io.realm.RealmList;
@@ -37,6 +31,57 @@ public class DBClient {
     public DBClient() {
         mRealm = Realm.getDefaultInstance();
     }
+
+
+    public RealmResults<CategoryItem> getCategoryList() {
+
+        mRealm.beginTransaction();
+
+        RealmResults<CategoryItem> results = mRealm.where(CategoryItem.class).findAll();
+        mRealm.commitTransaction();
+        return results;
+    }
+
+
+    public void saveCategoryList(CategoryItem item){
+
+        mRealm.beginTransaction();
+
+        if (item.getCategoryId() < 1) {
+            Number max = mRealm.where(CategoryItem.class).max("categoryId");
+            if (max == null) {
+                max = new Integer(0);
+            }
+            item.setCategoryId((int) (max.longValue() + 1));
+        }
+        mRealm.copyToRealmOrUpdate(item);
+
+        mRealm.commitTransaction();
+
+
+    }
+
+
+    public void updateCategoryItem(final CategoryItem category, Realm.Transaction.OnSuccess callback) {
+
+        mRealm.executeTransactionAsync(new Realm.Transaction() {
+            @Override
+            public void execute(Realm realm) {
+
+                CategoryItem record = new CategoryItem();
+                record = realm.where(CategoryItem.class).equalTo("categoryId", category.getCategoryId()).findFirst();
+                record.setCategoryItemName(category.getCategoryItemName());
+                realm.copyToRealmOrUpdate(category);
+
+
+            }
+        }, callback);
+
+
+    }
+
+
+
 
     public void saveTransaction(final Category category, Realm.Transaction.OnSuccess callback) {
 
