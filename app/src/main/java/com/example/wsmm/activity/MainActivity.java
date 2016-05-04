@@ -2,6 +2,7 @@ package com.example.wsmm.activity;
 
 
 import android.app.Dialog;
+import android.content.res.Configuration;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.v4.app.FragmentManager;
@@ -15,12 +16,14 @@ import android.view.MenuItem;
 import android.view.View;
 import android.view.Window;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.borax12.materialdaterangepicker.date.DatePickerDialog;
 import com.example.wsmm.R;
 import com.example.wsmm.TabFragment;
 import com.example.wsmm.db.DBClient;
 import com.example.wsmm.fragment.AddTransactionFragment;
+import com.example.wsmm.fragment.ChartFragment;
 import com.example.wsmm.fragment.NavigationDrawerFragment;
 import com.example.wsmm.fragment.PrimaryFragment;
 import com.example.wsmm.model.Category;
@@ -60,6 +63,7 @@ public class MainActivity extends BaseActivity implements View.OnClickListener, 
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
+
         Toolbar mToolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(mToolbar);
         datePickerText = (TextView) findViewById(R.id.date_picker_text);
@@ -339,5 +343,25 @@ public class MainActivity extends BaseActivity implements View.OnClickListener, 
         replaceFragment(primaryFragment, true, "PrimaryFragment");
         datePickerText.setText(getResources().getString(R.string.custom_range));
 
+    }
+
+
+    @Override
+    public void onConfigurationChanged(Configuration newConfig) {
+        super.onConfigurationChanged(newConfig);
+
+        // Checks the orientation of the screen
+        if (newConfig.orientation == Configuration.ORIENTATION_LANDSCAPE) {
+            Toast.makeText(this, "landscape", Toast.LENGTH_SHORT).show();
+
+            replaceFragment(new ChartFragment(),false,"ChartFragment");
+        } else if (newConfig.orientation == Configuration.ORIENTATION_PORTRAIT){
+
+            FragmentManager fm = getSupportFragmentManager();
+            if (fm.getBackStackEntryCount() > 0) {
+                fm.popBackStack();
+            }
+            Toast.makeText(this, "portrait", Toast.LENGTH_SHORT).show();
+        }
     }
 }
