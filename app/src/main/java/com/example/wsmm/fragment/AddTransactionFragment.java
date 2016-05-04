@@ -37,7 +37,6 @@ import com.example.wsmm.model.CategoryItem;
 import com.example.wsmm.util.GeneralUtils;
 import com.example.wsmm.util.ImageUtils;
 import com.example.wsmm.util.TouchImageView;
-import com.squareup.picasso.Picasso;
 import com.tmxlr.lib.driodvalidatorlight.Form;
 import com.tmxlr.lib.driodvalidatorlight.helper.RegexTemplate;
 
@@ -45,7 +44,6 @@ import java.io.File;
 import java.io.IOException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
@@ -91,8 +89,6 @@ public class AddTransactionFragment extends BaseFragment implements View.OnClick
     @Override
     public void initViews(View parent, Bundle savedInstanceState) {
         super.initViews(parent, savedInstanceState);
-
-
 
         setImage = (ImageView) parent.findViewById(R.id.set_image);
         categoryTitle = (EditText) parent.findViewById(R.id.et_category_title);

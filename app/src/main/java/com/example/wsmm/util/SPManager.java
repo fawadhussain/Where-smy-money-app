@@ -13,6 +13,7 @@ public class SPManager {
     private static final String DAY = "day";
     private static final String MONTH = "month";
     private static final String YEAR = "year";
+    private static final String CURRENCY = "currency";
 
 
     public static void setDate(Context context, long mills) {
@@ -72,6 +73,18 @@ public class SPManager {
         SharedPreferences settings = context.getSharedPreferences("PREF_NAME", Context.MODE_PRIVATE);
         settings.edit().clear().apply();
 
+    }
+
+    public static void setCurrency(Context context, int currency) {
+        SharedPreferences preferences = context.getSharedPreferences(PREF_NAME, Context.MODE_PRIVATE);
+        SharedPreferences.Editor editor = preferences.edit();
+        editor.putInt(CURRENCY, currency);
+        editor.apply();
+    }
+
+    public static int getCurrency(Context context) {
+        SharedPreferences preferences = context.getSharedPreferences(PREF_NAME, Context.MODE_PRIVATE);
+        return preferences.getInt(CURRENCY,-1);
     }
 
 }

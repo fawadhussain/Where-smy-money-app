@@ -9,8 +9,10 @@ import com.example.wsmm.R;
 import java.io.File;
 import java.io.IOException;
 import java.text.SimpleDateFormat;
+import java.util.Arrays;
 import java.util.Calendar;
 import java.util.Date;
+import java.util.List;
 
 /**
  * Created by abubaker on 08/04/2016.
@@ -18,6 +20,7 @@ import java.util.Date;
 public class GeneralUtils {
 
     private static Uri uri = null;
+    static List<String> currencyList;
 
     private static Calendar calendar = Calendar.getInstance();
 
@@ -112,6 +115,11 @@ public class GeneralUtils {
         calendar.set(Calendar.YEAR, year);
         return calendar.getTimeInMillis();
 
+    }
+
+    public static String getCurrencySymbol(Context context,int position){
+        currencyList = Arrays.asList(context.getResources().getStringArray(R.array.currency_symbol));
+        return currencyList.get(position);
     }
 
 

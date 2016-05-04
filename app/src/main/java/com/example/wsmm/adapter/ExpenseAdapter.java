@@ -9,11 +9,10 @@ import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.example.wsmm.R;
-import com.example.wsmm.fragment.PrimaryFragment;
 import com.example.wsmm.model.Category;
-import com.example.wsmm.model.Expense;
+import com.example.wsmm.util.GeneralUtils;
+import com.example.wsmm.util.SPManager;
 
-import java.util.ArrayList;
 import java.util.List;
 
 /**
@@ -51,7 +50,14 @@ public class ExpenseAdapter extends RecyclerView.Adapter<ExpenseAdapter.ViewHold
 
         Category expenseObject = mDataSet.get(position);
         holder.title.setText(expenseObject.getCategoryTitle());
-        holder.price.setText(expenseObject.getPrice() + " $");
+      //  holder.price.setText(expenseObject.getPrice() + " $");
+
+        if (SPManager.getCurrency(mContext)!= -1){
+            holder.price.setText(expenseObject.getPrice() +" "+ GeneralUtils.getCurrencySymbol(mContext,SPManager.getCurrency
+                    (mContext)));
+        }else {
+            holder.price.setText("$ " + expenseObject.getPrice() );
+        }
 
         if (expenseObject.getCategoryName()!=null){
             int id = mContext.getResources().getIdentifier(expenseObject.getCategoryName().replaceAll("\\s+", "").toLowerCase(), "drawable", mContext.getPackageName());
