@@ -33,7 +33,7 @@
                 android:text="@string/currency"/>
 
             <TextView
-                android:id="@+id/dollar"
+                android:id="@+id/currency_symbol"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:textSize="20sp"

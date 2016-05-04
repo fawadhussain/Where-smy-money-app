@@ -1,9 +1,7 @@
 package com.example.wsmm.fragment;
 
-import android.app.FragmentTransaction;
 import android.os.Bundle;
 import android.support.v4.app.FragmentManager;
-import android.view.KeyEvent;
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.View;
@@ -23,6 +21,7 @@ public class CategoryEditFragment extends BaseFragment{
     EditText categoryField;
 
     private int categoryId;
+    private String categoryTitle = null;
     private String categoryName = null;
     DBClient dbClient;
 
@@ -37,8 +36,8 @@ public class CategoryEditFragment extends BaseFragment{
         super.initViews(parent, savedInstanceState);
         categoryField = (EditText)parent.findViewById(R.id.et_category_name);
         setHasOptionsMenu(true);
-        if (categoryName!= null){
-            categoryField.setText(getCategoryName());
+        if (categoryTitle != null){
+            categoryField.setText(getCategoryTitle());
         }
 
 
@@ -87,9 +86,9 @@ public class CategoryEditFragment extends BaseFragment{
     }
 
 
-    public void setCategoryName(String name){
+    public void setCategoryTitle(String title){
 
-        categoryName = name;
+        categoryTitle = title;
 
     }
 
@@ -101,16 +100,16 @@ public class CategoryEditFragment extends BaseFragment{
     }
 
 
-    private int getCategoryId(){
 
-        return categoryId;
-
+    private String getCategoryTitle(){
+        return categoryTitle;
     }
 
 
-    private String getCategoryName(){
-        return categoryName;
-    }
+    public void setCategoryName(String name){
 
+        categoryName = name;
+
+    }
 
 }

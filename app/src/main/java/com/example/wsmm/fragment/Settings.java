@@ -4,14 +4,20 @@ import android.os.Bundle;
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.View;
+import android.widget.TextView;
 
 import com.example.wsmm.R;
+import com.example.wsmm.util.GeneralUtils;
+import com.example.wsmm.util.SPManager;
 
 
 /**
  * Created by abubaker on 2/26/16.
  */
 public class Settings extends BaseFragment implements View.OnClickListener{
+
+
+    TextView textSymbol;
 
     public Settings(){
 
@@ -25,6 +31,14 @@ public class Settings extends BaseFragment implements View.OnClickListener{
     @Override
     public void initViews(View parent, Bundle savedInstanceState) {
         super.initViews(parent, savedInstanceState);
+        textSymbol = (TextView)parent.findViewById(R.id.currency_symbol);
+
+        if (SPManager.getCurrency(getActivity()) != -1 ){
+            textSymbol.setText(GeneralUtils.getCurrencySymbol(getActivity(),SPManager.getCurrency(getActivity())));
+        }else {
+            textSymbol.setText("$USD");
+        }
+
         parent.findViewById(R.id.currency_layout).setOnClickListener(this);
         parent.findViewById(R.id.categories_layout).setOnClickListener(this);
         parent.findViewById(R.id.reminder_layout).setOnClickListener(this);

@@ -2,6 +2,7 @@ package com.example.wsmm.adapter;
 
 import android.content.Context;
 import android.support.v7.widget.RecyclerView;
+import android.util.SparseBooleanArray;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -9,6 +10,7 @@ import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.example.wsmm.R;
+import com.example.wsmm.util.SPManager;
 
 import java.util.List;
 
@@ -20,11 +22,16 @@ public class CurrencyAdapter extends RecyclerView.Adapter<CurrencyAdapter.ViewHo
 
     private List<String> mDataSet;
     private Context mContext;
+    private SparseBooleanArray selectedItems;
+    int previous;
+
 
 
     public CurrencyAdapter(Context context , List<String> list){
         this.mDataSet = list;
         this.mContext = context;
+        selectedItems = new SparseBooleanArray();
+
 
     }
 
@@ -35,13 +42,53 @@ public class CurrencyAdapter extends RecyclerView.Adapter<CurrencyAdapter.ViewHo
     }
 
     @Override
-    public void onBindViewHolder(CurrencyAdapter.ViewHolder holder, int position) {
+    public void onBindViewHolder(final CurrencyAdapter.ViewHolder holder, final int position) {
 
         final String currency = mDataSet.get(position);
         holder.title.setText(currency);
+
+       if (SPManager.getCurrency(mContext)!= -1 && SPManager.getCurrency(mContext) == position) {
+           holder.icon.setImageResource(R.drawable.ticked_checkbox_icon);
+           selectedItems.put(position,true);
+        } else {
+           holder.icon.setImageResource(R.drawable.checkbox_hollow_icon);
+        }
+
         holder.viewHolder.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
+
+
+                if (selectedItems.get(position, false)) {
+                    selectedItems.delete(position);
+                    SPManager.setCurrency(mContext,-1);
+                    holder.icon.setImageResource(R.drawable.checkbox_hollow_icon);
+                } else {
+
+                    selectedItems.put(position, true);
+                    holder.icon.setImageResource(R.drawable.ticked_checkbox_icon);
+
+                }
+
+                if (selectedItems.size() >= 2) {
+                    selectedItems.delete(previous);
+                    notifyDataSetChanged();
+                }
+
+                if (selectedItems.size()>0){
+                    SPManager.setCurrency(mContext,position);
+                }else {
+                    SPManager.setCurrency(mContext,-1);
+                }
+
+
+
+
+
+                previous = position;
+
+
+
 
 
             }

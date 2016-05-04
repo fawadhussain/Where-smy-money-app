@@ -1,28 +1,25 @@
 package com.example.wsmm.fragment;
 
-import android.annotation.SuppressLint;
 import android.app.Activity;
 import android.content.DialogInterface;
 import android.os.Bundle;
 import android.support.design.widget.FloatingActionButton;
-import android.support.design.widget.TabLayout;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
-import android.util.Log;
 import android.view.View;
 import android.widget.ProgressBar;
 import android.widget.TextView;
 import android.widget.Toast;
 
 import com.example.wsmm.R;
-
 import com.example.wsmm.TabFragment;
 import com.example.wsmm.activity.MainActivity;
 import com.example.wsmm.adapter.ExpenseAdapter;
 import com.example.wsmm.db.DBClient;
 import com.example.wsmm.model.Category;
 import com.example.wsmm.util.GeneralUtils;
+import com.example.wsmm.util.SPManager;
 import com.github.fabtransitionactivity.SheetLayout;
 
 import java.util.Calendar;
@@ -76,6 +73,13 @@ public class PrimaryFragment extends BaseFragment implements SheetLayout.OnFabAn
         super.initViews(parent, savedInstanceState);
 
         price = (TextView) parent.findViewById(R.id.price);
+
+        if (SPManager.getCurrency(getActivity()) != -1 ){
+            price.setText("0"+GeneralUtils.getCurrencySymbol(getActivity(),SPManager.getCurrency(getActivity())));
+        }else {
+            price.setText("0$");
+        }
+
         mRecyclerView = (RecyclerView) parent.findViewById(R.id.expense_list);
         mProgressBar = (ProgressBar) parent.findViewById(R.id.progressBar);
         sheetLayout = (SheetLayout) parent.findViewById(R.id.bottom_sheet);
@@ -140,7 +144,14 @@ public class PrimaryFragment extends BaseFragment implements SheetLayout.OnFabAn
             totalAmount += Integer.parseInt(expenseList.get(i).getPrice());
 
         }
-        price.setText("$ " + totalAmount);
+
+        if (SPManager.getCurrency(getActivity())!= -1){
+            price.setText(totalAmount+" "+GeneralUtils.getCurrencySymbol(getActivity(),SPManager.getCurrency(getActivity())));
+        }else {
+            price.setText("$ " + totalAmount);
+        }
+
+
         expenseAdapter = new ExpenseAdapter(getActivity(), expenseList);
         mRecyclerView.setAdapter(expenseAdapter);
 
@@ -247,7 +258,11 @@ public class PrimaryFragment extends BaseFragment implements SheetLayout.OnFabAn
                         totalAmount += Integer.parseInt(expenseAdapter.getDataList().get(i).getPrice());
 
                     }
-                    price.setText("$ " + totalAmount);
+                    if (SPManager.getCurrency(getActivity())!= -1){
+                        price.setText(totalAmount+" "+GeneralUtils.getCurrencySymbol(getActivity(),SPManager.getCurrency(getActivity())));
+                    }else {
+                        price.setText("$ " + totalAmount);
+                    }
 
                 } else {
                     getHelper().replaceFragment(new TabFragment(),true,"TabFragment");
@@ -293,7 +308,11 @@ public class PrimaryFragment extends BaseFragment implements SheetLayout.OnFabAn
             totalAmount += Integer.parseInt(categoryList.get(i).getPrice());
 
         }
-        price.setText("$ " + totalAmount);
+        if (SPManager.getCurrency(getActivity())!= -1){
+            price.setText(totalAmount+" "+GeneralUtils.getCurrencySymbol(getActivity(),SPManager.getCurrency(getActivity())));
+        }else {
+            price.setText("$ " + totalAmount);
+        }
 
 
     }
