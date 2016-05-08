@@ -14,7 +14,7 @@ import com.example.wsmm.util.SPManager;
 /**
  * Created by abubaker on 2/26/16.
  */
-public class Settings extends BaseFragment implements View.OnClickListener{
+public class Settings extends BaseFragment implements View.OnClickListener {
 
 
     TextView textSymbol;
@@ -50,9 +50,7 @@ public class Settings extends BaseFragment implements View.OnClickListener{
 
         switch (v.getId()){
             case R.id.currency_layout:
-
                 getHelper().replaceFragment(new CurrencyFragment(),false,"CurrencyFragment");
-
                 break;
             case R.id.categories_layout:
                 getHelper().replaceFragment(new CategoryListFragment(),false,"CategoryListFragment");

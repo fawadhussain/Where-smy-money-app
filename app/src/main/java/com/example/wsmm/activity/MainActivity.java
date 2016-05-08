@@ -34,8 +34,10 @@ import com.prolificinteractive.materialcalendarview.CalendarMode;
 import com.prolificinteractive.materialcalendarview.MaterialCalendarView;
 import com.prolificinteractive.materialcalendarview.OnDateSelectedListener;
 
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Calendar;
+import java.util.HashMap;
 import java.util.List;
 
 import io.realm.RealmResults;
@@ -58,6 +60,10 @@ public class MainActivity extends BaseActivity implements View.OnClickListener, 
     public static boolean checkPreviousRecords = false;
     private List<String> categoryList;
     private CategoryItem categoryItem;
+    private HashMap<String,ArrayList<Category> > map;
+    ArrayList<Category> childCategoryList;
+    ArrayList<String> headerList = new ArrayList<String>();
+    String categoryName;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -184,9 +190,31 @@ public class MainActivity extends BaseActivity implements View.OnClickListener, 
                 checkPreviousRecords = true;
                 db = new DBClient();
                 categories = db.getLastSevenDaysData();
+                map = new HashMap<>();
+                map.clear();
+                headerList.clear();
+
+
+                for (int i = 0;i<categories.size();i++){
+
+                    if (!map.containsKey(categories.get(i).getCategoryName())){
+                        categoryName = categories.get(i).getCategoryName();
+                        childCategoryList = new ArrayList<Category>();
+                        for (int j = 0; j<categories.size();j++){
+
+                            if (categories.get(j).getCategoryName().equals(categoryName)){
+                                childCategoryList.add(categories.get(j));
+                            }
+                        }
+                        headerList.add(categoryName);
+                        map.put(categoryName,childCategoryList);
+                    }
+                }
 
                 primaryFragment = new PrimaryFragment();
 
+                primaryFragment.setGroupedTransactions(map);
+                primaryFragment.setHeaderList(headerList);
                 primaryFragment.setPreviousRecords(categories);
 
                 replaceFragment(primaryFragment, true, "PrimaryFragment");
@@ -200,8 +228,32 @@ public class MainActivity extends BaseActivity implements View.OnClickListener, 
                 db =new DBClient();
 
                 categories = db.getLastMonthDaysData();
+                map = new HashMap<>();
+                map.clear();
+                headerList.clear();
+
+
+                for (int i = 0;i<categories.size();i++){
+
+                    if (!map.containsKey(categories.get(i).getCategoryName())){
+                        categoryName = categories.get(i).getCategoryName();
+                        childCategoryList = new ArrayList<Category>();
+                        for (int j = 0; j<categories.size();j++){
+
+                            if (categories.get(j).getCategoryName().equals(categoryName)){
+                                childCategoryList.add(categories.get(j));
+                            }
+                        }
+                        headerList.add(categoryName);
+                        map.put(categoryName,childCategoryList);
+                    }
+                }
+
                 primaryFragment = new PrimaryFragment();
+                primaryFragment.setGroupedTransactions(map);
+                primaryFragment.setHeaderList(headerList);
                 primaryFragment.setPreviousRecords(categories);
+
                 replaceFragment(primaryFragment, true, "PrimaryFragment");
                 datePickerText.setText(getResources().getString(R.string.lastThirtyDays));
 
@@ -336,8 +388,31 @@ public class MainActivity extends BaseActivity implements View.OnClickListener, 
         categories = db.getCustomDateData(GeneralUtils.getTimeInMillis(dayOfMonth-1,monthOfYear,year)
                 ,GeneralUtils.getTimeInMillis(dayOfMonthEnd+1,monthOfYearEnd,yearEnd));
 
+        map = new HashMap<>();
+        map.clear();
+        headerList.clear();
+
+
+        for (int i = 0;i<categories.size();i++){
+
+            if (!map.containsKey(categories.get(i).getCategoryName())){
+                categoryName = categories.get(i).getCategoryName();
+                childCategoryList = new ArrayList<Category>();
+                for (int j = 0; j<categories.size();j++){
+
+                    if (categories.get(j).getCategoryName().equals(categoryName)){
+                        childCategoryList.add(categories.get(j));
+                    }
+                }
+                headerList.add(categoryName);
+                map.put(categoryName,childCategoryList);
+            }
+        }
+
         primaryFragment = new PrimaryFragment();
 
+        primaryFragment.setGroupedTransactions(map);
+        primaryFragment.setHeaderList(headerList);
         primaryFragment.setPreviousRecords(categories);
 
         replaceFragment(primaryFragment, true, "PrimaryFragment");

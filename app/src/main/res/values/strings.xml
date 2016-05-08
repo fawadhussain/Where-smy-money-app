@@ -31,6 +31,7 @@
     <string name="lastThirtyDays">Last 30 Days</string>
     <string name="edit_category_title">Edit Category</string>
     <string name="category_name">Category Name</string>
+    <string name="header">Header</string>
 
 
     <string-array

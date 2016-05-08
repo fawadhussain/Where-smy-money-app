@@ -38,6 +38,13 @@
         android:paddingRight="3dp"
         android:visibility="visible" />
 
+    <ExpandableListView
+        android:id="@+id/expandable_listview"
+        android:layout_height="match_parent"
+        android:layout_below="@+id/price_layout"
+        android:visibility="gone"
+        android:layout_width="match_parent"/>
+
 
     <ProgressBar
         android:id="@+id/progressBar"

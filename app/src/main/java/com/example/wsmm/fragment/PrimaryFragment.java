@@ -8,6 +8,7 @@ import android.support.v7.app.AlertDialog;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.view.View;
+import android.widget.ExpandableListView;
 import android.widget.ProgressBar;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -16,20 +17,24 @@ import com.example.wsmm.R;
 import com.example.wsmm.TabFragment;
 import com.example.wsmm.activity.MainActivity;
 import com.example.wsmm.adapter.ExpenseAdapter;
+import com.example.wsmm.adapter.GroupTransactionsAdapter;
 import com.example.wsmm.db.DBClient;
 import com.example.wsmm.model.Category;
 import com.example.wsmm.util.GeneralUtils;
 import com.example.wsmm.util.SPManager;
 import com.github.fabtransitionactivity.SheetLayout;
 
+import java.util.ArrayList;
 import java.util.Calendar;
+import java.util.HashMap;
 import java.util.List;
 
 import io.realm.Realm;
 
 
 
-public class PrimaryFragment extends BaseFragment implements SheetLayout.OnFabAnimationEndListener, View.OnClickListener {
+public class PrimaryFragment extends BaseFragment implements SheetLayout.OnFabAnimationEndListener, View.OnClickListener,
+        ExpandableListView.OnGroupClickListener, ExpandableListView.OnChildClickListener{
 
     public static final String PRIMARY_FRAGMENT_TAG = "PrimaryFragment";
     public static final String DESCRIBABLE_KEY = "editTransaction";
@@ -47,6 +52,10 @@ public class PrimaryFragment extends BaseFragment implements SheetLayout.OnFabAn
     private int day, month, year;
     TextView price;
     private int currentPosition=-1;
+    private HashMap<String,ArrayList<Category>> hashMap = new HashMap<>();
+    ExpandableListView expListView;
+    ArrayList<String> listDataHeader;
+    private GroupTransactionsAdapter groupTransactionsAdapter;
 
 
 
@@ -81,6 +90,10 @@ public class PrimaryFragment extends BaseFragment implements SheetLayout.OnFabAn
         }
 
         mRecyclerView = (RecyclerView) parent.findViewById(R.id.expense_list);
+        expListView = (ExpandableListView)parent.findViewById(R.id.expandable_listview);
+        expListView.setGroupIndicator(null);
+        expListView.setOnGroupClickListener(this);
+        expListView.setOnChildClickListener(this);
         mProgressBar = (ProgressBar) parent.findViewById(R.id.progressBar);
         sheetLayout = (SheetLayout) parent.findViewById(R.id.bottom_sheet);
         mFab = (FloatingActionButton) parent.findViewById(R.id.fab);
@@ -97,7 +110,22 @@ public class PrimaryFragment extends BaseFragment implements SheetLayout.OnFabAn
         mProgressBar.setVisibility(View.GONE);
         Bundle args = getArguments();
 
-        if (getPreviousRecords()!= null) {
+        if (MainActivity.checkPreviousRecords){
+            mRecyclerView.setVisibility(View.GONE);
+            expListView.setVisibility(View.VISIBLE);
+
+                setTotalAmount(getPreviousRecords());
+                groupTransactionsAdapter = new GroupTransactionsAdapter(getActivity(), listDataHeader,hashMap);
+                expListView.setAdapter(groupTransactionsAdapter);
+            for (int i= 0; i<listDataHeader.size();i++){
+                expListView.expandGroup(i);
+            }
+
+
+
+        }
+
+        if (!MainActivity.checkPreviousRecords && getPreviousRecords()!= null) {
             setTotalAmount(getPreviousRecords());
             expenseAdapter = new ExpenseAdapter(getActivity(), getPreviousRecords());
             mRecyclerView.setAdapter(expenseAdapter);
@@ -200,6 +228,7 @@ public class PrimaryFragment extends BaseFragment implements SheetLayout.OnFabAn
     }
 
 
+
     public interface OnUpdateToolBar {
         public void onUpdateDate(int day, int month, int year);
     }
@@ -295,6 +324,15 @@ public class PrimaryFragment extends BaseFragment implements SheetLayout.OnFabAn
     }
 
 
+    public void setGroupedTransactions(HashMap<String,ArrayList<Category>> categoryList){
+        this.hashMap = categoryList;
+    }
+
+    public void setHeaderList(ArrayList<String> headerList){
+        this.listDataHeader = headerList;
+    }
+
+
     public List<Category> getPreviousRecords(){
         return previousRecordsList;
     }
@@ -317,6 +355,16 @@ public class PrimaryFragment extends BaseFragment implements SheetLayout.OnFabAn
 
     }
 
+
+    @Override
+    public boolean onChildClick(ExpandableListView parent, View v, int groupPosition, int childPosition, long id) {
+        return false;
+    }
+
+    @Override
+    public boolean onGroupClick(ExpandableListView parent, View v, int groupPosition, long id) {
+        return false;
+    }
 
 
 
