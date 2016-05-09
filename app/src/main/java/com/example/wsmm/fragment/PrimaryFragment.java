@@ -114,7 +114,7 @@ public class PrimaryFragment extends BaseFragment implements SheetLayout.OnFabAn
             mRecyclerView.setVisibility(View.GONE);
             expListView.setVisibility(View.VISIBLE);
 
-                setTotalAmount(getPreviousRecords());
+               setTotalAmount(getPreviousRecords());
                 groupTransactionsAdapter = new GroupTransactionsAdapter(getActivity(), listDataHeader,hashMap);
                 expListView.setAdapter(groupTransactionsAdapter);
             for (int i= 0; i<listDataHeader.size();i++){
@@ -126,7 +126,7 @@ public class PrimaryFragment extends BaseFragment implements SheetLayout.OnFabAn
         }
 
         if (!MainActivity.checkPreviousRecords && getPreviousRecords()!= null) {
-            setTotalAmount(getPreviousRecords());
+            //setTotalAmount(getPreviousRecords());
             expenseAdapter = new ExpenseAdapter(getActivity(), getPreviousRecords());
             mRecyclerView.setAdapter(expenseAdapter);
             expenseAdapter.setLongClickListener(new ExpenseAdapter.OnItemLongClickListener() {
@@ -318,18 +318,18 @@ public class PrimaryFragment extends BaseFragment implements SheetLayout.OnFabAn
     }
 
     public void setPreviousRecords(List<Category> categoryList){
-        this.previousRecordsList = categoryList;
+        previousRecordsList = categoryList;
 
 
     }
 
 
     public void setGroupedTransactions(HashMap<String,ArrayList<Category>> categoryList){
-        this.hashMap = categoryList;
+        hashMap = categoryList;
     }
 
     public void setHeaderList(ArrayList<String> headerList){
-        this.listDataHeader = headerList;
+        listDataHeader = headerList;
     }
 
 

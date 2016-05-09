@@ -40,8 +40,6 @@ import java.util.Calendar;
 import java.util.HashMap;
 import java.util.List;
 
-import io.realm.RealmResults;
-
 
 public class MainActivity extends BaseActivity implements View.OnClickListener, PrimaryFragment.OnUpdateToolBar, PopupMenu.OnMenuItemClickListener, OnDateSelectedListener, DatePickerDialog.OnDateSetListener {
 
@@ -60,7 +58,7 @@ public class MainActivity extends BaseActivity implements View.OnClickListener, 
     public static boolean checkPreviousRecords = false;
     private List<String> categoryList;
     private CategoryItem categoryItem;
-    private HashMap<String,ArrayList<Category> > map;
+    private HashMap<String, ArrayList<Category>> map;
     ArrayList<Category> childCategoryList;
     ArrayList<String> headerList = new ArrayList<String>();
     String categoryName;
@@ -90,13 +88,13 @@ public class MainActivity extends BaseActivity implements View.OnClickListener, 
         DBClient dbClient = new DBClient();
         categoryList = Arrays.asList(getResources().getStringArray(R.array.categories));
 
-        if (dbClient.getCategoryList().size()> 0){
+        if (dbClient.getCategoryList().size() > 0) {
 
             replaceFragment(new TabFragment(), false, "TabFragment");
 
-        }else {
+        } else {
 
-            for (int i =0; i<categoryList.size();i++){
+            for (int i = 0; i < categoryList.size(); i++) {
 
                 categoryItem = new CategoryItem();
                 categoryItem.setCategoryItemName(categoryList.get(i));
@@ -107,10 +105,6 @@ public class MainActivity extends BaseActivity implements View.OnClickListener, 
             replaceFragment(new TabFragment(), false, "TabFragment");
 
         }
-
-
-
-
 
 
     }
@@ -195,19 +189,19 @@ public class MainActivity extends BaseActivity implements View.OnClickListener, 
                 headerList.clear();
 
 
-                for (int i = 0;i<categories.size();i++){
+                for (int i = 0; i < categories.size(); i++) {
 
-                    if (!map.containsKey(categories.get(i).getCategoryName())){
+                    if (!map.containsKey(categories.get(i).getCategoryName())) {
                         categoryName = categories.get(i).getCategoryName();
                         childCategoryList = new ArrayList<Category>();
-                        for (int j = 0; j<categories.size();j++){
+                        for (int j = 0; j < categories.size(); j++) {
 
-                            if (categories.get(j).getCategoryName().equals(categoryName)){
+                            if (categories.get(j).getCategoryName().equals(categoryName)) {
                                 childCategoryList.add(categories.get(j));
                             }
                         }
                         headerList.add(categoryName);
-                        map.put(categoryName,childCategoryList);
+                        map.put(categoryName, childCategoryList);
                     }
                 }
 
@@ -217,7 +211,14 @@ public class MainActivity extends BaseActivity implements View.OnClickListener, 
                 primaryFragment.setHeaderList(headerList);
                 primaryFragment.setPreviousRecords(categories);
 
-                replaceFragment(primaryFragment, true, "PrimaryFragment");
+                //replaceFragment(primaryFragment, true, "PrimaryFragment");
+
+                FragmentTransaction transaction = getSupportFragmentManager().beginTransaction();
+                transaction.setCustomAnimations(android.R.anim.slide_in_left, android.R.anim.slide_out_right);
+                transaction.replace(R.id.containerView, primaryFragment, "PrimaryFragment");
+                transaction.addToBackStack(null);
+                transaction.commit();
+
                 datePickerText.setText(getResources().getString(R.string.lastSevenDays));
 
 
@@ -225,7 +226,7 @@ public class MainActivity extends BaseActivity implements View.OnClickListener, 
             case R.id.item_thirty_days:
 
                 checkPreviousRecords = true;
-                db =new DBClient();
+                db = new DBClient();
 
                 categories = db.getLastMonthDaysData();
                 map = new HashMap<>();
@@ -233,19 +234,19 @@ public class MainActivity extends BaseActivity implements View.OnClickListener, 
                 headerList.clear();
 
 
-                for (int i = 0;i<categories.size();i++){
+                for (int i = 0; i < categories.size(); i++) {
 
-                    if (!map.containsKey(categories.get(i).getCategoryName())){
+                    if (!map.containsKey(categories.get(i).getCategoryName())) {
                         categoryName = categories.get(i).getCategoryName();
                         childCategoryList = new ArrayList<Category>();
-                        for (int j = 0; j<categories.size();j++){
+                        for (int j = 0; j < categories.size(); j++) {
 
-                            if (categories.get(j).getCategoryName().equals(categoryName)){
+                            if (categories.get(j).getCategoryName().equals(categoryName)) {
                                 childCategoryList.add(categories.get(j));
                             }
                         }
                         headerList.add(categoryName);
-                        map.put(categoryName,childCategoryList);
+                        map.put(categoryName, childCategoryList);
                     }
                 }
 
@@ -254,7 +255,14 @@ public class MainActivity extends BaseActivity implements View.OnClickListener, 
                 primaryFragment.setHeaderList(headerList);
                 primaryFragment.setPreviousRecords(categories);
 
-                replaceFragment(primaryFragment, true, "PrimaryFragment");
+               // replaceFragment(primaryFragment, true, "PrimaryFragment");
+
+                FragmentTransaction transaction1 = getSupportFragmentManager().beginTransaction();
+                transaction1.setCustomAnimations(android.R.anim.slide_in_left, android.R.anim.slide_out_right);
+                transaction1.replace(R.id.containerView, primaryFragment, "PrimaryFragment");
+                transaction1.addToBackStack(null);
+                transaction1.commit();
+
                 datePickerText.setText(getResources().getString(R.string.lastThirtyDays));
 
                 return true;
@@ -338,15 +346,15 @@ public class MainActivity extends BaseActivity implements View.OnClickListener, 
         } else if (tabFragment != null && tabFragment.isVisible()) {
             checkPreviousRecords = false;
             TabFragment tabF = new TabFragment();
-            bundle.putLong("date",day.getCalendar().getTimeInMillis());
+            bundle.putLong("date", day.getCalendar().getTimeInMillis());
             tabF.setArguments(bundle);
-            replaceFragment(tabF,true,"TabFragment");
-        } else  {
+            replaceFragment(tabF, true, "TabFragment");
+        } else {
             checkPreviousRecords = false;
             TabFragment tabF = new TabFragment();
-            bundle.putLong("date",day.getCalendar().getTimeInMillis());
+            bundle.putLong("date", day.getCalendar().getTimeInMillis());
             tabF.setArguments(bundle);
-            replaceFragment(tabF,true,"TabFragment");
+            replaceFragment(tabF, true, "TabFragment");
 
         }
 
@@ -385,27 +393,27 @@ public class MainActivity extends BaseActivity implements View.OnClickListener, 
 
 
         db = new DBClient();
-        categories = db.getCustomDateData(GeneralUtils.getTimeInMillis(dayOfMonth-1,monthOfYear,year)
-                ,GeneralUtils.getTimeInMillis(dayOfMonthEnd+1,monthOfYearEnd,yearEnd));
+        categories = db.getCustomDateData(GeneralUtils.getTimeInMillis(dayOfMonth - 1, monthOfYear, year)
+                , GeneralUtils.getTimeInMillis(dayOfMonthEnd + 1, monthOfYearEnd, yearEnd));
 
         map = new HashMap<>();
         map.clear();
         headerList.clear();
 
 
-        for (int i = 0;i<categories.size();i++){
+        for (int i = 0; i < categories.size(); i++) {
 
-            if (!map.containsKey(categories.get(i).getCategoryName())){
+            if (!map.containsKey(categories.get(i).getCategoryName())) {
                 categoryName = categories.get(i).getCategoryName();
                 childCategoryList = new ArrayList<Category>();
-                for (int j = 0; j<categories.size();j++){
+                for (int j = 0; j < categories.size(); j++) {
 
-                    if (categories.get(j).getCategoryName().equals(categoryName)){
+                    if (categories.get(j).getCategoryName().equals(categoryName)) {
                         childCategoryList.add(categories.get(j));
                     }
                 }
                 headerList.add(categoryName);
-                map.put(categoryName,childCategoryList);
+                map.put(categoryName, childCategoryList);
             }
         }
 
@@ -415,7 +423,13 @@ public class MainActivity extends BaseActivity implements View.OnClickListener, 
         primaryFragment.setHeaderList(headerList);
         primaryFragment.setPreviousRecords(categories);
 
-        replaceFragment(primaryFragment, true, "PrimaryFragment");
+        FragmentTransaction transaction1 = getSupportFragmentManager().beginTransaction();
+        transaction1.setCustomAnimations(android.R.anim.slide_in_left, android.R.anim.slide_out_right);
+        transaction1.replace(R.id.containerView, primaryFragment, "PrimaryFragment");
+        transaction1.addToBackStack(null);
+        transaction1.commit();
+
+       // replaceFragment(primaryFragment, true, "PrimaryFragment");
         datePickerText.setText(getResources().getString(R.string.custom_range));
 
     }
@@ -429,8 +443,8 @@ public class MainActivity extends BaseActivity implements View.OnClickListener, 
         if (newConfig.orientation == Configuration.ORIENTATION_LANDSCAPE) {
             Toast.makeText(this, "landscape", Toast.LENGTH_SHORT).show();
 
-            replaceFragment(new ChartFragment(),false,"ChartFragment");
-        } else if (newConfig.orientation == Configuration.ORIENTATION_PORTRAIT){
+            replaceFragment(new ChartFragment(), false, "ChartFragment");
+        } else if (newConfig.orientation == Configuration.ORIENTATION_PORTRAIT) {
 
             FragmentManager fm = getSupportFragmentManager();
             if (fm.getBackStackEntryCount() > 0) {
