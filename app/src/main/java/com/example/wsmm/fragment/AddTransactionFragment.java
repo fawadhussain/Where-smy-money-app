@@ -30,6 +30,7 @@ import android.widget.Toast;
 
 import com.example.wsmm.R;
 import com.example.wsmm.TabFragment;
+import com.example.wsmm.activity.MainActivity;
 import com.example.wsmm.adapter.CategoryAdapter;
 import com.example.wsmm.db.DBClient;
 import com.example.wsmm.model.Category;
@@ -182,6 +183,7 @@ public class AddTransactionFragment extends BaseFragment implements View.OnClick
                 break;
 
             case R.id.btn_save:
+                MainActivity.checkPreviousRecords = false;
 
                 if (categoryName != null) {
 

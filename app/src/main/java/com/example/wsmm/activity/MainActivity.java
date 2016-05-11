@@ -190,9 +190,12 @@ public class MainActivity extends BaseActivity implements View.OnClickListener, 
                 checkPreviousRecords = true;
                 db = new DBClient();
                 categories = db.getLastSevenDaysData();
-                map = new HashMap<>();
+                if (map!=null)
                 map.clear();
+                if (headerList!=null)
                 headerList.clear();
+                map = new HashMap<>();
+
 
 
                 for (int i = 0;i<categories.size();i++){
