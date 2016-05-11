@@ -1,7 +1,6 @@
 package com.example.wsmm.adapter;
 
 import android.content.Context;
-import android.graphics.Typeface;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -27,14 +26,14 @@ public class GroupTransactionsAdapter extends BaseExpandableListAdapter {
     private Context mContext;
     private List<String> listDataHeader; // header titles
     // child data in format of header title, child title
-    private HashMap<String, ArrayList<Category>> listDataChild;
+    private HashMap<String, ArrayList<Category>> hashMap;
 
 
     public GroupTransactionsAdapter(Context context,ArrayList<String> listDataHeader,
                                     HashMap<String, ArrayList<Category>> listChildData){
         this.mContext = context;
         this.listDataHeader = listDataHeader;
-        this.listDataChild = listChildData;
+        this.hashMap = listChildData;
     }
 
     @Override
@@ -44,7 +43,7 @@ public class GroupTransactionsAdapter extends BaseExpandableListAdapter {
 
     @Override
     public int getChildrenCount(int groupPosition) {
-        return this.listDataChild.get(this.listDataHeader.get(groupPosition)).size();
+        return this.hashMap.get(this.listDataHeader.get(groupPosition)).size();
     }
 
     @Override
@@ -54,7 +53,7 @@ public class GroupTransactionsAdapter extends BaseExpandableListAdapter {
 
     @Override
     public Object getChild(int groupPosition, int childPosition) {
-        return this.listDataChild.get(this.listDataHeader.get(groupPosition)).get(childPosition);
+        return this.hashMap.get(this.listDataHeader.get(groupPosition)).get(childPosition);
     }
 
     @Override
@@ -69,7 +68,13 @@ public class GroupTransactionsAdapter extends BaseExpandableListAdapter {
 
     @Override
     public boolean hasStableIds() {
-        return false;
+        return true;
+    }
+
+    @Override
+    public boolean areAllItemsEnabled() {
+        return true;
+
     }
 
     @Override
@@ -134,12 +139,31 @@ public class GroupTransactionsAdapter extends BaseExpandableListAdapter {
     public void removeGroup(int group) {
         //TODO: Remove the according group. Dont forget to remove the children aswell!
         Log.v("Adapter", "Removing group"+group);
+        hashMap.remove(listDataHeader.get(group));
+        listDataHeader.remove(group);
         notifyDataSetChanged();
     }
 
     public void removeChild(int group, int child) {
         //TODO: Remove the according child
-        Log.v("Adapter", "Removing child "+child+" in group "+group);
+        Log.v("Adapter", "Removing child "+hashMap.get(listDataHeader.get(group)).size());
+
+        hashMap.get(listDataHeader.get(group)).remove(child);
+
+        if (hashMap.get(listDataHeader.get(group)).size() < 1){
+
+            hashMap.remove(listDataHeader.get(group));
+            listDataHeader.remove(group);
+
+
+        }
+
+
         notifyDataSetChanged();
+    }
+
+
+    public HashMap<String, ArrayList<Category>> getDataSet(){
+        return hashMap;
     }
 }

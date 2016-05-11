@@ -263,14 +263,6 @@ public class PrimaryFragment extends BaseFragment implements SheetLayout.OnFabAn
     private void removeTransaction(final List<Category> list, int position) {
         Category category = list.get(position);
 
-        if(MainActivity.checkPreviousRecords){
-
-            expenseAdapter.removeItem(position);
-
-        }else {
-
-            expenseAdapter.remove(position);
-        }
 
         db = new DBClient();
 
@@ -358,11 +350,15 @@ public class PrimaryFragment extends BaseFragment implements SheetLayout.OnFabAn
 
     @Override
     public boolean onChildClick(ExpandableListView parent, View v, int groupPosition, int childPosition, long id) {
-        return false;
+        groupTransactionsAdapter.removeChild(groupPosition,childPosition);
+        Toast.makeText(getActivity(),"Child",Toast.LENGTH_SHORT).show();
+
+        return true;
     }
 
     @Override
     public boolean onGroupClick(ExpandableListView parent, View v, int groupPosition, long id) {
+       // groupTransactionsAdapter.removeGroup(groupPosition);
         return false;
     }
 
