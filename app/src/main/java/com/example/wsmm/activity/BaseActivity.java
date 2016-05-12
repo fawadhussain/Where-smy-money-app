@@ -4,6 +4,7 @@ import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentTransaction;
 import android.support.v7.app.AppCompatActivity;
+import android.util.Log;
 import android.view.KeyEvent;
 
 import com.example.wsmm.R;
@@ -18,6 +19,7 @@ import java.util.Stack;
  */
 public class BaseActivity extends AppCompatActivity implements BaseFragment.FragmentNavigationHelper {
 
+    private static final String TAG = "BaseActivity";
     public BaseFragment mCurrentFragment;
     private Stack<Fragment> mFragments = new Stack<>();
 
@@ -85,6 +87,7 @@ public class BaseActivity extends AppCompatActivity implements BaseFragment.Frag
     public void clearFragmentBackStack() {
         android.support.v4.app.FragmentManager fm = getSupportFragmentManager();
         for (int i = 0; i < fm.getBackStackEntryCount(); i++) {
+            Log.i(TAG, "Found fragment: " + fm.getBackStackEntryAt(i).getId());
             fm.popBackStack();
         }
 

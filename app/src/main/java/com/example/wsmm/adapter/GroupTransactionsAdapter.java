@@ -138,7 +138,6 @@ public class GroupTransactionsAdapter extends BaseExpandableListAdapter {
 
     public void removeGroup(int group) {
         //TODO: Remove the according group. Dont forget to remove the children aswell!
-        Log.v("Adapter", "Removing group"+group);
         hashMap.remove(listDataHeader.get(group));
         listDataHeader.remove(group);
         notifyDataSetChanged();
@@ -146,7 +145,6 @@ public class GroupTransactionsAdapter extends BaseExpandableListAdapter {
 
     public void removeChild(int group, int child) {
         //TODO: Remove the according child
-        Log.v("Adapter", "Removing child "+hashMap.get(listDataHeader.get(group)).size());
 
         hashMap.get(listDataHeader.get(group)).remove(child);
 

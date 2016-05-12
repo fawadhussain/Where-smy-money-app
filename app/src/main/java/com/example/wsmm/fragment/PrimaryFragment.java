@@ -4,6 +4,8 @@ import android.app.Activity;
 import android.content.DialogInterface;
 import android.os.Bundle;
 import android.support.design.widget.FloatingActionButton;
+import android.support.v4.app.Fragment;
+import android.support.v4.app.FragmentTransaction;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
@@ -146,6 +148,10 @@ public class PrimaryFragment extends BaseFragment implements SheetLayout.OnFabAn
                 int position = getArguments().getInt("position");
                 setCurrentPostionAndData(position);
 
+            }else {
+                Calendar cal = Calendar.getInstance();
+                updateToolBar.onUpdateDate(cal.get(Calendar.DAY_OF_MONTH), cal.get(Calendar.MONTH), cal.get(Calendar.YEAR));
+                //datePickerText.setText("TODAY " + GeneralUtils.getMonth(cal.get(Calendar.MONTH)) + " " + cal.get(Calendar.DAY_OF_MONTH));
             }
 
         }
@@ -245,7 +251,7 @@ public class PrimaryFragment extends BaseFragment implements SheetLayout.OnFabAn
             public void onClick(DialogInterface dialog, int item) {
                 if (items[item].equals("Edit Transaction")) {
 
-                    editTransaction(list,position);
+                    editTransaction(list.get(position).getCategoryId());
 
                 } else if (items[item].equals("Remove Transaction")) {
 
@@ -262,6 +268,15 @@ public class PrimaryFragment extends BaseFragment implements SheetLayout.OnFabAn
 
     private void removeTransaction(final List<Category> list, int position) {
         Category category = list.get(position);
+
+        if(MainActivity.checkPreviousRecords){
+
+            expenseAdapter.removeItem(position);
+
+        }else {
+
+            expenseAdapter.remove(position);
+        }
 
 
         db = new DBClient();
@@ -286,7 +301,8 @@ public class PrimaryFragment extends BaseFragment implements SheetLayout.OnFabAn
                     }
 
                 } else {
-                    getHelper().replaceFragment(new TabFragment(),true,"TabFragment");
+
+                    fragmentTransaction(new TabFragment(),"TabFragment");
 
                 }
 
@@ -297,10 +313,10 @@ public class PrimaryFragment extends BaseFragment implements SheetLayout.OnFabAn
     }
 
 
-    private void editTransaction(List<Category> list,int position) {
+    private void editTransaction(int categoryId) {
         db = new DBClient();
         Category transaction = new Category();
-        transaction = db.getResultFromId(list.get(position).getCategoryId());
+        transaction = db.getResultFromId(categoryId);
         AddTransactionFragment add = new AddTransactionFragment();
         Bundle bundle = new Bundle();
         bundle.putSerializable(DESCRIBABLE_KEY, transaction);
@@ -350,8 +366,7 @@ public class PrimaryFragment extends BaseFragment implements SheetLayout.OnFabAn
 
     @Override
     public boolean onChildClick(ExpandableListView parent, View v, int groupPosition, int childPosition, long id) {
-        groupTransactionsAdapter.removeChild(groupPosition,childPosition);
-        Toast.makeText(getActivity(),"Child",Toast.LENGTH_SHORT).show();
+     dialogGroupTransactions(childPosition,groupPosition);
 
         return true;
     }
@@ -361,6 +376,88 @@ public class PrimaryFragment extends BaseFragment implements SheetLayout.OnFabAn
        // groupTransactionsAdapter.removeGroup(groupPosition);
         return false;
     }
+
+
+    private void dialogGroupTransactions(final int childPosition, final int groupPosition) {
+        final CharSequence[] items = {"Edit Transaction", "Remove Transaction",
+                "Cancel"};
+
+        AlertDialog.Builder builder = new AlertDialog.Builder(getActivity());
+        builder.setTitle("Please Select");
+        builder.setItems(items, new DialogInterface.OnClickListener() {
+            @Override
+            public void onClick(DialogInterface dialog, int item) {
+                if (items[item].equals("Edit Transaction")) {
+
+
+                } else if (items[item].equals("Remove Transaction")) {
+                    removeChildItem(childPosition,groupPosition);
+
+
+                } else if (items[item].equals("Cancel")) {
+                    dialog.dismiss();
+                }
+            }
+        });
+        builder.show();
+    }
+
+
+
+    private void removeChildItem(int childPosition, final int groupPosition) {
+
+        Category category = hashMap.get(listDataHeader.get(groupPosition)).get(childPosition);
+        groupTransactionsAdapter.removeChild(groupPosition,childPosition);
+
+
+        db = new DBClient();
+
+        db.deleteTransaction(category.getCategoryId(), new Realm.Transaction.OnSuccess() {
+            @Override
+            public void onSuccess() {
+                int totalAmount = 0;
+                HashMap<String,ArrayList<Category>> hashMapList;
+                Toast.makeText(getActivity(), "Transaction Deleted", Toast.LENGTH_SHORT).show();
+                hashMapList = groupTransactionsAdapter.getDataSet();
+                if (hashMapList!= null){
+
+                    for (int k = 0; k <hashMapList.size();k++){
+
+                    if (hashMapList.containsKey(listDataHeader.get(k))){
+                        ArrayList<Category> childList =  hashMapList.get(listDataHeader.get(k));
+
+                        if (childList != null && childList.size() > 0){
+                            for (int i = 0; i<childList.size();i++){
+
+                                totalAmount+= Integer.parseInt(childList.get(i).getPrice());
+
+                            }
+                        }
+                    }
+
+                    }
+
+
+                }
+
+
+
+            }
+        });
+
+    }
+
+
+    private void fragmentTransaction(Fragment fragment, String tag){
+
+        FragmentTransaction transaction = getActivity().getSupportFragmentManager().beginTransaction();
+        transaction.setCustomAnimations(android.R.anim.slide_in_left, android.R.anim.slide_out_right);
+        transaction.replace(R.id.containerView, fragment, tag);
+        transaction.addToBackStack(null);
+        transaction.commit();
+
+    }
+
 
 
 
