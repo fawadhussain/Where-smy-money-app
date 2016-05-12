@@ -123,6 +123,8 @@ public class PrimaryFragment extends BaseFragment implements SheetLayout.OnFabAn
 
 
 
+
+
         }
 
         if (!MainActivity.checkPreviousRecords && getPreviousRecords()!= null) {
@@ -358,12 +360,16 @@ public class PrimaryFragment extends BaseFragment implements SheetLayout.OnFabAn
 
     @Override
     public boolean onChildClick(ExpandableListView parent, View v, int groupPosition, int childPosition, long id) {
+
+
         return false;
     }
 
     @Override
     public boolean onGroupClick(ExpandableListView parent, View v, int groupPosition, long id) {
-        return false;
+        Toast.makeText(getActivity(),"GroupClicked",Toast.LENGTH_SHORT).show();
+        groupTransactionsAdapter.removeGroup(groupPosition);
+        return true;
     }
 
 

@@ -1,7 +1,6 @@
 package com.example.wsmm.adapter;
 
 import android.content.Context;
-import android.graphics.Typeface;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -125,5 +124,17 @@ public class GroupTransactionsAdapter extends BaseExpandableListAdapter {
     @Override
     public boolean isChildSelectable(int groupPosition, int childPosition) {
         return true;
+    }
+
+
+    public void removeGroup(int group) {
+        //TODO: Remove the according group. Dont forget to remove the children aswell!
+        listDataChild.remove(listDataHeader.get(group));
+        notifyDataSetChanged();
+    }
+
+    public void removeChild(int group, int child) {
+        //TODO: Remove the according child
+        notifyDataSetChanged();
     }
 }
