@@ -3,6 +3,8 @@ package com.example.wsmm.fragment;
 import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
+import android.support.v4.app.Fragment;
+import android.support.v4.app.FragmentTransaction;
 import android.support.v4.widget.DrawerLayout;
 import android.support.v7.app.ActionBarDrawerToggle;
 import android.support.v7.widget.Toolbar;
@@ -81,22 +83,22 @@ public class NavigationDrawerFragment extends BaseFragment implements View.OnCli
         switch (v.getId()){
             case R.id.transactions:
                 closeNav();
-                getHelper().replaceFragment(new TabFragment(),true,"TabFragment");
+               fragmentTransaction(new TabFragment(),"TabFragment");
                 MainActivity.checkPreviousRecords =false;
                 break;
             case R.id.settings:
                 closeNav();
-                getHelper().replaceFragment(new Settings(),true,"Settings");
+                fragmentTransaction(new Settings(),"Settings");
                 break;
             case R.id.export_csv:
                 closeNav();
-                //getHelper().replaceFragment(new ExportFile(),false,"ExportFile");
                 exportCsvData();
 
                 break;
             case R.id.how_to_us:
                 closeNav();
-                getHelper().replaceFragment(new AboutUs(),true,"AboutUs");
+                fragmentTransaction(new AboutUs(),"AboutUs");
+
                 break;
         }
 
@@ -132,6 +134,17 @@ public class NavigationDrawerFragment extends BaseFragment implements View.OnCli
 
             }
         });
+
+    }
+
+
+    private void fragmentTransaction(Fragment fragment,String tag){
+
+        FragmentTransaction transaction = getActivity().getSupportFragmentManager().beginTransaction();
+        transaction.setCustomAnimations(android.R.anim.slide_in_left, android.R.anim.slide_out_right);
+        transaction.replace(R.id.containerView, fragment, tag);
+        transaction.addToBackStack(null);
+        transaction.commit();
 
     }
 

@@ -4,6 +4,8 @@ import android.app.Activity;
 import android.content.DialogInterface;
 import android.os.Bundle;
 import android.support.design.widget.FloatingActionButton;
+import android.support.v4.app.Fragment;
+import android.support.v4.app.FragmentTransaction;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
@@ -122,6 +124,7 @@ public class PrimaryFragment extends BaseFragment implements SheetLayout.OnFabAn
             }
 
 
+
         }
 
         if (!MainActivity.checkPreviousRecords && getPreviousRecords()!= null) {
@@ -145,6 +148,10 @@ public class PrimaryFragment extends BaseFragment implements SheetLayout.OnFabAn
                 int position = getArguments().getInt("position");
                 setCurrentPostionAndData(position);
 
+            }else {
+                Calendar cal = Calendar.getInstance();
+                updateToolBar.onUpdateDate(cal.get(Calendar.DAY_OF_MONTH), cal.get(Calendar.MONTH), cal.get(Calendar.YEAR));
+                //datePickerText.setText("TODAY " + GeneralUtils.getMonth(cal.get(Calendar.MONTH)) + " " + cal.get(Calendar.DAY_OF_MONTH));
             }
 
         }
@@ -168,11 +175,7 @@ public class PrimaryFragment extends BaseFragment implements SheetLayout.OnFabAn
         int totalAmount = 0;
         for (int i = 0; i < expenseList.size(); i++) {
 
-            try {
-                totalAmount += Integer.parseInt(expenseList.get(i).getPrice());
-            } catch (NumberFormatException e) {
-                e.printStackTrace();
-            }
+            totalAmount += Integer.parseInt(expenseList.get(i).getPrice());
 
         }
 
@@ -248,7 +251,7 @@ public class PrimaryFragment extends BaseFragment implements SheetLayout.OnFabAn
             public void onClick(DialogInterface dialog, int item) {
                 if (items[item].equals("Edit Transaction")) {
 
-                    editTransaction(list,position);
+                    editTransaction(list.get(position).getCategoryId());
 
                 } else if (items[item].equals("Remove Transaction")) {
 
@@ -265,7 +268,16 @@ public class PrimaryFragment extends BaseFragment implements SheetLayout.OnFabAn
 
     private void removeTransaction(final List<Category> list, int position) {
         Category category = list.get(position);
-        expenseAdapter.remove(position);
+
+        if(MainActivity.checkPreviousRecords){
+
+            expenseAdapter.removeItem(position);
+
+        }else {
+
+            expenseAdapter.remove(position);
+        }
+
 
         db = new DBClient();
 
@@ -289,7 +301,8 @@ public class PrimaryFragment extends BaseFragment implements SheetLayout.OnFabAn
                     }
 
                 } else {
-                    getHelper().replaceFragment(new TabFragment(),true,"TabFragment");
+
+                    fragmentTransaction(new TabFragment(),"TabFragment");
 
                 }
 
@@ -300,10 +313,10 @@ public class PrimaryFragment extends BaseFragment implements SheetLayout.OnFabAn
     }
 
 
-    private void editTransaction(List<Category> list,int position) {
+    private void editTransaction(int categoryId) {
         db = new DBClient();
         Category transaction = new Category();
-        transaction = db.getResultFromId(list.get(position).getCategoryId());
+        transaction = db.getResultFromId(categoryId);
         AddTransactionFragment add = new AddTransactionFragment();
         Bundle bundle = new Bundle();
         bundle.putSerializable(DESCRIBABLE_KEY, transaction);
@@ -353,9 +366,7 @@ public class PrimaryFragment extends BaseFragment implements SheetLayout.OnFabAn
 
     @Override
     public boolean onChildClick(ExpandableListView parent, View v, int groupPosition, int childPosition, long id) {
-
-        dialogGroupTransactions(childPosition,groupPosition);
-        //groupTransactionsAdapter.removeChild(groupPosition,childPosition);
+     dialogGroupTransactions(childPosition,groupPosition);
 
         return true;
     }
@@ -365,7 +376,6 @@ public class PrimaryFragment extends BaseFragment implements SheetLayout.OnFabAn
        // groupTransactionsAdapter.removeGroup(groupPosition);
         return false;
     }
-
 
 
     private void dialogGroupTransactions(final int childPosition, final int groupPosition) {
@@ -393,6 +403,7 @@ public class PrimaryFragment extends BaseFragment implements SheetLayout.OnFabAn
     }
 
 
+
     private void removeChildItem(int childPosition, final int groupPosition) {
 
         Category category = hashMap.get(listDataHeader.get(groupPosition)).get(childPosition);
@@ -410,8 +421,10 @@ public class PrimaryFragment extends BaseFragment implements SheetLayout.OnFabAn
                 hashMapList = groupTransactionsAdapter.getDataSet();
                 if (hashMapList!= null){
 
-                    if (hashMapList.containsKey(listDataHeader.get(groupPosition))){
-                        ArrayList<Category> childList =  hashMapList.get(listDataHeader.get(groupPosition));
+                    for (int k = 0; k <hashMapList.size();k++){
+
+                    if (hashMapList.containsKey(listDataHeader.get(k))){
+                        ArrayList<Category> childList =  hashMapList.get(listDataHeader.get(k));
 
                         if (childList != null && childList.size() > 0){
                             for (int i = 0; i<childList.size();i++){
@@ -422,35 +435,29 @@ public class PrimaryFragment extends BaseFragment implements SheetLayout.OnFabAn
                         }
                     }
 
-
-                }
-
-                if (SPManager.getCurrency(getActivity())!= -1){
-                    price.setText(totalAmount+" "+GeneralUtils.getCurrencySymbol(getActivity(),SPManager.getCurrency(getActivity())));
-                }else {
-                    price.setText("$ " + totalAmount);
-                }
-
-
-              /*  if (expenseAdapter.getDataList() != null && expenseAdapter.getDataList().size() > 0) {
-
-                    for (int i = 0; i < expenseAdapter.getDataList().size(); i++) {
-
-                        totalAmount += Integer.parseInt(expenseAdapter.getDataList().get(i).getPrice());
-
                     }
 
 
-                } else {
-                    getHelper().replaceFragment(new TabFragment(),true,"TabFragment");
+                }
 
-                }*/
 
 
             }
         });
 
     }
+
+
+    private void fragmentTransaction(Fragment fragment, String tag){
+
+        FragmentTransaction transaction = getActivity().getSupportFragmentManager().beginTransaction();
+        transaction.setCustomAnimations(android.R.anim.slide_in_left, android.R.anim.slide_out_right);
+        transaction.replace(R.id.containerView, fragment, tag);
+        transaction.addToBackStack(null);
+        transaction.commit();
+
+    }
+
 
 
 
