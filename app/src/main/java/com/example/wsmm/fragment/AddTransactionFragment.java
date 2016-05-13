@@ -194,6 +194,7 @@ public class AddTransactionFragment extends BaseFragment implements View.OnClick
                         Category categoryObject = new Category();
                         categoryObject.setCategoryName(categoryName);
                         categoryObject.setCategoryTitle(categoryTitle.getText().toString());
+                        categoryObject.setExpensePrice(Float.parseFloat(amount.getText().toString()));
                         categoryObject.setPrice(amount.getText().toString());
                         if (getCurrentPhotoPath() != null) {
                             categoryObject.setImagePath(getCurrentPhotoPath());

@@ -43,7 +43,7 @@ public class DBClient {
     }
 
 
-    public void saveCategoryList(CategoryItem item){
+    public void saveCategoryList(CategoryItem item) {
 
         mRealm.beginTransaction();
 
@@ -81,8 +81,6 @@ public class DBClient {
     }
 
 
-
-
     public void saveTransaction(final Category category, Realm.Transaction.OnSuccess callback) {
 
         mRealm.executeTransactionAsync(new Realm.Transaction() {
@@ -115,16 +113,11 @@ public class DBClient {
     }
 
     public RealmResults<Category> getRecords() {
-        // Realm mRealm = Realm.getInstance(realmConfig);
         mRealm.beginTransaction();
-        // RealmResults<Category> results = mRealm.where(Category.class).findAll();
         RealmResults<Category> results = mRealm.where(Category.class).findAll().distinct("stringDate");
         results.sort("stringDate", Sort.ASCENDING);
 
         mRealm.commitTransaction();
-
-
-        //mRealm.close();
         return results;
     }
 
@@ -333,10 +326,10 @@ public class DBClient {
         return results;
 
 
-   }
+    }
 
 
-    public RealmResults<Category> getLastMonthDaysData(){
+    public RealmResults<Category> getLastMonthDaysData() {
 
         mRealm.beginTransaction();
 
@@ -353,7 +346,7 @@ public class DBClient {
     }
 
 
-    public RealmResults<Category> getCustomDateData(long from , long to){
+    public RealmResults<Category> getCustomDateData(long from, long to) {
 
         mRealm.beginTransaction();
 
@@ -369,7 +362,4 @@ public class DBClient {
     }
 
 
-
-
-
-    }
+}

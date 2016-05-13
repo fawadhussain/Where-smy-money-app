@@ -122,9 +122,6 @@ public class PrimaryFragment extends BaseFragment implements SheetLayout.OnFabAn
             }
 
 
-
-
-
         }
 
         if (!MainActivity.checkPreviousRecords && getPreviousRecords()!= null) {
@@ -171,7 +168,11 @@ public class PrimaryFragment extends BaseFragment implements SheetLayout.OnFabAn
         int totalAmount = 0;
         for (int i = 0; i < expenseList.size(); i++) {
 
-            totalAmount += Integer.parseInt(expenseList.get(i).getPrice());
+            try {
+                totalAmount += Integer.parseInt(expenseList.get(i).getPrice());
+            } catch (NumberFormatException e) {
+                e.printStackTrace();
+            }
 
         }
 
@@ -264,15 +265,7 @@ public class PrimaryFragment extends BaseFragment implements SheetLayout.OnFabAn
 
     private void removeTransaction(final List<Category> list, int position) {
         Category category = list.get(position);
-
-        if(MainActivity.checkPreviousRecords){
-
-            expenseAdapter.removeItem(position);
-
-        }else {
-
-            expenseAdapter.remove(position);
-        }
+        expenseAdapter.remove(position);
 
         db = new DBClient();
 
@@ -361,15 +354,102 @@ public class PrimaryFragment extends BaseFragment implements SheetLayout.OnFabAn
     @Override
     public boolean onChildClick(ExpandableListView parent, View v, int groupPosition, int childPosition, long id) {
 
+        dialogGroupTransactions(childPosition,groupPosition);
+        //groupTransactionsAdapter.removeChild(groupPosition,childPosition);
 
-        return false;
+        return true;
     }
 
     @Override
     public boolean onGroupClick(ExpandableListView parent, View v, int groupPosition, long id) {
-        Toast.makeText(getActivity(),"GroupClicked",Toast.LENGTH_SHORT).show();
-        groupTransactionsAdapter.removeGroup(groupPosition);
-        return true;
+       // groupTransactionsAdapter.removeGroup(groupPosition);
+        return false;
+    }
+
+
+
+    private void dialogGroupTransactions(final int childPosition, final int groupPosition) {
+        final CharSequence[] items = {"Edit Transaction", "Remove Transaction",
+                "Cancel"};
+
+        AlertDialog.Builder builder = new AlertDialog.Builder(getActivity());
+        builder.setTitle("Please Select");
+        builder.setItems(items, new DialogInterface.OnClickListener() {
+            @Override
+            public void onClick(DialogInterface dialog, int item) {
+                if (items[item].equals("Edit Transaction")) {
+
+
+                } else if (items[item].equals("Remove Transaction")) {
+                    removeChildItem(childPosition,groupPosition);
+
+
+                } else if (items[item].equals("Cancel")) {
+                    dialog.dismiss();
+                }
+            }
+        });
+        builder.show();
+    }
+
+
+    private void removeChildItem(int childPosition, final int groupPosition) {
+
+        Category category = hashMap.get(listDataHeader.get(groupPosition)).get(childPosition);
+        groupTransactionsAdapter.removeChild(groupPosition,childPosition);
+
+
+        db = new DBClient();
+
+        db.deleteTransaction(category.getCategoryId(), new Realm.Transaction.OnSuccess() {
+            @Override
+            public void onSuccess() {
+                int totalAmount = 0;
+                HashMap<String,ArrayList<Category>> hashMapList;
+                Toast.makeText(getActivity(), "Transaction Deleted", Toast.LENGTH_SHORT).show();
+                hashMapList = groupTransactionsAdapter.getDataSet();
+                if (hashMapList!= null){
+
+                    if (hashMapList.containsKey(listDataHeader.get(groupPosition))){
+                        ArrayList<Category> childList =  hashMapList.get(listDataHeader.get(groupPosition));
+
+                        if (childList != null && childList.size() > 0){
+                            for (int i = 0; i<childList.size();i++){
+
+                                totalAmount+= Integer.parseInt(childList.get(i).getPrice());
+
+                            }
+                        }
+                    }
+
+
+                }
+
+                if (SPManager.getCurrency(getActivity())!= -1){
+                    price.setText(totalAmount+" "+GeneralUtils.getCurrencySymbol(getActivity(),SPManager.getCurrency(getActivity())));
+                }else {
+                    price.setText("$ " + totalAmount);
+                }
+
+
+              /*  if (expenseAdapter.getDataList() != null && expenseAdapter.getDataList().size() > 0) {
+
+                    for (int i = 0; i < expenseAdapter.getDataList().size(); i++) {
+
+                        totalAmount += Integer.parseInt(expenseAdapter.getDataList().get(i).getPrice());
+
+                    }
+
+
+                } else {
+                    getHelper().replaceFragment(new TabFragment(),true,"TabFragment");
+
+                }*/
+
+
+            }
+        });
+
     }
 
 

@@ -1,7 +1,6 @@
 package com.example.wsmm.model;
 
 import java.io.Serializable;
-import java.util.Date;
 
 import io.realm.RealmObject;
 import io.realm.annotations.Index;
@@ -20,6 +19,7 @@ public class Category extends RealmObject implements Serializable {
     private String categoryTitle;
     private long date;
     private String price;
+    private float expensePrice;
     private String imagePath;
 
     public String getPrice() {
@@ -76,5 +76,14 @@ public class Category extends RealmObject implements Serializable {
 
     public void setStringDate(String stringDate) {
         this.stringDate = stringDate;
+    }
+
+
+    public float getExpensePrice() {
+        return expensePrice;
+    }
+
+    public void setExpensePrice(float expensePrice) {
+        this.expensePrice = expensePrice;
     }
 }
