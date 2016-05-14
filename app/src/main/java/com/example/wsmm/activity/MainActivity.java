@@ -23,8 +23,8 @@ import com.example.wsmm.R;
 import com.example.wsmm.TabFragment;
 import com.example.wsmm.db.DBClient;
 import com.example.wsmm.fragment.AddTransactionFragment;
-import com.example.wsmm.fragment.ChartFragment;
 import com.example.wsmm.fragment.NavigationDrawerFragment;
+import com.example.wsmm.fragment.PieFragment;
 import com.example.wsmm.fragment.PrimaryFragment;
 import com.example.wsmm.model.Category;
 import com.example.wsmm.model.CategoryItem;
@@ -446,7 +446,7 @@ public class MainActivity extends BaseActivity implements View.OnClickListener, 
         if (newConfig.orientation == Configuration.ORIENTATION_LANDSCAPE) {
             Toast.makeText(this, "landscape", Toast.LENGTH_SHORT).show();
 
-            replaceFragment(new ChartFragment(), false, "ChartFragment");
+            replaceFragment(new PieFragment(), false, "ChartFragment");
         } else if (newConfig.orientation == Configuration.ORIENTATION_PORTRAIT) {
 
             FragmentManager fm = getSupportFragmentManager();
