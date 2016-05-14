@@ -3,7 +3,6 @@
   <component name="ProjectModuleManager">
     <modules>
       <module fileurl="file://$PROJECT_DIR$/MPChartLib/MPChartLib.iml" filepath="$PROJECT_DIR$/MPChartLib/MPChartLib.iml" />
-      <module fileurl="file://$PROJECT_DIR$/Where-smy-money-app.iml" filepath="$PROJECT_DIR$/Where-smy-money-app.iml" />
       <module fileurl="file://$PROJECT_DIR$/Wsmm.iml" filepath="$PROJECT_DIR$/Wsmm.iml" />
       <module fileurl="file://$PROJECT_DIR$/app/app.iml" filepath="$PROJECT_DIR$/app/app.iml" />
     </modules>

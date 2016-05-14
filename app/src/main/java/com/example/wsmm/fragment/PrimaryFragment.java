@@ -66,7 +66,6 @@ public class PrimaryFragment extends BaseFragment implements SheetLayout.OnFabAn
     }
 
 
-
     @Override
     public void onAttach(Activity activity) {
         super.onAttach(activity);
