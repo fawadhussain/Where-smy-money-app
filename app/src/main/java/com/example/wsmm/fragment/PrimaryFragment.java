@@ -9,6 +9,7 @@ import android.support.v4.app.FragmentTransaction;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
+import android.util.Log;
 import android.view.View;
 import android.widget.ExpandableListView;
 import android.widget.ProgressBar;
@@ -111,7 +112,7 @@ public class PrimaryFragment extends BaseFragment implements SheetLayout.OnFabAn
         mProgressBar.setVisibility(View.GONE);
         Bundle args = getArguments();
 
-        if (MainActivity.checkPreviousRecords){
+        if (listDataHeader!= null && MainActivity.checkPreviousRecords ){
             mRecyclerView.setVisibility(View.GONE);
             expListView.setVisibility(View.VISIBLE);
 
@@ -208,7 +209,7 @@ public class PrimaryFragment extends BaseFragment implements SheetLayout.OnFabAn
         month = calendar.get(Calendar.MONTH);
         year = calendar.get(Calendar.YEAR);
         updateToolBar.onUpdateDate(day, month, year);
-        getHelper().replaceFragment(new AddTransactionFragment(), false, "AddTransaction");
+        getHelper().replaceFragment(new AddTransactionFragment(), true, false,"AddTransaction");
 
         sheetLayout.contractFab();
         sheetLayout.hide();
@@ -230,6 +231,9 @@ public class PrimaryFragment extends BaseFragment implements SheetLayout.OnFabAn
     @Override
     public void onPause() {
         super.onPause();
+        Log.d("Primary","onPause");
+       // MainActivity.checkPreviousRecords = false;
+
     }
 
 
@@ -320,7 +324,7 @@ public class PrimaryFragment extends BaseFragment implements SheetLayout.OnFabAn
         Bundle bundle = new Bundle();
         bundle.putSerializable(DESCRIBABLE_KEY, transaction);
         add.setArguments(bundle);
-        getHelper().replaceFragment(add, false, "AddTransaction");
+        getHelper().replaceFragment(add, false,false ,"AddTransaction");
 
     }
 
@@ -347,6 +351,10 @@ public class PrimaryFragment extends BaseFragment implements SheetLayout.OnFabAn
 
     public void setTotalAmount(List<Category> categoryList){
 
+        if (categoryList !=  null){
+
+
+
         int totalAmount = 0;
         for (int i = 0; i < categoryList.size(); i++) {
 
@@ -357,6 +365,8 @@ public class PrimaryFragment extends BaseFragment implements SheetLayout.OnFabAn
             price.setText(totalAmount+" "+GeneralUtils.getCurrencySymbol(getActivity(),SPManager.getCurrency(getActivity())));
         }else {
             price.setText("$ " + totalAmount);
+        }
+
         }
 
 
@@ -456,6 +466,8 @@ public class PrimaryFragment extends BaseFragment implements SheetLayout.OnFabAn
         transaction.commit();
 
     }
+
+
 
 
 

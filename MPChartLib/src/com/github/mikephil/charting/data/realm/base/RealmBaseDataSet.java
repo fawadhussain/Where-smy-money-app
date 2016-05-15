@@ -160,7 +160,7 @@ public abstract class RealmBaseDataSet<T extends RealmObject, S extends Entry> e
     @Override
     public int getEntryIndex(int x, DataSet.Rounding rounding) {
 
-        int low = 0;
+        int low = 1;
         int high = mValues.size() - 1;
         int closest = -1;
 

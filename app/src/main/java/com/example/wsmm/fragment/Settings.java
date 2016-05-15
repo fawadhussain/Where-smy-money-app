@@ -50,10 +50,10 @@ public class Settings extends BaseFragment implements View.OnClickListener {
 
         switch (v.getId()){
             case R.id.currency_layout:
-                getHelper().replaceFragment(new CurrencyFragment(),false,"CurrencyFragment");
+                getHelper().replaceFragment(new CurrencyFragment(),false,true,"CurrencyFragment");
                 break;
             case R.id.categories_layout:
-                getHelper().replaceFragment(new CategoryListFragment(),false,"CategoryListFragment");
+                getHelper().replaceFragment(new CategoryListFragment(),false,true,"CategoryListFragment");
                 break;
             case R.id.reminder_layout:
                 break;

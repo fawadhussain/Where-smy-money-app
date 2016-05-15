@@ -2,9 +2,11 @@ package com.example.wsmm.activity;
 
 
 import android.app.Dialog;
+import android.content.Intent;
 import android.content.res.Configuration;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
+import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentTransaction;
 import android.support.v4.widget.DrawerLayout;
@@ -68,6 +70,13 @@ public class MainActivity extends BaseActivity implements View.OnClickListener, 
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
+        android.support.v4.app.FragmentManager fm = getSupportFragmentManager();
+        for (int i = 0; i < fm.getBackStackEntryCount(); i++) {
+            Log.i("MainActivity", "Found fragment: " + fm.getBackStackEntryAt(i).getId());
+            fm.popBackStack();
+
+        }
+
         Toolbar mToolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(mToolbar);
         datePickerText = (TextView) findViewById(R.id.date_picker_text);
@@ -90,7 +99,8 @@ public class MainActivity extends BaseActivity implements View.OnClickListener, 
 
         if (dbClient.getCategoryList().size() > 0) {
 
-            replaceFragment(new TabFragment(), false, "TabFragment");
+           replaceFragment(new TabFragment(), true,false, "TabFragment");
+            //fragmentTransaction(new TabFragment(),"TabFragment");
 
         } else {
 
@@ -102,7 +112,8 @@ public class MainActivity extends BaseActivity implements View.OnClickListener, 
                 dbClient.saveCategoryList(categoryItem);
             }
 
-            replaceFragment(new TabFragment(), false, "TabFragment");
+            replaceFragment(new TabFragment(), true,false ,"TabFragment");
+           // fragmentTransaction(new TabFragment(),"TabFragment");
 
         }
 
@@ -215,12 +226,13 @@ public class MainActivity extends BaseActivity implements View.OnClickListener, 
                 primaryFragment.setPreviousRecords(categories);
 
                 //replaceFragment(primaryFragment, true, "PrimaryFragment");
+                replaceFragment(primaryFragment,true,false,"PrimaryFragment");
 
-                FragmentTransaction transaction = getSupportFragmentManager().beginTransaction();
+         /*       FragmentTransaction transaction = getSupportFragmentManager().beginTransaction();
                 transaction.setCustomAnimations(android.R.anim.slide_in_left, android.R.anim.slide_out_right);
                 transaction.replace(R.id.containerView, primaryFragment, "PrimaryFragment");
-                transaction.addToBackStack(null);
-                transaction.commit();
+               // transaction.addToBackStack(null);
+                transaction.commit();*/
 
                 datePickerText.setText(getResources().getString(R.string.lastSevenDays));
 
@@ -258,13 +270,15 @@ public class MainActivity extends BaseActivity implements View.OnClickListener, 
                 primaryFragment.setHeaderList(headerList);
                 primaryFragment.setPreviousRecords(categories);
 
+                replaceFragment(primaryFragment,true,false,"PrimaryFragment");
+
                // replaceFragment(primaryFragment, true, "PrimaryFragment");
 
-                FragmentTransaction transaction1 = getSupportFragmentManager().beginTransaction();
+            /*    FragmentTransaction transaction1 = getSupportFragmentManager().beginTransaction();
                 transaction1.setCustomAnimations(android.R.anim.slide_in_left, android.R.anim.slide_out_right);
                 transaction1.replace(R.id.containerView, primaryFragment, "PrimaryFragment");
-                transaction1.addToBackStack(null);
-                transaction1.commit();
+              //  transaction1.addToBackStack(null);
+                transaction1.commit();*/
 
                 datePickerText.setText(getResources().getString(R.string.lastThirtyDays));
 
@@ -351,13 +365,13 @@ public class MainActivity extends BaseActivity implements View.OnClickListener, 
             TabFragment tabF = new TabFragment();
             bundle.putLong("date", day.getCalendar().getTimeInMillis());
             tabF.setArguments(bundle);
-            replaceFragment(tabF, true, "TabFragment");
+            replaceFragment(tabF, true,false ,"TabFragment");
         } else {
             checkPreviousRecords = false;
             TabFragment tabF = new TabFragment();
             bundle.putLong("date", day.getCalendar().getTimeInMillis());
             tabF.setArguments(bundle);
-            replaceFragment(tabF, true, "TabFragment");
+            replaceFragment(tabF, true,false ,"TabFragment");
 
         }
 
@@ -444,16 +458,19 @@ public class MainActivity extends BaseActivity implements View.OnClickListener, 
 
         // Checks the orientation of the screen
         if (newConfig.orientation == Configuration.ORIENTATION_LANDSCAPE) {
-            Toast.makeText(this, "landscape", Toast.LENGTH_SHORT).show();
-
-            replaceFragment(new PieFragment(), false, "ChartFragment");
-        } else if (newConfig.orientation == Configuration.ORIENTATION_PORTRAIT) {
-
-            FragmentManager fm = getSupportFragmentManager();
-            if (fm.getBackStackEntryCount() > 0) {
-                fm.popBackStack();
-            }
-            Toast.makeText(this, "portrait", Toast.LENGTH_SHORT).show();
+            Intent chartActivity = new Intent(MainActivity.this,ChartActivity.class);
+            startActivity(chartActivity);
         }
+    }
+
+
+    private void fragmentTransaction(Fragment fragment, String tag){
+
+        FragmentTransaction transaction = getSupportFragmentManager().beginTransaction();
+        transaction.setCustomAnimations(android.R.anim.slide_in_left, android.R.anim.slide_out_right);
+        transaction.replace(R.id.containerView, fragment, tag);
+        //transaction.addToBackStack(null);
+        transaction.commit();
+
     }
 }

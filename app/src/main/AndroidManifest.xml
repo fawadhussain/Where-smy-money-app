@@ -32,6 +32,12 @@
             android:label="@string/app_name"/>
 
 
+        <activity android:name=".activity.ChartActivity"
+            android:configChanges="orientation|screenSize|layoutDirection"
+            android:label="@string/app_name"/>
+
+
+
     </application>
 
 </manifest>

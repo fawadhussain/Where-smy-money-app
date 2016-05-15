@@ -122,7 +122,7 @@ public abstract class BaseFragment extends Fragment {
 
         public void addFragment(BaseFragment f, boolean clearBackStack , String tag);
 
-        public void replaceFragment(BaseFragment f, boolean clearBackStack, String tag);
+        public void replaceFragment(BaseFragment f, boolean clearBackStack, boolean addToBackstack,String tag);
 
         public void onBack();
 

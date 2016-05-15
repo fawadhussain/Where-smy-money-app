@@ -3,69 +3,66 @@ package com.example.wsmm.fragment;
 import android.graphics.Color;
 import android.graphics.Typeface;
 import android.os.Bundle;
-import android.text.SpannableString;
-import android.text.style.ForegroundColorSpan;
-import android.text.style.RelativeSizeSpan;
-import android.text.style.StyleSpan;
 import android.view.View;
 
 import com.example.wsmm.R;
 import com.example.wsmm.db.DBClient;
 import com.example.wsmm.model.Category;
+import com.example.wsmm.model.LineChartCategoryModel;
+import com.github.mikephil.charting.animation.Easing;
 import com.github.mikephil.charting.charts.BarLineChartBase;
 import com.github.mikephil.charting.charts.Chart;
+import com.github.mikephil.charting.charts.LineChart;
 import com.github.mikephil.charting.charts.PieChart;
 import com.github.mikephil.charting.components.XAxis;
 import com.github.mikephil.charting.components.YAxis;
 import com.github.mikephil.charting.data.ChartData;
+import com.github.mikephil.charting.data.realm.implementation.RealmLineData;
+import com.github.mikephil.charting.data.realm.implementation.RealmLineDataSet;
 import com.github.mikephil.charting.data.realm.implementation.RealmPieData;
 import com.github.mikephil.charting.data.realm.implementation.RealmPieDataSet;
 import com.github.mikephil.charting.formatter.PercentFormatter;
+import com.github.mikephil.charting.interfaces.datasets.ILineDataSet;
 import com.github.mikephil.charting.utils.ColorTemplate;
 
+import java.util.ArrayList;
+import java.util.List;
+
+import io.realm.RealmList;
 import io.realm.RealmResults;
 
 /**
- * Created by abubaker on 5/13/16.
+ * Created by abubaker on 15/05/2016.
  */
-public class PieFragment extends BaseFragment {
+public class LineChartFragment extends BaseFragment{
 
-    private PieChart mChart;
+
+    private LineChart mChart;
     private Typeface mTf;
     DBClient dbClient;
-    RealmResults<Category> result;
-    RealmPieData data;
-    RealmPieDataSet<Category> set;
+    ArrayList<LineChartCategoryModel> modelList;
+    List<Category> result;
 
 
-    public PieFragment() {
+    public LineChartFragment(){
 
     }
 
+
     @Override
     public int getLayoutId() {
-        return R.layout.pie_fragment_layout;
+        return R.layout.line_chart_fragment_layout;
     }
 
     @Override
     public void initViews(View parent, Bundle savedInstanceState) {
         super.initViews(parent, savedInstanceState);
 
-        mChart = (PieChart) parent.findViewById(R.id.pie_chart);
+        mChart = (LineChart) parent.findViewById(R.id.line_chart);
 
         setup(mChart);
-
-        //mChart.setCenterText(generateCenterSpannableText());
-
-
     }
 
-
-    @Override
-    public void onResume() {
-        super.onResume();
-        setData();
-    }
 
     protected void setup(Chart<?> chart) {
 
@@ -108,6 +105,7 @@ public class PieFragment extends BaseFragment {
         }
     }
 
+
     protected void styleData(ChartData data) {
         data.setValueTypeface(mTf);
         data.setValueTextSize(8f);
@@ -115,56 +113,63 @@ public class PieFragment extends BaseFragment {
         data.setValueFormatter(new PercentFormatter());
     }
 
+    @Override
+    public void onResume() {
+        super.onResume();
+        setData();
+    }
 
     private void setData() {
 
-        if (result == null) {
+        dbClient =new DBClient();
 
-            dbClient = new DBClient();
+        if (result == null){
 
-           result = dbClient.getAllItems();
-
+            result = dbClient.getAllItems();
 
         }
 
 
-        RealmPieDataSet<Category> set = new RealmPieDataSet<Category>(result, "expensePrice", "categoryId"); // stacked entries
-        set.setColors(ColorTemplate.VORDIPLOM_COLORS);
-        set.setLabel("Example market share");
-        set.setSliceSpace(2);
+        for (int i = 0;i<result.size();i++){
+            LineChartCategoryModel model = new LineChartCategoryModel();
+            model.setId(result.get(i).getCategoryId()-1);
+            model.setPrice(Float.parseFloat(result.get(i).getPrice()));
+            model.setDate(result.get(i).getStringDate());
+            dbClient.saveChartData(model);
+        }
 
+        RealmResults<LineChartCategoryModel> chartData = dbClient.getChartData();
 
-        data = new RealmPieData(result, "categoryName", set);
+        //RealmBarDataSet<RealmDemoData> set = new RealmBarDataSet<RealmDemoData>(result, "stackValues", "xIndex"); // normal entries
+        RealmLineDataSet<LineChartCategoryModel> set = new RealmLineDataSet<LineChartCategoryModel>(chartData, "price", "categoryChartId"); // stacked entries
+        set.setDrawCubic(false);
+        set.setLabel("Realm LineDataSet");
+        set.setDrawCircleHole(false);
+        set.setColor(ColorTemplate.rgb("#FF5722"));
+        set.setCircleColor(ColorTemplate.rgb("#FF5722"));
+        set.setLineWidth(1.8f);
+        set.setCircleSize(3.6f);
 
+        ArrayList<ILineDataSet> dataSets = new ArrayList<ILineDataSet>();
+        dataSets.add(set); // add the dataset
 
+        // create a data object with the dataset list
+        RealmLineData data = new RealmLineData(chartData, "date", dataSets);
         styleData(data);
-        data.setValueTextColor(Color.BLACK);
-        data.setValueTextSize(10f);
 
         // set data
-        mChart.setUsePercentValues(true);
         mChart.setData(data);
-        mChart.animateY(1400);
+        mChart.animateY(1400, Easing.EasingOption.EaseInOutQuart);;
     }
 
-    private SpannableString generateCenterSpannableText() {
 
-        SpannableString s = new SpannableString("Realm.io\nmobile database");
-        s.setSpan(new ForegroundColorSpan(Color.rgb(240, 115, 126)), 0, 8, 0);
-        s.setSpan(new RelativeSizeSpan(2.2f), 0, 8, 0);
-        s.setSpan(new StyleSpan(Typeface.ITALIC), 9, s.length(), 0);
-        s.setSpan(new ForegroundColorSpan(ColorTemplate.getHoloBlue()), 9, s.length(), 0);
-        s.setSpan(new RelativeSizeSpan(0.85f), 9, s.length(), 0);
-        return s;
-    }
-
-    public void setRealmDataSet(RealmResults<Category> dataSet) {
+    public void setRealmList(List<Category> dataSet) {
 
         result = dataSet;
 
     }
 
-    private RealmResults<Category> getDataSet() {
+    private List<Category> getDataSet() {
         return result;
     }
 }

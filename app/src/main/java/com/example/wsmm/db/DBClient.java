@@ -6,6 +6,7 @@ import android.util.Log;
 
 import com.example.wsmm.model.Category;
 import com.example.wsmm.model.CategoryItem;
+import com.example.wsmm.model.LineChartCategoryModel;
 import com.example.wsmm.util.GeneralUtils;
 
 
@@ -138,6 +139,17 @@ public class DBClient {
         }
         mRealm.commitTransaction();
         return records;
+
+    }
+
+
+    public RealmResults<Category> getParticularRealmResult(int day, int month, int year) {
+
+        mRealm.beginTransaction();
+        RealmResults<Category> result = mRealm.where(Category.class).equalTo("stringDate",year+"-0"+month+"-"+day).findAll();
+        mRealm.commitTransaction();
+        return result;
+
 
     }
 
@@ -357,6 +369,22 @@ public class DBClient {
         mRealm.commitTransaction();
 
 
+        return results;
+
+    }
+
+    public void saveChartData(LineChartCategoryModel data){
+
+        mRealm.beginTransaction();
+        mRealm.copyToRealmOrUpdate(data);
+        mRealm.commitTransaction();
+
+    }
+
+
+    public RealmResults<LineChartCategoryModel>  getChartData(){
+
+        RealmResults<LineChartCategoryModel> results = mRealm.where(LineChartCategoryModel.class).findAll();
         return results;
 
     }
