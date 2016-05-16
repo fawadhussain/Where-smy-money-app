@@ -1,6 +1,5 @@
 package com.example.wsmm.fragment;
 
-import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
@@ -83,12 +82,14 @@ public class NavigationDrawerFragment extends BaseFragment implements View.OnCli
         switch (v.getId()){
             case R.id.transactions:
                 closeNav();
-               fragmentTransaction(new TabFragment(),"TabFragment");
+                getHelper().replaceFragment(new TabFragment(),true,false,"TabFragment");
+              // fragmentTransaction(new TabFragment(),"TabFragment");
                 MainActivity.checkPreviousRecords =false;
                 break;
             case R.id.settings:
                 closeNav();
-                fragmentTransaction(new Settings(),"Settings");
+               // fragmentTransaction(new Settings(),"Settings");
+                getHelper().replaceFragment(new Settings(),false,true,"Settings");
                 break;
             case R.id.export_csv:
                 closeNav();
@@ -97,7 +98,8 @@ public class NavigationDrawerFragment extends BaseFragment implements View.OnCli
                 break;
             case R.id.how_to_us:
                 closeNav();
-                fragmentTransaction(new AboutUs(),"AboutUs");
+                //fragmentTransaction(new AboutUs(),"AboutUs");
+                getHelper().replaceFragment(new AboutUs(),true,false,"AboutUs");
 
                 break;
         }
@@ -143,7 +145,7 @@ public class NavigationDrawerFragment extends BaseFragment implements View.OnCli
         FragmentTransaction transaction = getActivity().getSupportFragmentManager().beginTransaction();
         transaction.setCustomAnimations(android.R.anim.slide_in_left, android.R.anim.slide_out_right);
         transaction.replace(R.id.containerView, fragment, tag);
-        transaction.addToBackStack(null);
+        //transaction.addToBackStack(null);
         transaction.commit();
 
     }

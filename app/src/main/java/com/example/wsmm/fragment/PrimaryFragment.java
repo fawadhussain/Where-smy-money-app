@@ -4,8 +4,6 @@ import android.app.Activity;
 import android.content.DialogInterface;
 import android.os.Bundle;
 import android.support.design.widget.FloatingActionButton;
-import android.support.v4.app.Fragment;
-import android.support.v4.app.FragmentTransaction;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
@@ -66,7 +64,6 @@ public class PrimaryFragment extends BaseFragment implements SheetLayout.OnFabAn
     }
 
 
-
     @Override
     public void onAttach(Activity activity) {
         super.onAttach(activity);
@@ -85,10 +82,14 @@ public class PrimaryFragment extends BaseFragment implements SheetLayout.OnFabAn
 
         price = (TextView) parent.findViewById(R.id.price);
 
-        if (SPManager.getCurrency(getActivity()) != -1 ){
-            price.setText("0"+GeneralUtils.getCurrencySymbol(getActivity(),SPManager.getCurrency(getActivity())));
-        }else {
-            price.setText("0$");
+        try {
+            if (SPManager.getCurrency(getActivity()) != -1 ){
+                price.setText("0"+GeneralUtils.getCurrencySymbol(getActivity(),SPManager.getCurrency(getActivity())));
+            }else {
+                price.setText("0$");
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
         }
 
         mRecyclerView = (RecyclerView) parent.findViewById(R.id.expense_list);
@@ -112,7 +113,7 @@ public class PrimaryFragment extends BaseFragment implements SheetLayout.OnFabAn
         mProgressBar.setVisibility(View.GONE);
         Bundle args = getArguments();
 
-        if (MainActivity.checkPreviousRecords){
+        if (listDataHeader!= null && MainActivity.checkPreviousRecords ){
             mRecyclerView.setVisibility(View.GONE);
             expListView.setVisibility(View.VISIBLE);
 
@@ -128,7 +129,6 @@ public class PrimaryFragment extends BaseFragment implements SheetLayout.OnFabAn
         }
 
         if (!MainActivity.checkPreviousRecords && getPreviousRecords()!= null) {
-            //setTotalAmount(getPreviousRecords());
             expenseAdapter = new ExpenseAdapter(getActivity(), getPreviousRecords());
             mRecyclerView.setAdapter(expenseAdapter);
             expenseAdapter.setLongClickListener(new ExpenseAdapter.OnItemLongClickListener() {
@@ -151,7 +151,6 @@ public class PrimaryFragment extends BaseFragment implements SheetLayout.OnFabAn
             }else {
                 Calendar cal = Calendar.getInstance();
                 updateToolBar.onUpdateDate(cal.get(Calendar.DAY_OF_MONTH), cal.get(Calendar.MONTH), cal.get(Calendar.YEAR));
-                //datePickerText.setText("TODAY " + GeneralUtils.getMonth(cal.get(Calendar.MONTH)) + " " + cal.get(Calendar.DAY_OF_MONTH));
             }
 
         }
@@ -179,10 +178,14 @@ public class PrimaryFragment extends BaseFragment implements SheetLayout.OnFabAn
 
         }
 
-        if (SPManager.getCurrency(getActivity())!= -1){
-            price.setText(totalAmount+" "+GeneralUtils.getCurrencySymbol(getActivity(),SPManager.getCurrency(getActivity())));
-        }else {
-            price.setText("$ " + totalAmount);
+        try {
+            if (getActivity().getApplicationContext()!=null && SPManager.getCurrency(getActivity().getApplicationContext())!= -1){
+                price.setText(totalAmount+" "+GeneralUtils.getCurrencySymbol(getActivity(),SPManager.getCurrency(getActivity().getApplicationContext())));
+            }else {
+                price.setText("$ " + totalAmount);
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
         }
 
 
@@ -209,7 +212,7 @@ public class PrimaryFragment extends BaseFragment implements SheetLayout.OnFabAn
         month = calendar.get(Calendar.MONTH);
         year = calendar.get(Calendar.YEAR);
         updateToolBar.onUpdateDate(day, month, year);
-        getHelper().replaceFragment(new AddTransactionFragment(), false, "AddTransaction");
+        getHelper().replaceFragment(new AddTransactionFragment(), true, false,"AddTransaction");
 
         sheetLayout.contractFab();
         sheetLayout.hide();
@@ -231,6 +234,8 @@ public class PrimaryFragment extends BaseFragment implements SheetLayout.OnFabAn
     @Override
     public void onPause() {
         super.onPause();
+
+
     }
 
 
@@ -302,7 +307,7 @@ public class PrimaryFragment extends BaseFragment implements SheetLayout.OnFabAn
 
                 } else {
 
-                    fragmentTransaction(new TabFragment(),"TabFragment");
+                    getHelper().replaceFragment(new TabFragment(),true,false,"TabFragment");
 
                 }
 
@@ -321,7 +326,7 @@ public class PrimaryFragment extends BaseFragment implements SheetLayout.OnFabAn
         Bundle bundle = new Bundle();
         bundle.putSerializable(DESCRIBABLE_KEY, transaction);
         add.setArguments(bundle);
-        getHelper().replaceFragment(add, false, "AddTransaction");
+        getHelper().replaceFragment(add, false,false ,"AddTransaction");
 
     }
 
@@ -348,16 +353,26 @@ public class PrimaryFragment extends BaseFragment implements SheetLayout.OnFabAn
 
     public void setTotalAmount(List<Category> categoryList){
 
+        if (categoryList !=  null){
+
+
+
         int totalAmount = 0;
         for (int i = 0; i < categoryList.size(); i++) {
 
             totalAmount += Integer.parseInt(categoryList.get(i).getPrice());
 
         }
-        if (SPManager.getCurrency(getActivity())!= -1){
-            price.setText(totalAmount+" "+GeneralUtils.getCurrencySymbol(getActivity(),SPManager.getCurrency(getActivity())));
-        }else {
-            price.setText("$ " + totalAmount);
+            try {
+                if (SPManager.getCurrency(getActivity())!= -1){
+                    price.setText(totalAmount+" "+GeneralUtils.getCurrencySymbol(getActivity(),SPManager.getCurrency(getActivity())));
+                }else {
+                    price.setText("$ " + totalAmount);
+                }
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
+
         }
 
 
@@ -373,7 +388,6 @@ public class PrimaryFragment extends BaseFragment implements SheetLayout.OnFabAn
 
     @Override
     public boolean onGroupClick(ExpandableListView parent, View v, int groupPosition, long id) {
-       // groupTransactionsAdapter.removeGroup(groupPosition);
         return false;
     }
 
@@ -446,18 +460,6 @@ public class PrimaryFragment extends BaseFragment implements SheetLayout.OnFabAn
         });
 
     }
-
-
-    private void fragmentTransaction(Fragment fragment, String tag){
-
-        FragmentTransaction transaction = getActivity().getSupportFragmentManager().beginTransaction();
-        transaction.setCustomAnimations(android.R.anim.slide_in_left, android.R.anim.slide_out_right);
-        transaction.replace(R.id.containerView, fragment, tag);
-        transaction.addToBackStack(null);
-        transaction.commit();
-
-    }
-
 
 
 

@@ -51,17 +51,23 @@ public class BaseActivity extends AppCompatActivity implements BaseFragment.Frag
 
     }
 
-    @Override
-    public void replaceFragment(BaseFragment f, boolean clearBackStack,String tag) {
 
-        if (clearBackStack) {
+    @Override
+    public void replaceFragment(BaseFragment f, boolean clearBackStack, boolean addToBackstack,String tag) {
+        replaceFragment(f, R.id.containerView, clearBackStack, addToBackstack,tag);
+    }
+
+    public void replaceFragment(BaseFragment f, int layoutId, boolean clearBackStack, boolean addToBackstack,String tag) {
+        if(clearBackStack) {
             clearFragmentBackStack();
         }
 
         FragmentTransaction transaction = getSupportFragmentManager().beginTransaction();
         transaction.setCustomAnimations(android.R.anim.slide_in_left, android.R.anim.slide_out_right);
-        transaction.replace(R.id.containerView, f,tag);
-        transaction.addToBackStack(null);
+        transaction.replace(layoutId, f,tag);
+        if(addToBackstack) {
+            transaction.addToBackStack(null);
+        }
         transaction.commit();
 
         mCurrentFragment = f;
@@ -76,6 +82,8 @@ public class BaseActivity extends AppCompatActivity implements BaseFragment.Frag
             finish();
             return;
         }
+
+
 
         getSupportFragmentManager().popBackStack();
         mFragments.pop();

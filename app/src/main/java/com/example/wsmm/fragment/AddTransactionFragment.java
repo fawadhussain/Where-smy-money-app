@@ -222,7 +222,7 @@ public class AddTransactionFragment extends BaseFragment implements View.OnClick
                                 public void onSuccess() {
                                     Toast.makeText(getActivity(), "Update Successfully ", Toast.LENGTH_SHORT).show();
 
-                                    getHelper().replaceFragment(new TabFragment(),false,"TabFragment");
+                                    getHelper().replaceFragment(new TabFragment(),true,false,"TabFragment");
 
                                 }
                             });
@@ -236,7 +236,7 @@ public class AddTransactionFragment extends BaseFragment implements View.OnClick
                                 @Override
                                 public void onSuccess() {
 
-                                    getHelper().replaceFragment(new TabFragment(),false,"TabFragment");
+                                    getHelper().replaceFragment(new TabFragment(),true,false,"TabFragment");
 
                                 }
                             });

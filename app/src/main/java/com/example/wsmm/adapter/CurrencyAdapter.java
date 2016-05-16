@@ -81,15 +81,7 @@ public class CurrencyAdapter extends RecyclerView.Adapter<CurrencyAdapter.ViewHo
                     SPManager.setCurrency(mContext,-1);
                 }
 
-
-
-
-
                 previous = position;
-
-
-
-
 
             }
         });

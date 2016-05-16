@@ -61,7 +61,7 @@ public class CategoryListFragment extends BaseFragment{
                 categoryEditFragment.setCategoryId(itemList.get(itemPosition).getCategoryId());
                 categoryEditFragment.setCategoryTitle(itemList.get(itemPosition).getCategoryTitle());
                 categoryEditFragment.setCategoryName(itemList.get(itemPosition).getCategoryItemName());
-                getHelper().replaceFragment(categoryEditFragment,false,"CategoryEditFragment");
+                getHelper().replaceFragment(categoryEditFragment,false,true,"CategoryEditFragment");
 
 
 

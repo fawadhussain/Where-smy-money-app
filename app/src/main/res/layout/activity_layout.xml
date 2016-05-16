@@ -1,0 +1,65 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical">
+
+
+    <RelativeLayout
+        android:id="@+id/button_layout"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content">
+
+        <Button
+            android:id="@+id/right_button"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:padding="5dp"
+            android:background="@color/primary"
+            android:layout_margin="5dp"
+            android:textColor="@color/white"
+            android:text="@string/select_categroy"
+            android:layout_alignParentRight="true"
+            android:layout_alignParentTop="true"/>
+
+        <Button
+            android:id="@+id/select_data"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:padding="5dp"
+            android:layout_margin="5dp"
+            android:layout_centerHorizontal="true"
+            android:background="@color/primary"
+            android:textColor="@color/white"
+            android:text="@string/date"
+            />
+
+
+
+        <Button
+            android:id="@+id/left_button"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:padding="5dp"
+            android:layout_margin="5dp"
+            android:background="@color/primary"
+            android:textColor="@color/white"
+            android:text="@string/select_period"
+            android:layout_alignParentLeft="true"
+            android:layout_alignParentTop="true"/>
+
+    </RelativeLayout>
+
+
+
+    <FrameLayout
+        android:id="@+id/containerView"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:layout_below="@+id/button_layout"
+        android:visibility="visible">
+
+    </FrameLayout>
+
+
+</RelativeLayout>

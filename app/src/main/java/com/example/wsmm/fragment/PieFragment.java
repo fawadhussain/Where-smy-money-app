@@ -8,6 +8,7 @@ import android.text.style.ForegroundColorSpan;
 import android.text.style.RelativeSizeSpan;
 import android.text.style.StyleSpan;
 import android.view.View;
+import android.widget.TextView;
 
 import com.example.wsmm.R;
 import com.example.wsmm.db.DBClient;
@@ -28,14 +29,18 @@ import io.realm.RealmResults;
 /**
  * Created by abubaker on 5/13/16.
  */
-public class PieFragment extends BaseFragment{
+public class PieFragment extends BaseFragment {
 
     private PieChart mChart;
     private Typeface mTf;
     DBClient dbClient;
+    RealmResults<Category> result;
+    RealmPieData data;
+    RealmPieDataSet<Category> set;
+    TextView message;
 
 
-    public PieFragment(){
+    public PieFragment() {
 
     }
 
@@ -49,11 +54,11 @@ public class PieFragment extends BaseFragment{
         super.initViews(parent, savedInstanceState);
 
         mChart = (PieChart) parent.findViewById(R.id.pie_chart);
+        message = (TextView)parent.findViewById(R.id.text_message);
 
         setup(mChart);
 
         //mChart.setCenterText(generateCenterSpannableText());
-
 
 
     }
@@ -116,19 +121,25 @@ public class PieFragment extends BaseFragment{
 
     private void setData() {
 
-        dbClient =new DBClient();
+        if (result == null) {
 
-        RealmResults<Category> result = dbClient.getAllItems();
+            dbClient = new DBClient();
+
+           result = dbClient.getAllItems();
 
 
-        //RealmBarDataSet<RealmDemoData> set = new RealmBarDataSet<RealmDemoData>(result, "stackValues", "xIndex"); // normal entries
+        }
+
+
         RealmPieDataSet<Category> set = new RealmPieDataSet<Category>(result, "expensePrice", "categoryId"); // stacked entries
         set.setColors(ColorTemplate.VORDIPLOM_COLORS);
         set.setLabel("Example market share");
         set.setSliceSpace(2);
 
-        // create a data object with the dataset list
-        RealmPieData data = new RealmPieData(result, "categoryName", set);
+
+        data = new RealmPieData(result, "categoryName", set);
+
+
         styleData(data);
         data.setValueTextColor(Color.BLACK);
         data.setValueTextSize(10f);
@@ -137,6 +148,11 @@ public class PieFragment extends BaseFragment{
         mChart.setUsePercentValues(true);
         mChart.setData(data);
         mChart.animateY(1400);
+
+        if (result.size() < 1){
+            message.setVisibility(View.VISIBLE);
+            mChart.setVisibility(View.GONE);
+        }
     }
 
     private SpannableString generateCenterSpannableText() {
@@ -148,5 +164,15 @@ public class PieFragment extends BaseFragment{
         s.setSpan(new ForegroundColorSpan(ColorTemplate.getHoloBlue()), 9, s.length(), 0);
         s.setSpan(new RelativeSizeSpan(0.85f), 9, s.length(), 0);
         return s;
+    }
+
+    public void setRealmDataSet(RealmResults<Category> dataSet) {
+
+        result = dataSet;
+
+    }
+
+    private RealmResults<Category> getDataSet() {
+        return result;
     }
 }

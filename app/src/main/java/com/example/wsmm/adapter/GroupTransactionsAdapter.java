@@ -38,12 +38,12 @@ public class GroupTransactionsAdapter extends BaseExpandableListAdapter {
 
     @Override
     public int getGroupCount() {
-        return this.listDataHeader.size();
+        return listDataHeader.size();
     }
 
     @Override
     public int getChildrenCount(int groupPosition) {
-        return this.hashMap.get(this.listDataHeader.get(groupPosition)).size();
+        return hashMap.get(listDataHeader.get(groupPosition)).size();
     }
 
     @Override
@@ -53,7 +53,7 @@ public class GroupTransactionsAdapter extends BaseExpandableListAdapter {
 
     @Override
     public Object getChild(int groupPosition, int childPosition) {
-        return this.hashMap.get(this.listDataHeader.get(groupPosition)).get(childPosition);
+        return hashMap.get(listDataHeader.get(groupPosition)).get(childPosition);
     }
 
     @Override
