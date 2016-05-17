@@ -14,6 +14,7 @@ import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.RelativeLayout;
 
+import com.borax12.materialdaterangepicker.date.DatePickerDialog;
 import com.example.wsmm.R;
 import com.example.wsmm.adapter.CategoryDialogAdapter;
 import com.example.wsmm.db.DBClient;
@@ -21,6 +22,7 @@ import com.example.wsmm.fragment.LineChartFragment;
 import com.example.wsmm.fragment.PieFragment;
 import com.example.wsmm.model.Category;
 import com.example.wsmm.model.CategoryItem;
+import com.example.wsmm.util.GeneralUtils;
 import com.prolificinteractive.materialcalendarview.CalendarDay;
 import com.prolificinteractive.materialcalendarview.CalendarMode;
 import com.prolificinteractive.materialcalendarview.MaterialCalendarView;
@@ -35,7 +37,7 @@ import io.realm.RealmResults;
 /**
  * Created by abubaker on 14/05/2016.
  */
-public class ChartActivity extends BaseActivity implements View.OnClickListener, OnDateSelectedListener {
+public class ChartActivity extends BaseActivity implements View.OnClickListener, OnDateSelectedListener ,DatePickerDialog.OnDateSetListener{
 
 
     private RecyclerView mRecyclerView;
@@ -51,6 +53,7 @@ public class ChartActivity extends BaseActivity implements View.OnClickListener,
     private Dialog dialog;
     private List<CategoryItem> itemList;
     Dialog categoryDialog = null;
+    private List<Category> categories;
 
     boolean check = false;
 
@@ -120,6 +123,19 @@ public class ChartActivity extends BaseActivity implements View.OnClickListener,
                                 }
                                 replaceFragment(fragment1, true, false, "LineChartFragment");
 
+                                return true;
+
+
+                            case R.id.item_custom_range:
+
+                                Calendar now = Calendar.getInstance();
+                                DatePickerDialog dpd = com.borax12.materialdaterangepicker.date.DatePickerDialog.newInstance(
+                                        ChartActivity.this,
+                                        now.get(Calendar.YEAR),
+                                        now.get(Calendar.MONTH),
+                                        now.get(Calendar.DAY_OF_MONTH)
+                                );
+                                dpd.show(getFragmentManager(), "Range Picker");
                                 return true;
 
 
@@ -248,5 +264,24 @@ public class ChartActivity extends BaseActivity implements View.OnClickListener,
     }
 
 
+    @Override
+    public void onDateSet(DatePickerDialog view, int year, int monthOfYear, int dayOfMonth, int yearEnd, int monthOfYearEnd, int dayOfMonthEnd) {
+        LineChartFragment lineChartFragment = new LineChartFragment();
 
+        db = new DBClient();
+        categories = db.getCustomDateData(GeneralUtils.getTimeInMillis(dayOfMonth - 1, monthOfYear, year)
+                , GeneralUtils.getTimeInMillis(dayOfMonthEnd + 1, monthOfYearEnd, yearEnd));
+
+        lineChartFragment.setRealmList(categories);
+        try {
+            if (adapter!= null && adapter.getSelectedMap()!= null)
+                lineChartFragment.setSelectCategories(adapter.getSelectedMap());
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        replaceFragment(lineChartFragment, true, false, "LineChartFragment");
+
+
+
+    }
 }

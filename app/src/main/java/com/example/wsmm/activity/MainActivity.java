@@ -277,7 +277,7 @@ public class MainActivity extends BaseActivity implements View.OnClickListener, 
                         now.get(Calendar.MONTH),
                         now.get(Calendar.DAY_OF_MONTH)
                 );
-                dpd.show(getFragmentManager(), "Datepickerdialog");
+                dpd.show(getFragmentManager(), "Range Picker");
                 return true;
         }
 
