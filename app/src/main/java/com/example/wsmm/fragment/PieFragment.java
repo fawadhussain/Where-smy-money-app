@@ -24,6 +24,8 @@ import com.github.mikephil.charting.data.realm.implementation.RealmPieDataSet;
 import com.github.mikephil.charting.formatter.PercentFormatter;
 import com.github.mikephil.charting.utils.ColorTemplate;
 
+import java.util.Calendar;
+
 import io.realm.RealmResults;
 
 /**
@@ -125,7 +127,11 @@ public class PieFragment extends BaseFragment {
 
             dbClient = new DBClient();
 
-           result = dbClient.getAllItems();
+            Calendar now = Calendar.getInstance();
+
+           result = dbClient.getParticularRealmResult(now.get(Calendar.DAY_OF_MONTH),now.get(Calendar.MONTH)+1,
+                   now.get(Calendar
+                   .YEAR));
 
 
         }

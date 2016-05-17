@@ -88,8 +88,6 @@ public class DBClient {
             @Override
             public void execute(Realm realm) {
 
-                // realm.beginTransaction();
-
                 if (category.getCategoryId() < 1) {
                     Number max = realm.where(Category.class).max("categoryId");
                     if (max == null) {
@@ -98,9 +96,6 @@ public class DBClient {
                     category.setCategoryId((int) (max.longValue() + 1));
                 }
                 realm.copyToRealmOrUpdate(category);
-                // realm.commitTransaction();
-                //close();
-
             }
         }, callback);
 
