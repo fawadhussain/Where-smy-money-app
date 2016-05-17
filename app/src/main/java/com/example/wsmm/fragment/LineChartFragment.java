@@ -44,6 +44,7 @@ public class LineChartFragment extends BaseFragment{
     List<Category> result;
     TextView message;
     private HashMap<Integer,String> hashMap;
+    private int counter = -1;
 
 
     public LineChartFragment(){
@@ -139,7 +140,7 @@ public class LineChartFragment extends BaseFragment{
                     Map.Entry pair = (Map.Entry)it.next();
                     if (pair.getValue().equals(result.get(i).getCategoryName().toUpperCase())){
                         LineChartCategoryModel model = new LineChartCategoryModel();
-                        model.setId(i);
+                        model.setId(++counter);
                         model.setCatName(result.get(i).getCategoryTitle());
                         model.setPrice(Float.parseFloat(result.get(i).getPrice()));
                         model.setDate(result.get(i).getStringDate());
