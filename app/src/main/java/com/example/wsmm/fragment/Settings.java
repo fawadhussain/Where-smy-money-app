@@ -18,6 +18,7 @@ public class Settings extends BaseFragment implements View.OnClickListener {
 
 
     TextView textSymbol;
+    TextView time;
 
     public Settings(){
 
@@ -32,11 +33,18 @@ public class Settings extends BaseFragment implements View.OnClickListener {
     public void initViews(View parent, Bundle savedInstanceState) {
         super.initViews(parent, savedInstanceState);
         textSymbol = (TextView)parent.findViewById(R.id.currency_symbol);
+        time=(TextView)parent.findViewById(R.id.time);
 
         if (SPManager.getCurrency(getActivity()) != -1 ){
             textSymbol.setText(GeneralUtils.getCurrencySymbol(getActivity(),SPManager.getCurrency(getActivity())));
         }else {
             textSymbol.setText("$USD");
+        }
+
+        if (SPManager.checkAlarm(getActivity())){
+            time.setText("At "+SPManager.getTime(getActivity()));
+        }else {
+            time.setText("Set Alarm");
         }
 
         parent.findViewById(R.id.currency_layout).setOnClickListener(this);
@@ -56,6 +64,7 @@ public class Settings extends BaseFragment implements View.OnClickListener {
                 getHelper().replaceFragment(new CategoryListFragment(),false,true,"CategoryListFragment");
                 break;
             case R.id.reminder_layout:
+                getHelper().replaceFragment(new AlarmFragment(),false,true,"AlarmFragment");
                 break;
         }
 

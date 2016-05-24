@@ -9,10 +9,9 @@ import android.content.SharedPreferences;
 public class SPManager {
 
     private static final String PREF_NAME = "wsmm";
-    private static final String DATE_MILLI = "date";
-    private static final String DAY = "day";
-    private static final String MONTH = "month";
-    private static final String YEAR = "year";
+    private static final String DATE = "date";
+    private static final String TIME = "time";
+    private static final String ALARM = "alarm";
     private static final String CURRENCY = "currency";
 
 
@@ -29,6 +28,51 @@ public class SPManager {
 
       SharedPreferences preferences = context.getSharedPreferences(PREF_NAME, Context.MODE_PRIVATE);
         return preferences.getInt(CURRENCY,-1);
+    }
+
+
+    public static void setDate(Context context, String date) {
+        SharedPreferences preferences = context.getSharedPreferences(PREF_NAME, Context.MODE_PRIVATE);
+        SharedPreferences.Editor editor = preferences.edit();
+        editor.putString(DATE,date);
+        editor.apply();;
+    }
+
+
+    public static String getDate(Context context) {
+
+        SharedPreferences preferences = context.getSharedPreferences(PREF_NAME, Context.MODE_PRIVATE);
+        return preferences.getString(DATE,null);
+    }
+
+
+    public static void setTime(Context context, String time) {
+        SharedPreferences preferences = context.getSharedPreferences(PREF_NAME, Context.MODE_PRIVATE);
+        SharedPreferences.Editor editor = preferences.edit();
+        editor.putString(TIME,time);
+        editor.apply();
+    }
+
+
+    public static String getTime(Context context) {
+
+        SharedPreferences preferences = context.getSharedPreferences(PREF_NAME, Context.MODE_PRIVATE);
+        return preferences.getString(TIME,null);
+    }
+
+
+    public static void setAlarm(Context context, boolean alarm){
+
+        SharedPreferences preferences = context.getSharedPreferences(PREF_NAME, Context.MODE_PRIVATE);
+        SharedPreferences.Editor editor = preferences.edit();
+        editor.putBoolean(ALARM,alarm);
+        editor.apply();
+
+    }
+
+    public static boolean checkAlarm(Context context){
+        SharedPreferences preferences = context.getSharedPreferences(PREF_NAME, Context.MODE_PRIVATE);
+        return preferences.getBoolean(ALARM,false);
     }
 
 }

@@ -1,0 +1,83 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+              android:orientation="vertical"
+              android:layout_width="match_parent"
+              android:layout_height="match_parent">
+
+
+    <RelativeLayout
+        android:id="@+id/date_picker"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content">
+
+
+        <Button
+            android:id="@+id/btn_date_picker"
+            android:layout_width="wrap_content"
+            android:text="@string/date_picker"
+            android:layout_height="wrap_content"/>
+
+        <TextView
+            android:id="@+id/show_date"
+            android:layout_width="wrap_content"
+            android:layout_toRightOf="@+id/btn_date_picker"
+            android:layout_marginLeft="20dp"
+            android:text="@string/show_date"
+            android:layout_centerVertical="true"
+            android:layout_height="wrap_content"/>
+
+
+
+    </RelativeLayout>
+
+
+    <RelativeLayout
+        android:id="@+id/time_picker"
+        android:layout_width="wrap_content"
+        android:layout_below="@+id/date_picker"
+        android:layout_height="wrap_content">
+
+
+
+        <Button
+            android:id="@+id/btn_time_picker"
+            android:layout_width="wrap_content"
+            android:text="@string/time_picker"
+            android:layout_height="wrap_content"/>
+
+
+        <TextView
+            android:id="@+id/show_time"
+            android:layout_width="wrap_content"
+            android:layout_toRightOf="@+id/btn_time_picker"
+            android:layout_marginLeft="20dp"
+            android:text="@string/show_time"
+            android:layout_centerVertical="true"
+            android:layout_height="wrap_content"/>
+
+
+    </RelativeLayout>
+
+
+
+    <Button
+        android:id="@+id/set_alarm"
+        android:layout_below="@+id/time_picker"
+        android:layout_width="wrap_content"
+        android:text="@string/set_alarm"
+        android:layout_height="wrap_content"/>
+
+
+    <Button
+        android:id="@+id/stop_alarm"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="@string/stop_alarm"
+        android:layout_alignParentBottom="true"
+        android:layout_centerHorizontal="true"
+        android:layout_marginBottom="168dp"/>
+
+
+
+
+</RelativeLayout>

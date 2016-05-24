@@ -36,6 +36,13 @@
     <string name="select_categroy">category</string>
     <string name="no_record_found">No Record Found</string>
     <string name="select_all_categories">Select All Categories</string>
+    <string name="date_picker">date picker</string>
+    <string name="time_picker">time picker</string>
+    <string name="set_alarm">set alarm</string>
+    <string name="stop_alarm">stop alarm</string>
+    <string name="show_date">show date</string>
+    <string name="show_time">show time</string>
+
 
 
     <string-array

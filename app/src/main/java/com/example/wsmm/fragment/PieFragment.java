@@ -139,7 +139,7 @@ public class PieFragment extends BaseFragment {
 
         RealmPieDataSet<Category> set = new RealmPieDataSet<Category>(result, "expensePrice", "categoryId"); // stacked entries
         set.setColors(ColorTemplate.VORDIPLOM_COLORS);
-        set.setLabel("Example market share");
+        set.setLabel("Wsmm pie chart");
         set.setSliceSpace(2);
 
 

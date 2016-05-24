@@ -261,9 +261,9 @@ public class AddTransactionFragment extends BaseFragment implements View.OnClick
     }
 
     @TargetApi(Build.VERSION_CODES.M)
-    private boolean addPermission(List<String> permissionsList, String permission) {
+    private boolean addPermission(List<String> List, String permission) {
         if (getActivity().checkSelfPermission(permission) != PackageManager.PERMISSION_GRANTED) {
-            permissionsList.add(permission);
+            List.add(permission);
             // Check for Rationale Option
             if (!shouldShowRequestPermissionRationale(permission))
                 return false;
@@ -407,7 +407,7 @@ public class AddTransactionFragment extends BaseFragment implements View.OnClick
         if (hasWriteContactsPermission != PackageManager.PERMISSION_GRANTED) {
             if (!shouldShowRequestPermissionRationale(Manifest.permission.READ_EXTERNAL_STORAGE)) {
                 showMessageOKCancel("You need to allow access to Read External Storage",
-                        new DialogInterface.OnClickListener() {
+                           new DialogInterface.OnClickListener() {
                             @Override
                             public void onClick(DialogInterface dialog, int which) {
                                 requestPermissions(new String[]{Manifest.permission.READ_EXTERNAL_STORAGE},
